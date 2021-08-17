@@ -23,13 +23,14 @@ function models() {
       logging:
         getConfig().DATABASE_LOGGING === 'true'
           ? (log) =>
-              console.log(
-                highlight(log, {
-                  language: 'sql',
-                  ignoreIllegals: true,
-                }),
-              )
+            console.log(
+              highlight(log, {
+                language: 'sql',
+                ignoreIllegals: true,
+              }),
+            )
           : false,
+      timezone: getConfig().DATABASE_TIMEZONE,
     },
   );
 
