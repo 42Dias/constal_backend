@@ -39,8 +39,7 @@ class PessoaFisicaRepository {
           'pontoReferencia',
           'cidade',
           'estado',
-          'bairro',
-          'pix',          
+          'bairro',     
           'importHash',
         ]),
         userId: data.user || null,
@@ -118,8 +117,7 @@ class PessoaFisicaRepository {
           'pontoReferencia',
           'cidade',
           'estado',
-          'bairro',
-          'pix',          
+          'bairro',  
           'importHash',
         ]),
         userId: data.user || null,
@@ -443,16 +441,6 @@ class PessoaFisicaRepository {
             'pessoaFisica',
             'bairro',
             filter.bairro,
-          ),
-        );
-      }
-
-      if (filter.pix) {
-        whereAnd.push(
-          SequelizeFilterUtils.ilikeIncludes(
-            'pessoaFisica',
-            'pix',
-            filter.pix,
           ),
         );
       }

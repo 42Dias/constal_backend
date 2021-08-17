@@ -41,7 +41,8 @@ class EmpresaRepository {
           'pontoReferencia',
           'cidade',
           'estado',
-          'bairro',          
+          'bairro',
+          'pix',
           'importHash',
         ]),
         userId: data.user || null,
@@ -121,7 +122,8 @@ class EmpresaRepository {
           'pontoReferencia',
           'cidade',
           'estado',
-          'bairro',          
+          'bairro',
+          'pix',     
           'importHash',
         ]),
         userId: data.user || null,
@@ -465,6 +467,16 @@ class EmpresaRepository {
             'empresa',
             'bairro',
             filter.bairro,
+          ),
+        );
+      }
+
+      if (filter.pix) {
+        whereAnd.push(
+          SequelizeFilterUtils.ilikeIncludes(
+            'pessoaFisica',
+            'pix',
+            filter.pix,
           ),
         );
       }

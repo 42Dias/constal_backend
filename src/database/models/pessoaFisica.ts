@@ -11,6 +11,7 @@ export default function (sequelize) {
       },
       cpf: {
         type: DataTypes.TEXT,
+        allowNull: false,
       },
       nome: {
         type: DataTypes.TEXT,
@@ -48,9 +49,6 @@ export default function (sequelize) {
       bairro: {
         type: DataTypes.TEXT,
       },
-      pix: {
-        type: DataTypes.TEXT,
-      },
       importHash: {
         type: DataTypes.STRING(255),
         allowNull: true,    
@@ -64,13 +62,6 @@ export default function (sequelize) {
         {
           unique: true,
           fields: ['importHash', 'tenantId'],
-          where: {
-            deletedAt: null,
-          },
-        },
-        {
-          unique: true,
-          fields: ['cpf', 'tenantId'],
           where: {
             deletedAt: null,
           },

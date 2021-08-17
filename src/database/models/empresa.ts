@@ -17,6 +17,7 @@ export default function (sequelize) {
       },
       cnpj: {
         type: DataTypes.TEXT,
+        allowNull: false,
       },
       telefone: {
         type: DataTypes.TEXT,
@@ -54,6 +55,9 @@ export default function (sequelize) {
       bairro: {
         type: DataTypes.TEXT,
       },
+      pix: {
+        type: DataTypes.TEXT,
+      },
       importHash: {
         type: DataTypes.STRING(255),
         allowNull: true,    
@@ -67,13 +71,6 @@ export default function (sequelize) {
         {
           unique: true,
           fields: ['importHash', 'tenantId'],
-          where: {
-            deletedAt: null,
-          },
-        },
-        {
-          unique: true,
-          fields: ['cnpj', 'tenantId'],
           where: {
             deletedAt: null,
           },

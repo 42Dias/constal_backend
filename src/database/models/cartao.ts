@@ -23,6 +23,7 @@ export default function (sequelize) {
       },
       apelido: {
         type: DataTypes.TEXT,
+        allowNull: false,
       },
       numero: {
         type: DataTypes.TEXT,
@@ -49,13 +50,6 @@ export default function (sequelize) {
         {
           unique: true,
           fields: ['importHash', 'tenantId'],
-          where: {
-            deletedAt: null,
-          },
-        },
-        {
-          unique: true,
-          fields: ['apelido', 'tenantId'],
           where: {
             deletedAt: null,
           },
