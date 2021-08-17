@@ -1,0 +1,30 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/cartao`,
+    require('./cartaoCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/cartao/:id`,
+    require('./cartaoUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/cartao/import`,
+    require('./cartaoImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/cartao`,
+    require('./cartaoDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/cartao/autocomplete`,
+    require('./cartaoAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/cartao`,
+    require('./cartaoList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/cartao/:id`,
+    require('./cartaoFind').default,
+  );
+};

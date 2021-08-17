@@ -1,0 +1,30 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/produto`,
+    require('./produtoCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/produto/:id`,
+    require('./produtoUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/produto/import`,
+    require('./produtoImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/produto`,
+    require('./produtoDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/produto/autocomplete`,
+    require('./produtoAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/produto`,
+    require('./produtoList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/produto/:id`,
+    require('./produtoFind').default,
+  );
+};
