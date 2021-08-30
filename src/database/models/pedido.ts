@@ -88,12 +88,12 @@ export default function (sequelize) {
       constraints: false,
     });
 
-    models.pedido.belongsToMany(models.produto, {
+    /* models.pedido.belongsToMany(models.produto, {
       as: 'produto',
       constraints: false,
       through: 'pedidoProdutoProduto',
     });
-
+ */
 
     
     models.pedido.belongsTo(models.tenant, {

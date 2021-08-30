@@ -40,11 +40,11 @@ export default function (sequelize) {
       constraints: false,
     });
 
-    models.carrinho.belongsToMany(models.produto, {
+    /* models.carrinho.belongsToMany(models.produto, {
       as: 'produto',
       constraints: false,
       through: 'carrinhoProdutoProduto',
-    });
+    }); */
 
 
     
