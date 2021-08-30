@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "constal_dev",
+    "password": "9F%2Ysj_",
+    "database": "constal_dev",
+    "host": "189.127.14.12",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "constal_prod",
+    "password": "9F%2Ysj_",
+    "database": "constal_prod",
+    "host": "189.127.14.12",
+    "dialect": "mysql"
+  }
+}

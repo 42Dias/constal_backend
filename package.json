@@ -36,7 +36,8 @@
     "sequelize": "6.3.5",
     "sqlite": "4.0.14",
     "stripe": "8.96.0",
-    "swagger-ui-dist": "3.44.1"
+    "swagger-ui-dist": "3.44.1",
+    "uuid": "^8.3.2"
   },
   "private": true,
   "devDependencies": {
