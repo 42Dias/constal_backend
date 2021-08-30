@@ -28,7 +28,7 @@ export default function (sequelize) {
         type: DataTypes.TEXT,
       },
       preco: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.DECIMAL(10,2),
       },
       somatoriaAvaliacoes: {
         type: DataTypes.INTEGER,
