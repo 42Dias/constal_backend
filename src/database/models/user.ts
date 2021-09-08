@@ -7,14 +7,6 @@ export default function (sequelize, DataTypes) {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      tipoCadastro: {
-        type: DataTypes.ENUM,
-        allowNull: false,
-        values: [
-          "Empresa",
-          "PessoaFisica",
-        ],
-      },
       fullName: {
         type: DataTypes.STRING(255),
         allowNull: true,
