@@ -26,6 +26,7 @@ export default class UserRepository {
     const user = await options.database.user.create(
       {
         id: data.id || undefined,
+        tipoCadastro: data.tipoCadastro || 'PessoaFisica',
         email: data.email,
         firstName: data.firstName || null,
         lastName: data.lastName || null,
@@ -77,6 +78,7 @@ export default class UserRepository {
     const user = await options.database.user.create(
       {
         email: data.email,
+        tipoCadastro: data.tipoCadastro || 'PessoaFisica',
         firstName: data.firstName,
         password: data.password,
       },
@@ -428,6 +430,12 @@ export default class UserRepository {
       if (filter.id) {
         whereAnd.push({
           ['id']: filter.id,
+        });
+      }
+
+      if (filter.tipoCadastro) {
+        whereAnd.push({
+          tipoCadastro: filter.tipoCadastro,
         });
       }
 
