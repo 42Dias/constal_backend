@@ -3,7 +3,7 @@ import AuditLogRepository from '../../database/repositories/auditLogRepository';
 import lodash from 'lodash';
 import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
-import Sequelize from 'sequelize';import FileRepository from './fileRepository';
+import Sequelize from 'sequelize'; import FileRepository from './fileRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
 
 const Op = Sequelize.Op;
@@ -35,7 +35,9 @@ class ProdutoRepository {
           'preco',
           'somatoriaAvaliacoes',
           'quantidadeAvaliacoes',
-          'volumeVendas',          
+          'volumeVendas',
+          'isOferta',
+          'precoOferta',
           'importHash',
         ]),
         empresaId: data.empresa || null,
@@ -49,8 +51,8 @@ class ProdutoRepository {
       },
     );
 
-    
-  
+
+
     await FileRepository.replaceRelationFiles(
       {
         belongsTo: options.database.produto.getTableName(),
@@ -60,7 +62,7 @@ class ProdutoRepository {
       data.fotos,
       options,
     );
-  
+
     await this._createAuditLog(
       AuditLogRepository.CREATE,
       record,
@@ -85,7 +87,7 @@ class ProdutoRepository {
       options,
     );
 
-    let record = await options.database.produto.findOne(      
+    let record = await options.database.produto.findOne(
       {
         where: {
           id,
@@ -111,7 +113,9 @@ class ProdutoRepository {
           'preco',
           'somatoriaAvaliacoes',
           'quantidadeAvaliacoes',
-          'volumeVendas',          
+          'volumeVendas',
+          'isOferta',
+          'precoOferta',
           'importHash',
         ]),
         empresaId: data.empresa || null,
@@ -294,7 +298,7 @@ class ProdutoRepository {
       {
         model: options.database.categoria,
         as: 'categoria',
-      },      
+      },
     ];
 
     whereAnd.push({
@@ -442,6 +446,37 @@ class ProdutoRepository {
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             volumeVendas: {
+              [Op.lte]: end,
+            },
+          });
+        }
+      }
+
+      if (
+        filter.isOferta === true ||
+        filter.isOferta === 'true' ||
+        filter.isOferta === false ||
+        filter.isOferta === 'false'
+      ) {
+        whereAnd.push({
+          isOferta: filter.isOferta
+        });
+      }
+
+      if (filter.precoOfertaRange) {
+        const [start, end] = filter.precoOfertaRange;
+
+        if (start !== undefined && start !== null && start !== '') {
+          whereAnd.push({
+            precoOferta: {
+              [Op.gte]: start,
+            },
+          });
+        }
+
+        if (end !== undefined && end !== null && end !== '') {
+          whereAnd.push({
+            precoOferta: {
               [Op.lte]: end,
             },
           });
