@@ -36,7 +36,7 @@ export default function (sequelize) {
 
   carrinho.associate = (models) => {
     models.carrinho.belongsTo(models.user, {
-      as: 'userId',
+      as: 'user',
       constraints: false,
     });
 
