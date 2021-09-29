@@ -3,7 +3,7 @@
     "username": "constal_dev",
     "password": "9F%2Ysj_",
     "database": "constal_dev",
-    "host": "189.127.14.12",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "production": {
