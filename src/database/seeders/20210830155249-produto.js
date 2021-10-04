@@ -5,7 +5,7 @@ const faker = require('faker');
 
 faker.locale = "pt_BR";
  
-const produto = [...Array(4)].map((produto) => (
+const produto = [...Array(50)].map((produto) => (
   {
     id: uuidv4(),
     nome: faker.commerce.productName(),
