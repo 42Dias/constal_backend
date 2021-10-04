@@ -21,6 +21,7 @@ class AuthService {
     password,
     invitationToken,
     tenantId,
+    role,
     options: any = {},
   ) {
     
@@ -149,6 +150,7 @@ class AuthService {
           ...options,
           transaction,
         },
+        role,
       );
 
       // Email may have been alreadyverified using the invitation token
@@ -290,6 +292,7 @@ class AuthService {
     invitationToken,
     tenantId,
     options,
+    role?,
   ) {
     if (invitationToken) {
       try {
@@ -346,7 +349,7 @@ class AuthService {
       }).createOrJoinDefault(
         {
           // leave empty to require admin's approval
-          roles: [],
+          roles: [role] || null,
         },
         options.transaction,
       );
