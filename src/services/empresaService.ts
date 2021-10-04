@@ -157,4 +157,32 @@ export default class EmpresaService {
 
     return count > 0;
   }
+
+  async createOrUpdate(data) {
+
+    try {
+      data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options });
+
+      const record = await EmpresaRepository.createOrUpdate(data, {
+        ...this.options,
+        
+      });
+
+      
+
+      return record;
+    } catch (error) {
+      SequelizeRepository.handleUniqueFieldError(
+        error,
+        this.options.language,
+        'empresa',
+      );
+
+      throw error;
+    }
+  }
+
+  async findByCurrentId() {
+    return EmpresaRepository.findByCurrentId(this.options);
+  }
 }

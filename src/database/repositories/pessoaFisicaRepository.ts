@@ -314,9 +314,9 @@ class PessoaFisicaRepository {
       },
     );
 
-    if (!record) {
+    /* if (!record) {
       throw new Error404();
-    }
+    } */
 
     return this._fillWithRelationsAndFiles(record, options);
   }

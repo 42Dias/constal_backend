@@ -3,7 +3,7 @@ import AuditLogRepository from '../../database/repositories/auditLogRepository';
 import lodash from 'lodash';
 import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
-import Sequelize from 'sequelize';import UserRepository from './userRepository';
+import Sequelize from 'sequelize'; import UserRepository from './userRepository';
 import FileRepository from './fileRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
 
@@ -55,8 +55,8 @@ class EmpresaRepository {
       },
     );
 
-    
-  
+
+
     await FileRepository.replaceRelationFiles(
       {
         belongsTo: options.database.empresa.getTableName(),
@@ -66,7 +66,7 @@ class EmpresaRepository {
       data.foto,
       options,
     );
-  
+
     await this._createAuditLog(
       AuditLogRepository.CREATE,
       record,
@@ -91,7 +91,7 @@ class EmpresaRepository {
       options,
     );
 
-    let record = await options.database.empresa.findOne(      
+    let record = await options.database.empresa.findOne(
       {
         where: {
           id,
@@ -123,7 +123,7 @@ class EmpresaRepository {
           'cidade',
           'estado',
           'bairro',
-          'pix',     
+          'pix',
           'importHash',
         ]),
         userId: data.user || null,
@@ -225,6 +225,115 @@ class EmpresaRepository {
     return this._fillWithRelationsAndFiles(record, options);
   }
 
+  static async findByCurrentId(options: IRepositoryOptions) {
+    const currentUser = SequelizeRepository.getCurrentUser(
+      options,
+    );
+    const transaction = SequelizeRepository.getTransaction(
+      options,
+    );
+
+    const include = [
+      {
+        model: options.database.user,
+        as: 'user',
+      },
+    ];
+
+    const currentTenant = SequelizeRepository.getCurrentTenant(
+      options,
+    );
+
+    const record = await options.database.empresa.findOne(
+      {
+        where: {
+          userId: currentUser.id,
+          tenantId: currentTenant.id,
+        },
+        include,
+        transaction,
+      },
+    );
+
+    /* if (!record) {
+      throw new Error404();
+    } */
+
+    return this._fillWithRelationsAndFiles(record, options);
+  }
+
+  static async createOrUpdate(data, options: IRepositoryOptions) {
+    const currentUser = SequelizeRepository.getCurrentUser(
+      options,
+    );
+
+    const tenant = SequelizeRepository.getCurrentTenant(
+      options,
+    );
+
+    const record = await options.database.empresa.findOrCreate(
+      {
+        where: {
+          userId: currentUser.id,
+        },
+        defaults: {
+          ...lodash.pick(data, [
+            'marca',
+            'razaoSocial',
+            'cnpj',
+            'telefone',
+            'ramal',
+            'email',
+            'website',
+            'cep',
+            'logradouro',
+            'numero',
+            'complemento',
+            'pontoReferencia',
+            'cidade',
+            'estado',
+            'bairro',
+            'pix',
+            'importHash',
+          ]),
+          userId: currentUser.id || null,
+          tenantId: tenant.id,
+          createdById: currentUser.id,
+          updatedById: currentUser.id,
+        },
+      },
+    );
+    if (record[1] == false) {
+      record[0] = await record[0].update(
+        {
+          ...lodash.pick(data, [
+            'marca',
+            'razaoSocial',
+            'cnpj',
+            'telefone',
+            'ramal',
+            'email',
+            'website',
+            'cep',
+            'logradouro',
+            'numero',
+            'complemento',
+            'pontoReferencia',
+            'cidade',
+            'estado',
+            'bairro',
+            'pix',
+            'importHash',
+          ]),
+          userId: currentUser.id || null,
+          updatedById: currentUser.id,
+        },
+      );
+    }
+
+    return record;
+  }
+
   static async filterIdInTenant(
     id,
     options: IRepositoryOptions,
@@ -297,7 +406,7 @@ class EmpresaRepository {
       {
         model: options.database.user,
         as: 'user',
-      },      
+      },
     ];
 
     whereAnd.push({
@@ -474,7 +583,7 @@ class EmpresaRepository {
       if (filter.pix) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
-            'pessoaFisica',
+            'empresa',
             'pix',
             filter.pix,
           ),
@@ -578,8 +687,8 @@ class EmpresaRepository {
         order: [['marca', 'ASC']],
       },
     );
-      console.log(records);
-      
+    console.log(records);
+
     return records.map((record) => ({
       id: record.id,
       label: record.marca,

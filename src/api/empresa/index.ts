@@ -1,4 +1,12 @@
 export default (app) => {
+  app.get(
+    `/tenant/:tenantId/empresa-perfil`,
+    require('./empresaFindCurrentUser').default,
+  );
+  app.post(
+    `/tenant/:tenantId/empresa-perfil`,
+    require('./empresaCreateOrUpdate').default,
+  );
   app.post(
     `/tenant/:tenantId/empresa`,
     require('./empresaCreate').default,
