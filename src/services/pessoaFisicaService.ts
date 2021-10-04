@@ -44,6 +44,30 @@ export default class PessoaFisicaService {
     }
   }
 
+  async createOrUpdate(data) {
+
+    try {
+      data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options });
+
+      const record = await PessoaFisicaRepository.createOrUpdate(data, {
+        ...this.options,
+        
+      });
+
+      
+
+      return record;
+    } catch (error) {
+      SequelizeRepository.handleUniqueFieldError(
+        error,
+        this.options.language,
+        'pessoaFisica',
+      );
+
+      throw error;
+    }
+  }
+
   async update(id, data) {
     const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
@@ -107,6 +131,10 @@ export default class PessoaFisicaService {
 
   async findById(id) {
     return PessoaFisicaRepository.findById(id, this.options);
+  }
+
+  async findByCurrentId() {
+    return PessoaFisicaRepository.findByCurrentId(this.options);
   }
 
   async findAllAutocomplete(search, limit) {
