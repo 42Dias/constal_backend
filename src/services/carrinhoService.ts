@@ -2,6 +2,7 @@ import Error400 from '../errors/Error400';
 import SequelizeRepository from '../database/repositories/sequelizeRepository';
 import { IServiceOptions } from './IServiceOptions';
 import CarrinhoRepository from '../database/repositories/carrinhoRepository';
+import CarrinhoProdutoRepository from '../database/repositories/carrinhoProdutoRepository';
 import ProdutoRepository from '../database/repositories/produtoRepository';
 import UserRepository from '../database/repositories/userRepository';
 
@@ -13,28 +14,23 @@ export default class CarrinhoService {
   }
 
   async create(data) {
-    const transaction = await SequelizeRepository.createTransaction(
-      this.options.database,
-    );
 
     try {
-      data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction });
+      /* data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction }); */
 
-      const record = await CarrinhoRepository.create(data, {
+      const carrinho = await CarrinhoRepository.create(data, {
         ...this.options,
-        transaction,
       });
 
-      await SequelizeRepository.commitTransaction(
-        transaction,
-      );
+      data.carrinho = carrinho.id;
 
-      return record;
+      const carrinhoProduto = await CarrinhoProdutoRepository.create(data, {
+        ...this.options,
+      });
+
+      return carrinhoProduto;
     } catch (error) {
-      await SequelizeRepository.rollbackTransaction(
-        transaction,
-      );
 
       SequelizeRepository.handleUniqueFieldError(
         error,

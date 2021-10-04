@@ -74,6 +74,71 @@ class PessoaFisicaRepository {
     return this.findById(record.id, options);
   }
 
+  static async createOrUpdate(data, options: IRepositoryOptions) {
+    const currentUser = SequelizeRepository.getCurrentUser(
+      options,
+    );
+
+    const tenant = SequelizeRepository.getCurrentTenant(
+      options,
+    );
+
+    const record = await options.database.pessoaFisica.findOrCreate(
+      {
+        where: {
+          userId: currentUser.id,
+        },
+        defaults: {
+          ...lodash.pick(data, [
+            'cpf',
+            'nome',
+            'email',
+            'telefone',
+            'celular',
+            'cep',
+            'logradouro',
+            'numero',
+            'complemento',
+            'pontoReferencia',
+            'cidade',
+            'estado',
+            'bairro',     
+            'importHash',
+          ]),
+          userId: currentUser.id || null,
+          tenantId: tenant.id,
+          createdById: currentUser.id,
+          updatedById: currentUser.id,
+        },
+      },
+    );
+    if (record[1] == false) {
+      record[0] = await record[0].update(
+        {
+          ...lodash.pick(data, [
+            'cpf',
+            'nome',
+            'email',
+            'telefone',
+            'celular',
+            'cep',
+            'logradouro',
+            'numero',
+            'complemento',
+            'pontoReferencia',
+            'cidade',
+            'estado',
+            'bairro',
+          ]),
+          userId: currentUser.id || null,
+          updatedById: currentUser.id,
+        },
+      );
+    }
+    
+      return record;
+  }
+
   static async update(id, data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
@@ -205,6 +270,43 @@ class PessoaFisicaRepository {
       {
         where: {
           id,
+          tenantId: currentTenant.id,
+        },
+        include,
+        transaction,
+      },
+    );
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return this._fillWithRelationsAndFiles(record, options);
+  }
+
+  static async findByCurrentId(options: IRepositoryOptions) {
+    const currentUser = SequelizeRepository.getCurrentUser(
+      options,
+    );
+    const transaction = SequelizeRepository.getTransaction(
+      options,
+    );
+
+    const include = [
+      {
+        model: options.database.user,
+        as: 'user',
+      },
+    ];
+
+    const currentTenant = SequelizeRepository.getCurrentTenant(
+      options,
+    );
+
+    const record = await options.database.pessoaFisica.findOne(
+      {
+        where: {
+          userId: currentUser.id,
           tenantId: currentTenant.id,
         },
         include,

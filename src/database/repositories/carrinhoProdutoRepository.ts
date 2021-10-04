@@ -1,36 +1,28 @@
-import SequelizeRepository from '../../database/repositories/sequelizeRepository';
-import AuditLogRepository from '../../database/repositories/auditLogRepository';
+import SequelizeRepository from './sequelizeRepository';
+import AuditLogRepository from './auditLogRepository';
 import lodash from 'lodash';
-import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
+import SequelizeFilterUtils from '../utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
 import Sequelize from 'sequelize'; import UserRepository from './userRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
 
 const Op = Sequelize.Op;
 
-class CarrinhoRepository {
+class CarrinhoProdutoRepository {
 
   static async create(data, options: IRepositoryOptions) {
-    const currentUser = SequelizeRepository.getCurrentUser(
-      options,
-    );
-
-    const tenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
-
-    const record = await options.database.carrinho.findOrCreate(
+  
+    const record = await options.database.carrinhoProduto.findOrCreate(
       {
         where:
         {
-          userId: currentUser.id,
-          tenantId: tenant.id,
+          carrinhoId: data.carrinho,
+          produtoId: data.produto,
         },
         defaults: {
-          userId: currentUser.id || null,
-          tenantId: tenant.id,
-          createdById: currentUser.id,
-          updatedById: currentUser.id,
+          carrinhoId: data.carrinho,
+          produtoId: data.produto,
+          quantidade: data.quantidade
         }
       }
     );
@@ -51,58 +43,28 @@ class CarrinhoRepository {
       options,
     );
 
-    /* const transaction = SequelizeRepository.getTransaction(
-      options,
-    ); */
-
-
     const currentTenant = SequelizeRepository.getCurrentTenant(
       options,
     );
 
-    const record = await options.database.carrinho.findOrCreate(
+    let record = await options.database.carrinhoProduto.update(
       {
-        where:
-        {
-          userId: currentUser.id,
-          tenantId: currentTenant.id,
-        },
-        defaults: {
-          userId: currentUser.id || null,
-          tenantId: currentTenant.id,
-          createdById: currentUser.id,
-          updatedById: currentUser.id,
-        }
-      }
-    );
-
-    /* record = await record.update(
-      {
-        ...lodash.pick(data, [
-
-          'importHash',
-        ]),
-        userId: data.user || null,
+        produtoId: data.produto.id,
+        quantidade: data.quantidade,
         updatedById: currentUser.id,
       },
       {
-        transaction,
+        where: {
+          id: id
+        },
       },
+    )
+
+    record = await options.database.carrinhoProduto.findByPk(
+      id,
     );
 
-    await record.setProduto(data.produto || [], {
-      transaction,
-    }); */
-
-
-    await this._createAuditLog(
-      AuditLogRepository.UPDATE,
-      record,
-      data,
-      options,
-    );
-
-    return this.findById(record.id, options);
+    return record;
   }
 
   static async destroy(id, options: IRepositoryOptions) {
@@ -114,7 +76,7 @@ class CarrinhoRepository {
       options,
     );
 
-    let record = await options.database.carrinho.findOne(
+    let record = await options.database.carrinhoProduto.findOne(
       {
         where: {
           id,
@@ -141,37 +103,16 @@ class CarrinhoRepository {
   }
 
   static async findById(id, options: IRepositoryOptions) {
-    const transaction = SequelizeRepository.getTransaction(
-      options,
-    );
 
-    const include = [
-      {
-        model: options.database.user,
-        as: 'user',
-      },
-    ];
-
-    const currentTenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
-
-    const record = await options.database.carrinho.findOne(
-      {
-        where: {
-          id,
-          tenantId: currentTenant.id,
-        },
-        include,
-        transaction,
-      },
+    const record = await options.database.carrinhoProduto.findByPk(
+      id,
     );
 
     if (!record) {
       throw new Error404();
     }
 
-    return this._fillWithRelationsAndFiles(record, options);
+    return record;
   }
 
   static async filterIdInTenant(
@@ -203,7 +144,7 @@ class CarrinhoRepository {
       tenantId: currentTenant.id,
     };
 
-    const records = await options.database.carrinho.findAll(
+    const records = await options.database.carrinhoProduto.findAll(
       {
         attributes: ['id'],
         where,
@@ -222,7 +163,7 @@ class CarrinhoRepository {
       options,
     );
 
-    return options.database.carrinho.count(
+    return options.database.carrinhoProduto.count(
       {
         where: {
           ...filter,
@@ -302,7 +243,7 @@ class CarrinhoRepository {
     let {
       rows,
       count,
-    } = await options.database.carrinho.findAndCountAll({
+    } = await options.database.carrinhoProduto.findAndCountAll({
       where,
       include,
       limit: limit ? Number(limit) : undefined,
@@ -343,7 +284,7 @@ class CarrinhoRepository {
 
     const where = { [Op.and]: whereAnd };
 
-    const records = await options.database.carrinho.findAll(
+    const records = await options.database.carrinhoProduto.findAll(
       {
         attributes: ['id', 'id'],
         where,
@@ -420,4 +361,4 @@ class CarrinhoRepository {
   }
 }
 
-export default CarrinhoRepository;
+export default CarrinhoProdutoRepository;
