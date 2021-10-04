@@ -3,7 +3,7 @@ import AuditLogRepository from '../../database/repositories/auditLogRepository';
 import lodash from 'lodash';
 import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
-import Sequelize from 'sequelize';import UserRepository from './userRepository';
+import Sequelize from 'sequelize'; import UserRepository from './userRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
 
 const Op = Sequelize.Op;
@@ -23,28 +23,28 @@ class CarrinhoRepository {
       options,
     );
 
-    const record = await options.database.carrinho.create(
+    const record = await options.database.carrinho.findOrCreate(
       {
-        ...lodash.pick(data, [
-          
-          'importHash',
-        ]),
-        userIdId: data.userId || null,
-        tenantId: tenant.id,
-        createdById: currentUser.id,
-        updatedById: currentUser.id,
-      },
-      {
-        transaction,
-      },
+        where:
+        {
+          userId: data.user,
+          tenantId: tenant.id,
+        },
+        defaults: {
+          userId: data.user || null,
+          tenantId: tenant.id,
+          createdById: currentUser.id,
+          updatedById: currentUser.id,
+        }
+      }
     );
 
     await record.setProduto(data.produto || [], {
       transaction,
-    });    
-  
+    });
 
-  
+
+
     await this._createAuditLog(
       AuditLogRepository.CREATE,
       record,
@@ -69,7 +69,7 @@ class CarrinhoRepository {
       options,
     );
 
-    let record = await options.database.carrinho.findOne(      
+    let record = await options.database.carrinho.findOne(
       {
         where: {
           id,
@@ -86,10 +86,10 @@ class CarrinhoRepository {
     record = await record.update(
       {
         ...lodash.pick(data, [
-          
+
           'importHash',
         ]),
-        userIdId: data.userId || null,
+        userId: data.user || null,
         updatedById: currentUser.id,
       },
       {
@@ -156,7 +156,7 @@ class CarrinhoRepository {
     const include = [
       {
         model: options.database.user,
-        as: 'userId',
+        as: 'user',
       },
     ];
 
@@ -253,8 +253,8 @@ class CarrinhoRepository {
     let include = [
       {
         model: options.database.user,
-        as: 'userId',
-      },      
+        as: 'user',
+      },
     ];
 
     whereAnd.push({
@@ -268,10 +268,10 @@ class CarrinhoRepository {
         });
       }
 
-      if (filter.userId) {
+      if (filter.user) {
         whereAnd.push({
-          ['userIdId']: SequelizeFilterUtils.uuid(
-            filter.userId,
+          ['user']: SequelizeFilterUtils.uuid(
+            filter.user,
           ),
         });
       }
@@ -418,7 +418,7 @@ class CarrinhoRepository {
       options,
     );
 
-    output.userId = UserRepository.cleanupForRelationships(output.userId);
+    output.user = UserRepository.cleanupForRelationships(output.user);
 
     output.produto = await record.getProduto({
       transaction,

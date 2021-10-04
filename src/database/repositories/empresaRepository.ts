@@ -560,7 +560,7 @@ class EmpresaRepository {
           {
             [Op.and]: SequelizeFilterUtils.ilikeIncludes(
               'empresa',
-              'cnpj',
+              'marca',
               query,
             ),
           },
@@ -572,16 +572,17 @@ class EmpresaRepository {
 
     const records = await options.database.empresa.findAll(
       {
-        attributes: ['id', 'cnpj'],
+        attributes: ['id', 'marca'],
         where,
         limit: limit ? Number(limit) : undefined,
-        order: [['cnpj', 'ASC']],
+        order: [['marca', 'ASC']],
       },
     );
-
+      console.log(records);
+      
     return records.map((record) => ({
       id: record.id,
-      label: record.cnpj,
+      label: record.marca,
     }));
   }
 

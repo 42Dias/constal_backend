@@ -19,7 +19,7 @@ export default function (sequelize) {
         type: DataTypes.TEXT,
       },
       valorTotal: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.DECIMAL(10,2),
       },
       dataPedido: {
         type: DataTypes.DATE,
@@ -51,7 +51,7 @@ export default function (sequelize) {
         }
       },
       valorFrete: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.DECIMAL(10,2),
       },
       importHash: {
         type: DataTypes.STRING(255),
@@ -88,12 +88,12 @@ export default function (sequelize) {
       constraints: false,
     });
 
-    models.pedido.belongsToMany(models.produto, {
+    /* models.pedido.belongsToMany(models.produto, {
       as: 'produto',
       constraints: false,
       through: 'pedidoProdutoProduto',
     });
-
+ */
 
     
     models.pedido.belongsTo(models.tenant, {

@@ -28,7 +28,7 @@ export default function (sequelize) {
         type: DataTypes.TEXT,
       },
       preco: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.DECIMAL(10, 2),
       },
       somatoriaAvaliacoes: {
         type: DataTypes.INTEGER,
@@ -39,12 +39,18 @@ export default function (sequelize) {
       volumeVendas: {
         type: DataTypes.INTEGER,
       },
+      isOferta: {
+        type: DataTypes.BOOLEAN
+      },
+      precoOferta: {
+        type: DataTypes.DECIMAL(10, 2),
+      },
       importHash: {
         type: DataTypes.STRING(255),
-        allowNull: true,    
+        allowNull: true,
         validate: {
           len: [0, 255],
-        },    
+        },
       },
     },
     {
@@ -83,7 +89,7 @@ export default function (sequelize) {
         belongsToColumn: 'fotos',
       },
     });
-    
+
     models.produto.belongsTo(models.tenant, {
       as: 'tenant',
       foreignKey: {
