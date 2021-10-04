@@ -1,4 +1,12 @@
 export default (app) => {
+  app.get(
+    `/tenant/:tenantId/pessoa-fisica-perfil`,
+    require('./pessoaFisicaFindCurrentUser').default,
+  );
+  app.post(
+    `/tenant/:tenantId/pessoa-fisica-perfil`,
+    require('./pessoaFisicaCreateOrUpdate').default,
+  );
   app.post(
     `/tenant/:tenantId/pessoa-fisica`,
     require('./pessoaFisicaCreate').default,
