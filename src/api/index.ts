@@ -9,6 +9,7 @@ import { createRateLimiter } from './apiRateLimiter';
 import { languageMiddleware } from '../middlewares/languageMiddleware';
 import authSocial from './auth/authSocial';
 import setupSwaggerUI from './apiDocumentation';
+import { getEmpresaMiddleware } from '../middlewares/getEmpresaMiddleware';
 
 const app = express();
 
@@ -24,6 +25,9 @@ app.use(languageMiddleware);
 // Configures the authentication middleware
 // to set the currentUser to the requests
 app.use(authMiddleware);
+
+// Middleware para encontrar o ususario empresa
+app.use('/api/tenant/:tenantId/produto', getEmpresaMiddleware);
 
 // Setup the Documentation
 setupSwaggerUI(app);
