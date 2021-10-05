@@ -5,13 +5,38 @@ import SequelizeFilterUtils from '../utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
 import Sequelize from 'sequelize'; import UserRepository from './userRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
+import { getConfig } from '../../config';
+import highlight from 'cli-highlight';
+import FileRepository from './fileRepository';
 
 const Op = Sequelize.Op;
+
+let seq = new (<any>Sequelize)(
+  getConfig().DATABASE_DATABASE,
+  getConfig().DATABASE_USERNAME,
+  getConfig().DATABASE_PASSWORD,
+  {
+    host: getConfig().DATABASE_HOST,
+    dialect: getConfig().DATABASE_DIALECT,
+    logging:
+      getConfig().DATABASE_LOGGING === 'true'
+        ? (log) =>
+          console.log(
+            highlight(log, {
+              language: 'sql',
+              ignoreIllegals: true,
+            }),
+          )
+        : false,
+  },
+);
+
+const { QueryTypes } = require('sequelize');
 
 class CarrinhoProdutoRepository {
 
   static async create(data, options: IRepositoryOptions) {
-  
+
     const record = await options.database.carrinhoProduto.findOrCreate(
       {
         where:
@@ -22,7 +47,7 @@ class CarrinhoProdutoRepository {
         defaults: {
           carrinhoId: data.carrinho,
           produtoId: data.produto,
-          quantidade: data.quantidade
+          quantidade: data.quantidade,
         }
       }
     );
@@ -39,50 +64,27 @@ class CarrinhoProdutoRepository {
   }
 
   static async update(id, data, options: IRepositoryOptions) {
-    const currentUser = SequelizeRepository.getCurrentUser(
-      options,
-    );
 
-    const currentTenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
-
-    let record = await options.database.carrinhoProduto.update(
-      {
-        produtoId: data.produto.id,
-        quantidade: data.quantidade,
-        updatedById: currentUser.id,
-      },
-      {
-        where: {
-          id: id
-        },
-      },
-    )
-
-    record = await options.database.carrinhoProduto.findByPk(
+    let record = await options.database.carrinhoProduto.findByPk(
       id,
     );
+
+    record = await record.update(
+      {
+        quantidade: data.quantidade,
+      },
+    )
 
     return record;
   }
 
   static async destroy(id, options: IRepositoryOptions) {
-    const transaction = SequelizeRepository.getTransaction(
-      options,
-    );
-
-    const currentTenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
 
     let record = await options.database.carrinhoProduto.findOne(
       {
         where: {
           id,
-          tenantId: currentTenant.id,
         },
-        transaction,
       },
     );
 
@@ -90,9 +92,7 @@ class CarrinhoProdutoRepository {
       throw new Error404();
     }
 
-    await record.destroy({
-      transaction,
-    });
+    await record.destroy();
 
     await this._createAuditLog(
       AuditLogRepository.DELETE,
@@ -104,10 +104,34 @@ class CarrinhoProdutoRepository {
 
   static async findById(id, options: IRepositoryOptions) {
 
-    const record = await options.database.carrinhoProduto.findByPk(
-      id,
-    );
+    let query =
+      'SELECT cp.id, cp.quantidade,' +
+      ' p.id AS `produto.id`, p.nome AS `produto.nome`, IFNULL(p.precoOferta, p.preco) AS `produto.preco`,' +
+      ' p.descricao AS `produto.descricao`, p.marca AS `produto.marca`, p.modelo AS `produto.modelo`,'+
+      ' p.caracteristicas AS `produto.caracteristicas`, p.codigo AS `produto.codigo`, ca.id AS `produto.categoria.id`, ca.nome AS `produto.categoria.nome`,'+
+      ' f.privateUrl AS `produto.fotos`' +
+      ` FROM carrinhoProdutos cp
 
+          JOIN produtos p
+          ON cp.produtoId = p.id
+          
+          LEFT JOIN files f
+          ON p.id = f.belongsToId
+          
+          LEFT JOIN categoria ca
+          ON p.categoriaId = ca.id
+
+        WHERE cp.id = '${id}';`;
+
+
+    let record = await seq.query(query, {
+      nest: true,
+      type: QueryTypes.SELECT,
+    });
+
+    record.map(e => {
+      e.produto.fotos = `${process.env.BACKEND_URL}/file/download?privateUrl=${e.produto.fotos}`;
+    })
     if (!record) {
       throw new Error404();
     }
@@ -178,23 +202,28 @@ class CarrinhoProdutoRepository {
     { filter, limit = 0, offset = 0, orderBy = '' },
     options: IRepositoryOptions,
   ) {
-    const tenant = SequelizeRepository.getCurrentTenant(
+    /* const tenant = SequelizeRepository.getCurrentTenant(
       options,
-    );
+    ); */
 
     let whereAnd: Array<any> = [];
-    let include = [
+    /* let include = [
       {
-        model: options.database.user,
-        as: 'user',
+        model: options.database.produto,
+        as: 'produto',
       },
-    ];
+    ]; */
 
-    whereAnd.push({
+    /* whereAnd.push({
       tenantId: tenant.id,
-    });
+    }); */
 
     if (filter) {
+      if (filter.carrinho) {
+        whereAnd.push({
+          ['carrinhoId']: SequelizeFilterUtils.uuid(filter.carrinho),
+        });
+      }
       if (filter.id) {
         whereAnd.push({
           ['id']: SequelizeFilterUtils.uuid(filter.id),
@@ -240,27 +269,32 @@ class CarrinhoProdutoRepository {
 
     const where = { [Op.and]: whereAnd };
 
-    let {
-      rows,
-      count,
-    } = await options.database.carrinhoProduto.findAndCountAll({
-      where,
-      include,
-      limit: limit ? Number(limit) : undefined,
-      offset: offset ? Number(offset) : undefined,
-      order: orderBy
-        ? [orderBy.split('_')]
-        : [['createdAt', 'DESC']],
-      transaction: SequelizeRepository.getTransaction(
-        options,
-      ),
+    let query =
+      'SELECT cp.id, cp.quantidade, p.id AS `produto.id`, p.nome AS `produto.nome`, IFNULL(p.precoOferta, p.preco) AS `produto.preco`, f.privateUrl AS `produto.fotos`' +
+      ` FROM carrinhoProdutos cp
+          JOIN produtos p
+          ON cp.produtoId = p.id
+          LEFT JOIN files f
+          ON p.id = f.belongsToId
+        WHERE cp.carrinhoId = '${filter.carrinho}';`;
+
+
+    let rows = await seq.query(query, {
+      nest: true,
+      type: QueryTypes.SELECT,
     });
 
-    rows = await this._fillWithRelationsAndFilesForRows(
+    let count = rows.length;
+
+    rows.map(e => {
+      e.produto.fotos = `${process.env.BACKEND_URL}/file/download?privateUrl=${e.produto.fotos}`;
+    })
+
+    /* rows = await this._fillWithRelationsAndFilesForRows(
       rows,
       options,
     );
-
+ */
     return { rows, count };
   }
 
@@ -345,17 +379,11 @@ class CarrinhoProdutoRepository {
       return record;
     }
 
-    const output = record.get({ plain: true });
+    const output = record.produto;
 
-    const transaction = SequelizeRepository.getTransaction(
-      options,
+    output.fotos = await FileRepository.fillDownloadUrl(
+      await record.getFotos(),
     );
-
-    output.user = UserRepository.cleanupForRelationships(output.user);
-
-    output.produto = await record.getProduto({
-      transaction,
-    });
 
     return output;
   }

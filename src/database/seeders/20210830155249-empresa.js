@@ -28,17 +28,17 @@ const empresa = [...Array(4)].map((empresa) => (
     createdAt: new Date(),
     updatedAt: new Date(),
     tenantId: 'fa22705e-cf27-41d0-bebf-9a6ab52948c4',
-    createdById: 'a54019c5-16bd-4321-9c49-643d83c2b811',
-    updatedById: 'a54019c5-16bd-4321-9c49-643d83c2b811',
+    createdById: '41bbd975-cbf4-4e8d-9ed3-061c87c5c0f3',
+    updatedById: '41bbd975-cbf4-4e8d-9ed3-061c87c5c0f3',
   }
 ))
  
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Empresas', empresa, {});
+    return queryInterface.bulkInsert('empresas', empresa, {});
   },
  
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Empresas', null, {});
+    return queryInterface.bulkDelete('empresas', null, {});
   }
 };

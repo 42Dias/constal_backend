@@ -19,7 +19,7 @@ export default class CarrinhoService {
       /* data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
       data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction }); */
 
-      const carrinho = await CarrinhoRepository.create(data, {
+      const carrinho = await CarrinhoRepository.create({
         ...this.options,
       });
 
@@ -43,32 +43,21 @@ export default class CarrinhoService {
   }
 
   async update(id, data) {
-    const transaction = await SequelizeRepository.createTransaction(
-      this.options.database,
-    );
 
     try {
-      data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction });
+      /* data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction }); */
 
-      const record = await CarrinhoRepository.update(
+      const record = await CarrinhoProdutoRepository.update(
         id,
         data,
         {
           ...this.options,
-          transaction,
         },
-      );
-
-      await SequelizeRepository.commitTransaction(
-        transaction,
       );
 
       return record;
     } catch (error) {
-      await SequelizeRepository.rollbackTransaction(
-        transaction,
-      );
 
       SequelizeRepository.handleUniqueFieldError(
         error,
@@ -81,31 +70,22 @@ export default class CarrinhoService {
   }
 
   async destroyAll(ids) {
-    const transaction = await SequelizeRepository.createTransaction(
-      this.options.database,
-    );
 
     try {
       for (const id of ids) {
-        await CarrinhoRepository.destroy(id, {
+        await CarrinhoProdutoRepository.destroy(id, {
           ...this.options,
-          transaction,
         });
       }
 
-      await SequelizeRepository.commitTransaction(
-        transaction,
-      );
     } catch (error) {
-      await SequelizeRepository.rollbackTransaction(
-        transaction,
-      );
+
       throw error;
     }
   }
 
   async findById(id) {
-    return CarrinhoRepository.findById(id, this.options);
+    return CarrinhoProdutoRepository.findById(id, this.options);
   }
 
   async findAllAutocomplete(search, limit) {
@@ -117,7 +97,19 @@ export default class CarrinhoService {
   }
 
   async findAndCountAll(args) {
-    return CarrinhoRepository.findAndCountAll(
+    const carrinho = await CarrinhoRepository.create({
+      ...this.options,
+    });
+
+    let carrinhoId = carrinho.id;
+
+    if (!args.filter) {
+      args.filter = [];
+    }
+
+    args.filter.carrinho = carrinhoId;
+
+    return CarrinhoProdutoRepository.findAndCountAll(
       args,
       this.options,
     );

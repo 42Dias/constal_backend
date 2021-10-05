@@ -10,7 +10,7 @@ const Op = Sequelize.Op;
 
 class CarrinhoRepository {
 
-  static async create(data, options: IRepositoryOptions) {
+  static async create(options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
@@ -33,14 +33,6 @@ class CarrinhoRepository {
           updatedById: currentUser.id,
         }
       }
-    );
-
-
-    await this._createAuditLog(
-      AuditLogRepository.CREATE,
-      record[0],
-      data,
-      options,
     );
 
     return this.findById(record[0].id, options);

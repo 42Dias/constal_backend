@@ -12,17 +12,17 @@ const categoria = [...Array(15)].map((categoria) => (
     createdAt: new Date(),
     updatedAt: new Date(),
     tenantId: 'fa22705e-cf27-41d0-bebf-9a6ab52948c4',
-    createdById: 'a54019c5-16bd-4321-9c49-643d83c2b811',
-    updatedById: 'a54019c5-16bd-4321-9c49-643d83c2b811',
+    createdById: '41bbd975-cbf4-4e8d-9ed3-061c87c5c0f3',
+    updatedById: '41bbd975-cbf4-4e8d-9ed3-061c87c5c0f3',
   }
 ))
  
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Categoria', categoria, {});
+    return queryInterface.bulkInsert('categoria', categoria, {});
   },
  
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Categoria', null, {});
+    return queryInterface.bulkDelete('categoria', null, {});
   }
 };
