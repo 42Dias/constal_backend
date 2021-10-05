@@ -102,6 +102,11 @@ export default function (sequelize, DataTypes) {
           len: [0, 255],
         },
       },
+      hasProfile: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      }
     },
     {
       indexes: [

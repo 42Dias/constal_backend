@@ -229,9 +229,6 @@ class EmpresaRepository {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
-    const transaction = SequelizeRepository.getTransaction(
-      options,
-    );
 
     const include = [
       {
@@ -251,7 +248,6 @@ class EmpresaRepository {
           tenantId: currentTenant.id,
         },
         include,
-        transaction,
       },
     );
 
