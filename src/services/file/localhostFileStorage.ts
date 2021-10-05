@@ -44,7 +44,9 @@ export default class LocalFileStorage {
    * Handles the upload to the server.
    */
   static async upload(fileTempUrl, privateUrl) {
-    const internalUrl = path.join(UPLOAD_DIR, privateUrl);
+    let internalUrl: any = path.join(UPLOAD_DIR, privateUrl);
+    internalUrl = internalUrl.split( '\\');
+    internalUrl = internalUrl.join('/');
     if (!isPathInsideUploadDir(internalUrl)) {
       throw new Error403();
     }
@@ -76,7 +78,9 @@ export default class LocalFileStorage {
    * Downloads the file.
    */
   static async download(privateUrl) {
-    let finalPath = path.join(UPLOAD_DIR, privateUrl);
+    let finalPath: any = path.join(UPLOAD_DIR, privateUrl);
+    finalPath = finalPath.split( '\\');
+    finalPath = finalPath.join('/');
     if (!isPathInsideUploadDir(finalPath)) {
       throw new Error403();
     }
