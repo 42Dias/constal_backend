@@ -109,6 +109,10 @@ export default class EmpresaService {
     return EmpresaRepository.findById(id, this.options);
   }
 
+  async findByUserId(id) {
+    return EmpresaRepository.findByUserId(id, this.options);
+  }
+
   async findAllAutocomplete(search, limit) {
     return EmpresaRepository.findAllAutocomplete(
       search,

@@ -77,6 +77,19 @@ class EmpresaRepository {
     return this.findById(record.id, options);
   }
 
+  static async findByUserId(id, options: IRepositoryOptions) {
+
+    const record = await options.database.empresa.findOne(
+      {
+        where: {
+          userId: id,
+        },
+      },
+    );
+
+    return record
+  }
+
   static async update(id, data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,

@@ -9,6 +9,13 @@ export default async (req, res, next) => {
       Permissions.values.produtoRead,
     );
 
+    if (req.currentUser.tenants[0].roles[0] == 'empresa') {
+      if (!req.query.filter){
+        req.query.filter = []
+      }
+      req.query.filter.empresa = req.empresa.id
+    }
+
     const payload = await new ProdutoService(
       req,
     ).findAndCountAll(req.query);
