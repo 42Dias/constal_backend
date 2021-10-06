@@ -1,73 +1,29 @@
-import SequelizeRepository from '../../database/repositories/sequelizeRepository';
-import AuditLogRepository from '../../database/repositories/auditLogRepository';
+import SequelizeRepository from './sequelizeRepository';
+import AuditLogRepository from './auditLogRepository';
 import lodash from 'lodash';
-import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
+import SequelizeFilterUtils from '../utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
-import Sequelize from 'sequelize'; import UserRepository from './userRepository';
+import Sequelize from 'sequelize';import UserRepository from './userRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
-import { getConfig } from '../../config';
-import highlight from 'cli-highlight';
 
 const Op = Sequelize.Op;
 
-let seq = new (<any>Sequelize)(
-  getConfig().DATABASE_DATABASE,
-  getConfig().DATABASE_USERNAME,
-  getConfig().DATABASE_PASSWORD,
-  {
-    host: getConfig().DATABASE_HOST,
-    dialect: getConfig().DATABASE_DIALECT,
-    logging:
-      getConfig().DATABASE_LOGGING === 'true'
-        ? (log) =>
-          console.log(
-            highlight(log, {
-              language: 'sql',
-              ignoreIllegals: true,
-            }),
-          )
-        : false,
-  },
-);
+class PedidoProdutoRepository {
 
-const { QueryTypes } = require('sequelize');
+  static async create(pedido, data, options: IRepositoryOptions) {
 
-class PedidoRepository {
-
-  static async create(data, options: IRepositoryOptions) {
-    const currentUser = SequelizeRepository.getCurrentUser(
-      options,
-    );
-
-    const tenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
-
-    const record = await options.database.pedido.create(
+    const record = await options.database.pedidoProduto.create(
       {
         ...lodash.pick(data, [
-          'codigo',
-          'quantidadeProdutos',
-          'formaPagamento',
-          'valorTotal',
-          /* 'dataProcessamento',
-          'dataEnvio',
-          'dataEntrega',
-          'dataFaturamento', */
-          'valorFrete',
-          'importHash',
+          'quantidade',
+          'precoUnitario',
+          'precoTotal'
         ]),
-        dataPedido: new Date(),
-        status: 'pendente',
-
-        compradorUserId: currentUser.id || null,
-        fornecedorEmpresaId: data.fornecedorEmpresa || null,
-        tenantId: tenant.id,
-        createdById: currentUser.id,
-        updatedById: currentUser.id,
+        pedidoId: pedido,
+        produtoId: data.id,
       },
     );
-
+  
     await this._createAuditLog(
       AuditLogRepository.CREATE,
       record,
@@ -75,23 +31,15 @@ class PedidoRepository {
       options,
     );
 
-    return this.findById(record.id, options);
+    //return this.findById(record.id, options);
   }
 
   static async update(id, data, options: IRepositoryOptions) {
-    const currentUser = SequelizeRepository.getCurrentUser(
-      options,
-    );
 
-    const currentTenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
-
-    let record = await options.database.pedido.findOne(
+    let record = await options.database.pedidoProduto.findOne(      
       {
         where: {
           id,
-          tenantId: currentTenant.id,
         },
       },
     );
@@ -102,15 +50,24 @@ class PedidoRepository {
 
     record = await record.update(
       {
-        dataProcessamento: record.dataProcessamento == null ? data.dataProcessamento : record.dataProcessamento,
-        dataEnvio: record.dataEnvio == null ? data.dataEnvio : record.dataEnvio,
-        dataEntrega: record.dataEntrega == null ? data.dataEntrega : record.dataEntrega,
-        dataFaturamento: record.dataFaturamento == null ? data.dataFaturamento : record.dataFaturamento,
-        status: data.status,
-        updatedById: currentUser.id,
+        ...lodash.pick(data, [
+          'codigo',
+          'quantidadeProdutos',
+          'formaPagamento',
+          'valorTotal',
+          'dataPedido',
+          'dataProcessamento',
+          'dataEnvio',
+          'dataEntrega',
+          'dataFaturamento',
+          'status',
+          'valorFrete',          
+          'importHash',
+        ]),
+        compradorUserId: data.compradorUser || null,
+        fornecedorEmpresaId: data.fornecedorEmpresa || null,
       },
     );
-
 
     await this._createAuditLog(
       AuditLogRepository.UPDATE,
@@ -124,15 +81,10 @@ class PedidoRepository {
 
   static async destroy(id, options: IRepositoryOptions) {
 
-    const currentTenant = SequelizeRepository.getCurrentTenant(
-      options,
-    );
-
-    let record = await options.database.pedido.findOne(
+    let record = await options.database.pedidoProduto.findOne(
       {
         where: {
           id,
-          tenantId: currentTenant.id,
         },
       },
     );
@@ -152,46 +104,32 @@ class PedidoRepository {
   }
 
   static async findById(id, options: IRepositoryOptions) {
+    
+    const include = [
+      {
+        model: options.database.user,
+        as: 'compradorUser',
+      },
+      {
+        model: options.database.empresa,
+        as: 'fornecedorEmpresa',
+      },
+    ];
 
-    let queryPedido =
-      'SELECT p.id as `id`, p.codigo as `codigo`, p.quantidadeProdutos as `quantidadeProdutos`, p.formaPagamento `formaPagamento`, p.valorTotal as `valorTotal`,' +
-      ' p.valorFrete as `valorFrete`, p.dataPedido as `dataPedido`, p.dataProcessamento as `dataProcessamento`, p.dataEnvio as `dataEnvio`,' +
-      ' p.dataEntrega as `dataEntrega`, p.dataFaturamento as `dataFaturamento`, p.status as `status`,' +
-      ' e.id as `empresa.id`, e.razaoSocial as `empresa.razaoSocial`, e.cnpj as `empresa.cnpj`' +
-      `FROM pedidos p
+    const record = await options.database.pedidoProduto.findOne(
+      {
+        where: {
+          id,
+        },
+        include,
+      },
+    );
 
-    LEFT JOIN empresas e
-    ON p.fornecedorEmpresaId = e.id
-
-    WHERE p.id = '${id}';`;
-
-    let record = await seq.query(queryPedido, {
-      nest: true,
-      type: QueryTypes.SELECT,
-    });
-
-    if (record.length == 0) {
+    if (!record) {
       throw new Error404();
     }
 
-    record = record[0];
-
-    record.produtos = new Array();
-
-    let queryProdutos =
-    `SELECT id, quantidade, produtoId, precoUnitario, precoTotal
-     FROM pedidoProdutos
-     WHERE pedidoId = '${record.id}';`;
-
-    let produtos = await seq.query(queryProdutos, {
-      type: QueryTypes.SELECT,
-    });
-
-    produtos.forEach(e => {
-      record.produtos.push(e);
-    })
-
-    return record;
+    return this._fillWithRelationsAndFiles(record, options);
   }
 
   static async filterIdInTenant(
@@ -223,7 +161,7 @@ class PedidoRepository {
       tenantId: currentTenant.id,
     };
 
-    const records = await options.database.pedido.findAll(
+    const records = await options.database.pedidoProduto.findAll(
       {
         attributes: ['id'],
         where,
@@ -234,12 +172,13 @@ class PedidoRepository {
   }
 
   static async count(filter, options: IRepositoryOptions) {
+    
 
     const tenant = SequelizeRepository.getCurrentTenant(
       options,
     );
 
-    return options.database.pedido.count(
+    return options.database.pedidoProduto.count(
       {
         where: {
           ...filter,
@@ -266,7 +205,7 @@ class PedidoRepository {
       {
         model: options.database.empresa,
         as: 'fornecedorEmpresa',
-      },
+      },      
     ];
 
     whereAnd.push({
@@ -283,7 +222,7 @@ class PedidoRepository {
       if (filter.codigo) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
-            'pedido',
+            'pedidoProduto',
             'codigo',
             filter.codigo,
           ),
@@ -313,7 +252,7 @@ class PedidoRepository {
       if (filter.formaPagamento) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
-            'pedido',
+            'pedidoProduto',
             'formaPagamento',
             filter.formaPagamento,
           ),
@@ -516,7 +455,7 @@ class PedidoRepository {
     let {
       rows,
       count,
-    } = await options.database.pedido.findAndCountAll({
+    } = await options.database.pedidoProduto.findAndCountAll({
       where,
       include,
       limit: limit ? Number(limit) : undefined,
@@ -529,10 +468,10 @@ class PedidoRepository {
       ),
     });
 
-    /* rows = await this._fillWithRelationsAndFilesForRows(
+    rows = await this._fillWithRelationsAndFilesForRows(
       rows,
       options,
-    ); */
+    );
 
     return { rows, count };
   }
@@ -552,7 +491,7 @@ class PedidoRepository {
           { ['id']: SequelizeFilterUtils.uuid(query) },
           {
             [Op.and]: SequelizeFilterUtils.ilikeIncludes(
-              'pedido',
+              'pedidoProduto',
               'codigo',
               query,
             ),
@@ -563,7 +502,7 @@ class PedidoRepository {
 
     const where = { [Op.and]: whereAnd };
 
-    const records = await options.database.pedido.findAll(
+    const records = await options.database.pedidoProduto.findAll(
       {
         attributes: ['id', 'codigo'],
         where,
@@ -595,7 +534,7 @@ class PedidoRepository {
 
     await AuditLogRepository.log(
       {
-        entityName: 'pedido',
+        entityName: 'pedidoProduto',
         entityId: record.id,
         action,
         values,
@@ -626,27 +565,14 @@ class PedidoRepository {
 
     const output = record.get({ plain: true });
 
+    
+
     output.compradorUser = UserRepository.cleanupForRelationships(output.compradorUser);
 
     output.produto = await record.getProduto();
 
     return output;
   }
-
-  static async findProximoCodigo() {
-
-    let query =
-      'SELECT IFNULL(MAX(codigo), 0) as `codigo`' +
-      ` FROM pedidos;`;
-
-    let record = await seq.query(query, {
-      type: QueryTypes.SELECT,
-    });
-
-    record = Number(record[0].codigo) + 1;
-
-    return record;
-  }
 }
 
-export default PedidoRepository;
+export default PedidoProdutoRepository;

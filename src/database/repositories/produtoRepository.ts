@@ -5,9 +5,32 @@ import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
 import Sequelize from 'sequelize'; import FileRepository from './fileRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
+import { getConfig } from '../../config';
+import highlight from 'cli-highlight';
 
 const Op = Sequelize.Op;
 
+let seq = new (<any>Sequelize)(
+  getConfig().DATABASE_DATABASE,
+  getConfig().DATABASE_USERNAME,
+  getConfig().DATABASE_PASSWORD,
+  {
+    host: getConfig().DATABASE_HOST,
+    dialect: getConfig().DATABASE_DIALECT,
+    logging:
+      getConfig().DATABASE_LOGGING === 'true'
+        ? (log) =>
+          console.log(
+            highlight(log, {
+              language: 'sql',
+              ignoreIllegals: true,
+            }),
+          )
+        : false,
+  },
+);
+
+const { QueryTypes } = require('sequelize');
 class ProdutoRepository {
 
   static async create(data, options: IRepositoryOptions) {
@@ -654,6 +677,25 @@ class ProdutoRepository {
     );
 
     return output;
+  }
+
+  static async findPrecoById(id) {
+
+    let query =
+      'SELECT IFNULL(p.precoOferta, p.preco) AS `preco`' +
+      ` FROM produtos p
+
+        WHERE p.id = '${id}';`;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record[0].preco;
   }
 }
 

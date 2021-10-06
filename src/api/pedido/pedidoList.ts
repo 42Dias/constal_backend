@@ -9,6 +9,22 @@ export default async (req, res, next) => {
       Permissions.values.pedidoRead,
     );
 
+    //apenas pedidos da pessoa
+    if (req.currentUser.tenants[0].roles[0] == 'pessoa') {
+      if (!req.query.filter){
+        req.query.filter = []
+      }
+      req.query.filter.compradorUser = req.currentUser.id
+    }
+
+    //apenas pedidos da empresa
+    else if (req.currentUser.tenants[0].roles[0] == 'empresa') {
+      if (!req.query.filter){
+        req.query.filter = []
+      }
+      req.query.filter.fornecedorEmpresa = req.empresa.id
+    }
+
     const payload = await new PedidoService(
       req,
     ).findAndCountAll(req.query);

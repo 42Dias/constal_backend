@@ -11,10 +11,10 @@ export default (app) => {
     `/tenant/:tenantId/pedido/import`,
     require('./pedidoImport').default,
   );
-  app.delete(
+  /* app.delete(
     `/tenant/:tenantId/pedido`,
     require('./pedidoDestroy').default,
-  );
+  ); */
   app.get(
     `/tenant/:tenantId/pedido/autocomplete`,
     require('./pedidoAutocomplete').default,

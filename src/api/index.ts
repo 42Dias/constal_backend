@@ -29,6 +29,9 @@ app.use(authMiddleware);
 // Middleware para encontrar o ususario empresa
 app.use('/api/tenant/:tenantId/produto', getEmpresaMiddleware);
 
+// Middleware para encontrar o ususario empresa
+app.use('/api/tenant/:tenantId/pedido', getEmpresaMiddleware);
+
 // Setup the Documentation
 setupSwaggerUI(app);
 
