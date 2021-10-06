@@ -179,7 +179,7 @@ class PedidoRepository {
     record.produtos = new Array();
 
     let queryProdutos =
-    `SELECT id, quantidade, produtoId, precoUnitario, precoTotal
+      `SELECT id, quantidade, produtoId, precoUnitario, precoTotal
      FROM pedidoProdutos
      WHERE pedidoId = '${record.id}';`;
 
@@ -441,9 +441,27 @@ class PedidoRepository {
       }
 
       if (filter.status) {
-        whereAnd.push({
-          status: filter.status,
-        });
+        switch (filter.status) {
+          case 'pendente':
+            whereAnd.push({
+              status: {
+                [Op.in]: ['pendente', 'pago', 'enviado', 'recebido', 'transito']
+              }
+            });
+            break;
+
+          case 'devolvido':
+            whereAnd.push({
+              status: 'cancelado'
+            })
+            break;
+
+          case 'confirmado':
+            whereAnd.push({
+              status: 'entregue'
+            })
+            break;
+        }
       }
 
       if (filter.valorFreteRange) {
