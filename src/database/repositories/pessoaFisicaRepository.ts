@@ -288,9 +288,6 @@ class PessoaFisicaRepository {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
-    const transaction = SequelizeRepository.getTransaction(
-      options,
-    );
 
     const include = [
       {
@@ -310,7 +307,6 @@ class PessoaFisicaRepository {
           tenantId: currentTenant.id,
         },
         include,
-        transaction,
       },
     );
 

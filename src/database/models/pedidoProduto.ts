@@ -16,6 +16,12 @@ export default function (sequelize) {
       quantidade: {
         type: DataTypes.INTEGER,
       },
+      precoUnitario: {
+        type: DataTypes.DECIMAL(10, 2),
+      },
+      precoTotal: {
+        type: DataTypes.DECIMAL(10, 2),
+      },
     },
     {
       timestamps: true,

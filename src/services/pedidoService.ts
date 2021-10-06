@@ -5,6 +5,7 @@ import PedidoRepository from '../database/repositories/pedidoRepository';
 import EmpresaRepository from '../database/repositories/empresaRepository';
 import ProdutoRepository from '../database/repositories/produtoRepository';
 import UserRepository from '../database/repositories/userRepository';
+import PedidoProdutoRepository from '../database/repositories/pedidoProdutoRepository';
 
 export default class PedidoService {
   options: IServiceOptions;
@@ -14,29 +15,30 @@ export default class PedidoService {
   }
 
   async create(data) {
-    const transaction = await SequelizeRepository.createTransaction(
-      this.options.database,
-    );
 
     try {
-      data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options, transaction });
-      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options, transaction });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction });
+      /* data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
+      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options }); */
 
-      const record = await PedidoRepository.create(data, {
+      data.codigo = await PedidoRepository.findProximoCodigo();
+
+      const pedido = await PedidoRepository.create(data, {
         ...this.options,
-        transaction,
       });
 
-      await SequelizeRepository.commitTransaction(
-        transaction,
-      );
+      data.produtos.forEach(async e => {
 
-      return record;
+        e.precoUnitario = await ProdutoRepository.findPrecoById(e.id);
+        e.precoTotal = e.precoUnitario * e.quantidade;
+
+        await PedidoProdutoRepository.create(pedido.id, e, {
+          ...this.options,
+        });
+      });
+
+      //return pedidoProduto;
     } catch (error) {
-      await SequelizeRepository.rollbackTransaction(
-        transaction,
-      );
 
       SequelizeRepository.handleUniqueFieldError(
         error,
@@ -49,33 +51,22 @@ export default class PedidoService {
   }
 
   async update(id, data) {
-    const transaction = await SequelizeRepository.createTransaction(
-      this.options.database,
-    );
 
     try {
-      data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options, transaction });
-      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options, transaction });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction });
+      /* data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
+      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options }); */
 
       const record = await PedidoRepository.update(
         id,
         data,
         {
           ...this.options,
-          transaction,
         },
-      );
-
-      await SequelizeRepository.commitTransaction(
-        transaction,
       );
 
       return record;
     } catch (error) {
-      await SequelizeRepository.rollbackTransaction(
-        transaction,
-      );
 
       SequelizeRepository.handleUniqueFieldError(
         error,
@@ -88,25 +79,16 @@ export default class PedidoService {
   }
 
   async destroyAll(ids) {
-    const transaction = await SequelizeRepository.createTransaction(
-      this.options.database,
-    );
 
     try {
       for (const id of ids) {
         await PedidoRepository.destroy(id, {
           ...this.options,
-          transaction,
         });
       }
 
-      await SequelizeRepository.commitTransaction(
-        transaction,
-      );
     } catch (error) {
-      await SequelizeRepository.rollbackTransaction(
-        transaction,
-      );
+
       throw error;
     }
   }

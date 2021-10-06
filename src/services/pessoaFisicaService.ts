@@ -51,10 +51,10 @@ export default class PessoaFisicaService {
 
       const record = await PessoaFisicaRepository.createOrUpdate(data, {
         ...this.options,
-        
+
       });
 
-      
+      await UserRepository.updateHasProfile({ ...this.options });
 
       return record;
     } catch (error) {

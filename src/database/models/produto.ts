@@ -40,7 +40,9 @@ export default function (sequelize) {
         type: DataTypes.INTEGER,
       },
       isOferta: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       precoOferta: {
         type: DataTypes.DECIMAL(10, 2),
