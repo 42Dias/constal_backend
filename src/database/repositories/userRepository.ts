@@ -1007,4 +1007,26 @@ export default class UserRepository {
       status,
     };
   }
+
+  //Quando criar ou atualizar o perfil
+  static async updateHasProfile(
+    options: IRepositoryOptions,
+  ) {
+    const currentUser = SequelizeRepository.getCurrentUser(
+      options,
+    );
+
+    const user = await options.database.user.findOne({
+      where: {
+        id: currentUser.id
+      }
+    });
+
+    await user.update(
+      {
+        hasProfile: 1
+      },
+    );
+
+  }
 }

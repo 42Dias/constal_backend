@@ -169,10 +169,10 @@ export default class EmpresaService {
 
       const record = await EmpresaRepository.createOrUpdate(data, {
         ...this.options,
-        
+
       });
 
-      
+      await UserRepository.updateHasProfile({ ...this.options });
 
       return record;
     } catch (error) {
