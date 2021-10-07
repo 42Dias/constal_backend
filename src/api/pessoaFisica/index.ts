@@ -3,6 +3,7 @@ export default (app) => {
     `/tenant/:tenantId/pessoa-fisica-perfil`,
     require('./pessoaFisicaFindCurrentUser').default,
   );
+
   app.post(
     `/tenant/:tenantId/pessoa-fisica-perfil`,
     require('./pessoaFisicaCreateOrUpdate').default,

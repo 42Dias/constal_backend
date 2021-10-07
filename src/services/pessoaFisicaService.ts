@@ -133,6 +133,7 @@ export default class PessoaFisicaService {
     return PessoaFisicaRepository.findById(id, this.options);
   }
 
+
   async findByCurrentId() {
     return PessoaFisicaRepository.findByCurrentId(this.options);
   }

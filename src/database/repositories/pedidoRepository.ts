@@ -262,6 +262,10 @@ class PedidoRepository {
       {
         model: options.database.user,
         as: 'compradorUser',
+        include: {
+          model: options.database.pessoaFisica,
+          as: 'pessoaFisica'
+        }
       },
       {
         model: options.database.empresa,
