@@ -6,6 +6,7 @@ import EmpresaRepository from '../database/repositories/empresaRepository';
 import ProdutoRepository from '../database/repositories/produtoRepository';
 import UserRepository from '../database/repositories/userRepository';
 import PedidoProdutoRepository from '../database/repositories/pedidoProdutoRepository';
+import PagamentoRepository from '../database/repositories/pagamentoRepository';
 
 export default class PedidoService {
   options: IServiceOptions;
@@ -37,7 +38,30 @@ export default class PedidoService {
         });
       });
 
-      //return pedidoProduto;
+      return pedido;
+
+    } catch (error) {
+
+      SequelizeRepository.handleUniqueFieldError(
+        error,
+        this.options.language,
+        'pedido',
+      );
+
+      throw error;
+    }
+  }
+
+  async geraFatura(id) {
+
+    try {
+      const pedido = await PedidoRepository.findById(id, this.options);
+      let fatura = await PagamentoRepository.create(pedido, {
+        ... this.options
+      });
+
+      return fatura;
+
     } catch (error) {
 
       SequelizeRepository.handleUniqueFieldError(

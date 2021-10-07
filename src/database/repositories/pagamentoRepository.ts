@@ -1,12 +1,13 @@
-import SequelizeRepository from '../../database/repositories/sequelizeRepository';
-import AuditLogRepository from '../../database/repositories/auditLogRepository';
+import SequelizeRepository from './sequelizeRepository';
+import AuditLogRepository from './auditLogRepository';
 import lodash from 'lodash';
-import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
+import SequelizeFilterUtils from '../utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
 import Sequelize from 'sequelize'; import UserRepository from './userRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
 import { getConfig } from '../../config';
 import highlight from 'cli-highlight';
+const fetch = require("node-fetch");
 
 const Op = Sequelize.Op;
 
@@ -32,61 +33,116 @@ let seq = new (<any>Sequelize)(
 
 const { QueryTypes } = require('sequelize');
 
-class PedidoRepository {
+//Token Usado na Fatura
+const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';
+
+class PagamentoRepository {
 
   static async create(data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
 
-    const tenant = SequelizeRepository.getCurrentTenant(
-      options,
+    const pessoa = await options.database.pessoaFisica.findOne(
+      {
+        where: {
+          userId: data.compradorUserId
+        }
+      }
     );
 
-    const record = await options.database.pedido.create(
+    if (!pessoa) {
+      throw new Error404();
+    }
+
+    pessoa.cep = pessoa.cep.replace(/\.|-/g, '');
+    pessoa.cpf = pessoa.cpf.replace(/\.|-/g, '');
+    pessoa.celular = pessoa.celular.replace(/\+|\(|\)| |-/g, '');
+
+    let dataVencimento = new Date();
+    dataVencimento.setDate(dataVencimento.getDate() + 3);
+
+    let arrItems: any = data.produtos.map(e => {
+      return {
+        description: e.nome,
+        quantity: e.quantidade,
+        price_cents: e.precoUnitario * 100 //API Iugu considera centavos
+      }
+    });
+
+    let precoPedido = 0;
+    
+    arrItems.forEach(e => {
+      precoPedido += (e.price_cents * e.quantity);
+    });
+
+    let formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
+
+    const url = `https://api.iugu.com/v1/invoices?api_token=${API_TOKEN}`;
+    const opt = {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        //ensure_workday_due_date: true,
+        items: [
+          arrItems
+        ],
+        payable_with: formaPagamento,
+        payer: {
+          address: {
+            zip_code: pessoa.cep,
+            street: pessoa.estado,
+            number: pessoa.numero,
+            district: pessoa.bairro,
+            city: pessoa.cidade,
+            state: pessoa.estado,
+            country: 'brasil'
+          },
+          name: pessoa.nome,
+          phone: pessoa.celular,
+          cpf_cnpj: pessoa.cpf,
+          email: pessoa.email
+        },
+        email: pessoa.email,
+        due_date: dataVencimento
+      })
+    };
+
+    await fetch(url, opt)
+      .then(res => res.json())
+      .then(json => {
+        console.log(json)
+        data.idIugu = json.id
+        data.urlFaturaIugu = json.secure_url
+      }
+      )
+      .catch(err => console.error('error:' + err));
+
+    const record = await options.database.pagamento.create(
       {
         ...lodash.pick(data, [
-          'codigo',
-          'quantidadeProdutos',
-          'formaPagamento',
-          'valorTotal',
-          /* 'dataProcessamento',
-          'dataEnvio',
-          'dataEntrega',
-          'dataFaturamento', */
-          'valorFrete',
-          'importHash',
+          'idIugu',
+          'urlFaturaIugu',
         ]),
-        dataPedido: new Date(),
         status: 'pendente',
-
-        compradorUserId: currentUser.id || null,
-        fornecedorEmpresaId: data.fornecedorEmpresa || null,
-        tenantId: tenant.id,
+        pedidoId: data.id,
         createdById: currentUser.id,
         updatedById: currentUser.id,
       },
     );
 
-    await this._createAuditLog(
-      AuditLogRepository.CREATE,
-      record,
-      data,
-      options,
-    );
-
-    return this.findById(record.id, options);
+    return record;
   }
 
-  static async update(id, data, options: IRepositoryOptions) {
+  /* static async update(id, data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
-
+ 
     const currentTenant = SequelizeRepository.getCurrentTenant(
       options,
     );
-
+ 
     let record = await options.database.pedido.findOne(
       {
         where: {
@@ -95,11 +151,11 @@ class PedidoRepository {
         },
       },
     );
-
+ 
     if (!record) {
       throw new Error404();
     }
-
+ 
     record = await record.update(
       {
         dataProcessamento: record.dataProcessamento == null ? data.dataProcessamento : record.dataProcessamento,
@@ -110,24 +166,24 @@ class PedidoRepository {
         updatedById: currentUser.id,
       },
     );
-
-
+ 
+ 
     await this._createAuditLog(
       AuditLogRepository.UPDATE,
       record,
       data,
       options,
     );
-
+ 
     return this.findById(record.id, options);
   }
-
+ 
   static async destroy(id, options: IRepositoryOptions) {
-
+ 
     const currentTenant = SequelizeRepository.getCurrentTenant(
       options,
     );
-
+ 
     let record = await options.database.pedido.findOne(
       {
         where: {
@@ -136,13 +192,13 @@ class PedidoRepository {
         },
       },
     );
-
+ 
     if (!record) {
       throw new Error404();
     }
-
+ 
     await record.destroy();
-
+ 
     await this._createAuditLog(
       AuditLogRepository.DELETE,
       record,
@@ -150,55 +206,50 @@ class PedidoRepository {
       options,
     );
   }
-
+ 
   static async findById(id, options: IRepositoryOptions) {
-
+ 
     let queryPedido =
       'SELECT p.id as `id`, p.codigo as `codigo`, p.quantidadeProdutos as `quantidadeProdutos`, p.formaPagamento `formaPagamento`, p.valorTotal as `valorTotal`,' +
       ' p.valorFrete as `valorFrete`, p.dataPedido as `dataPedido`, p.dataProcessamento as `dataProcessamento`, p.dataEnvio as `dataEnvio`,' +
       ' p.dataEntrega as `dataEntrega`, p.dataFaturamento as `dataFaturamento`, p.status as `status`,' +
-      ' p.compradorUserId as `compradorUserId`,' +
       ' e.id as `empresa.id`, e.razaoSocial as `empresa.razaoSocial`, e.cnpj as `empresa.cnpj`' +
       `FROM pedidos p
-
+ 
     LEFT JOIN empresas e
     ON p.fornecedorEmpresaId = e.id
-
+ 
     WHERE p.id = '${id}';`;
-
+ 
     let record = await seq.query(queryPedido, {
       nest: true,
       type: QueryTypes.SELECT,
     });
-
+ 
     if (record.length == 0) {
       throw new Error404();
     }
-
+ 
     record = record[0];
-
+ 
     record.produtos = new Array();
-
+ 
     let queryProdutos =
-      `SELECT pp.id, pp.quantidade, pp.produtoId, pp.precoUnitario, pp.precoTotal, p.nome
-     FROM pedidoProdutos pp
-     
-     LEFT JOIN produtos p
-     ON pp.produtoId = p.id
-
-     WHERE pp.pedidoId = '${record.id}';`;
-
+      `SELECT id, quantidade, produtoId, precoUnitario, precoTotal
+     FROM pedidoProdutos
+     WHERE pedidoId = '${record.id}';`;
+ 
     let produtos = await seq.query(queryProdutos, {
       type: QueryTypes.SELECT,
     });
-
+ 
     produtos.forEach(e => {
       record.produtos.push(e);
     })
-
+ 
     return record;
   }
-
+ 
   static async filterIdInTenant(
     id,
     options: IRepositoryOptions,
@@ -209,7 +260,7 @@ class PedidoRepository {
       null,
     );
   }
-
+ 
   static async filterIdsInTenant(
     ids,
     options: IRepositoryOptions,
@@ -217,33 +268,33 @@ class PedidoRepository {
     if (!ids || !ids.length) {
       return [];
     }
-
+ 
     const currentTenant =
       SequelizeRepository.getCurrentTenant(options);
-
+ 
     const where = {
       id: {
         [Op.in]: ids,
       },
       tenantId: currentTenant.id,
     };
-
+ 
     const records = await options.database.pedido.findAll(
       {
         attributes: ['id'],
         where,
       },
     );
-
+ 
     return records.map((record) => record.id);
   }
-
+ 
   static async count(filter, options: IRepositoryOptions) {
-
+ 
     const tenant = SequelizeRepository.getCurrentTenant(
       options,
     );
-
+ 
     return options.database.pedido.count(
       {
         where: {
@@ -253,7 +304,7 @@ class PedidoRepository {
       },
     );
   }
-
+ 
   static async findAndCountAll(
     { filter, limit = 0, offset = 0, orderBy = '' },
     options: IRepositoryOptions,
@@ -261,34 +312,30 @@ class PedidoRepository {
     const tenant = SequelizeRepository.getCurrentTenant(
       options,
     );
-
+ 
     let whereAnd: Array<any> = [];
     let include = [
       {
         model: options.database.user,
         as: 'compradorUser',
-        include: {
-          model: options.database.pessoaFisica,
-          as: 'pessoaFisica'
-        }
       },
       {
         model: options.database.empresa,
         as: 'fornecedorEmpresa',
       },
     ];
-
+ 
     whereAnd.push({
       tenantId: tenant.id,
     });
-
+ 
     if (filter) {
       if (filter.id) {
         whereAnd.push({
           ['id']: SequelizeFilterUtils.uuid(filter.id),
         });
       }
-
+ 
       if (filter.codigo) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
@@ -298,10 +345,10 @@ class PedidoRepository {
           ),
         );
       }
-
+ 
       if (filter.quantidadeProdutosRange) {
         const [start, end] = filter.quantidadeProdutosRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             quantidadeProdutos: {
@@ -309,7 +356,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             quantidadeProdutos: {
@@ -318,7 +365,7 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.formaPagamento) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
@@ -328,10 +375,10 @@ class PedidoRepository {
           ),
         );
       }
-
+ 
       if (filter.valorTotalRange) {
         const [start, end] = filter.valorTotalRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             valorTotal: {
@@ -339,7 +386,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             valorTotal: {
@@ -348,10 +395,10 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.dataPedidoRange) {
         const [start, end] = filter.dataPedidoRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             dataPedido: {
@@ -359,7 +406,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             dataPedido: {
@@ -368,10 +415,10 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.dataProcessamentoRange) {
         const [start, end] = filter.dataProcessamentoRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             dataProcessamento: {
@@ -379,7 +426,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             dataProcessamento: {
@@ -388,10 +435,10 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.dataEnvioRange) {
         const [start, end] = filter.dataEnvioRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             dataEnvio: {
@@ -399,7 +446,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             dataEnvio: {
@@ -408,10 +455,10 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.dataEntregaRange) {
         const [start, end] = filter.dataEntregaRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             dataEntrega: {
@@ -419,7 +466,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             dataEntrega: {
@@ -428,10 +475,10 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.dataFaturamentoRange) {
         const [start, end] = filter.dataFaturamentoRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             dataFaturamento: {
@@ -439,7 +486,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             dataFaturamento: {
@@ -448,7 +495,7 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.status) {
         switch (filter.status) {
           case 'pendente':
@@ -458,13 +505,13 @@ class PedidoRepository {
               }
             });
             break;
-
+ 
           case 'devolvido':
             whereAnd.push({
               status: 'cancelado'
             })
             break;
-
+ 
           case 'confirmado':
             whereAnd.push({
               status: 'entregue'
@@ -472,10 +519,10 @@ class PedidoRepository {
             break;
         }
       }
-
+ 
       if (filter.valorFreteRange) {
         const [start, end] = filter.valorFreteRange;
-
+ 
         if (start !== undefined && start !== null && start !== '') {
           whereAnd.push({
             valorFrete: {
@@ -483,7 +530,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (end !== undefined && end !== null && end !== '') {
           whereAnd.push({
             valorFrete: {
@@ -492,7 +539,7 @@ class PedidoRepository {
           });
         }
       }
-
+ 
       if (filter.compradorUser) {
         whereAnd.push({
           ['compradorUserId']: SequelizeFilterUtils.uuid(
@@ -500,7 +547,7 @@ class PedidoRepository {
           ),
         });
       }
-
+ 
       if (filter.fornecedorEmpresa) {
         whereAnd.push({
           ['fornecedorEmpresaId']: SequelizeFilterUtils.uuid(
@@ -508,10 +555,10 @@ class PedidoRepository {
           ),
         });
       }
-
+ 
       if (filter.createdAtRange) {
         const [start, end] = filter.createdAtRange;
-
+ 
         if (
           start !== undefined &&
           start !== null &&
@@ -523,7 +570,7 @@ class PedidoRepository {
             },
           });
         }
-
+ 
         if (
           end !== undefined &&
           end !== null &&
@@ -537,9 +584,9 @@ class PedidoRepository {
         }
       }
     }
-
+ 
     const where = { [Op.and]: whereAnd };
-
+ 
     let {
       rows,
       count,
@@ -555,24 +602,24 @@ class PedidoRepository {
         options,
       ),
     });
-
-    /* rows = await this._fillWithRelationsAndFilesForRows(
+ 
+    rows = await this._fillWithRelationsAndFilesForRows(
       rows,
       options,
-    ); */
-
+    );
+ 
     return { rows, count };
   }
-
+ 
   static async findAllAutocomplete(query, limit, options: IRepositoryOptions) {
     const tenant = SequelizeRepository.getCurrentTenant(
       options,
     );
-
+ 
     let whereAnd: Array<any> = [{
       tenantId: tenant.id,
     }];
-
+ 
     if (query) {
       whereAnd.push({
         [Op.or]: [
@@ -587,9 +634,9 @@ class PedidoRepository {
         ],
       });
     }
-
+ 
     const where = { [Op.and]: whereAnd };
-
+ 
     const records = await options.database.pedido.findAll(
       {
         attributes: ['id', 'codigo'],
@@ -598,13 +645,13 @@ class PedidoRepository {
         order: [['codigo', 'ASC']],
       },
     );
-
+ 
     return records.map((record) => ({
       id: record.id,
       label: record.codigo,
     }));
   }
-
+ 
   static async _createAuditLog(
     action,
     record,
@@ -612,14 +659,14 @@ class PedidoRepository {
     options: IRepositoryOptions,
   ) {
     let values = {};
-
+ 
     if (data) {
       values = {
         ...record.get({ plain: true }),
         produtoIds: data.produto,
       };
     }
-
+ 
     await AuditLogRepository.log(
       {
         entityName: 'pedido',
@@ -630,7 +677,7 @@ class PedidoRepository {
       options,
     );
   }
-
+ 
   static async _fillWithRelationsAndFilesForRows(
     rows,
     options: IRepositoryOptions,
@@ -638,42 +685,28 @@ class PedidoRepository {
     if (!rows) {
       return rows;
     }
-
+ 
     return Promise.all(
       rows.map((record) =>
         this._fillWithRelationsAndFiles(record, options),
       ),
     );
   }
-
+ 
   static async _fillWithRelationsAndFiles(record, options: IRepositoryOptions) {
     if (!record) {
       return record;
     }
-
+ 
     const output = record.get({ plain: true });
-
+ 
     output.compradorUser = UserRepository.cleanupForRelationships(output.compradorUser);
-
+ 
     output.produto = await record.getProduto();
-
+ 
     return output;
-  }
+  } */
 
-  static async findProximoCodigo() {
-
-    let query =
-      'SELECT IFNULL(MAX(codigo), 0) as `codigo`' +
-      ` FROM pedidos;`;
-
-    let record = await seq.query(query, {
-      type: QueryTypes.SELECT,
-    });
-
-    record = Number(record[0].codigo) + 1;
-
-    return record;
-  }
 }
 
-export default PedidoRepository;
+export default PagamentoRepository;

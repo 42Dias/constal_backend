@@ -1,5 +1,10 @@
 export default (app) => {
   app.post(
+    `/tenant/:tenantId/pedido/:id/fatura`,
+    require('./pedidoGerarFatura').default,
+  );
+  
+  app.post(
     `/tenant/:tenantId/pedido`,
     require('./pedidoCreate').default,
   );
