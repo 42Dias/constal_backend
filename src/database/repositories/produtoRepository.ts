@@ -574,6 +574,7 @@ class ProdutoRepository {
       options,
     );
 
+    count = rows.length
     return { rows, count };
   }
 
