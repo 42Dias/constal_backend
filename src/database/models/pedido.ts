@@ -41,12 +41,12 @@ export default function (sequelize) {
         validate: {
           isIn: [[
             "pendente",
-            "pago",
-            "cancelado",
-            "enviado",
-            "recebido",
-            "transito",
-            "entregue"
+            "pago", // pendente
+            "cancelado", //devolvido
+            "enviado", //pendente
+            "recebido", // pendente
+            "transito", // pendente
+            "entregue" // confirmado
           ]],
         }
       },

@@ -145,6 +145,11 @@ export default function (sequelize, DataTypes) {
       },
     });
 
+    models.user.hasMany(models.pessoaFisica, {
+      as: 'pessoaFisica',
+      constraints: false,
+    });
+
     models.user.belongsTo(models.user, {
       as: 'createdBy',
     });
