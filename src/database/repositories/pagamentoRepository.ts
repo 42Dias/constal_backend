@@ -34,7 +34,8 @@ let seq = new (<any>Sequelize)(
 const { QueryTypes } = require('sequelize');
 
 //Token Usado na Fatura
-const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';
+const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
+// const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
 
 class PagamentoRepository {
 
@@ -71,19 +72,36 @@ class PagamentoRepository {
     });
 
     let precoPedido = 0;
-    
+
     arrItems.forEach(e => {
       precoPedido += (e.price_cents * e.quantity);
     });
 
-    let formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
+    let formaPagamento;
+    switch (data.formaPagamento) {
+      case 'boleto':
+        formaPagamento = ['bank_slip'];
+        break;
+
+      case 'cartao':
+        formaPagamento = precoPedido < 100000 ? ['credit_card'] : ['bank_slip', 'pix'];
+        break;
+
+      case 'pix':
+        formaPagamento = ['pix'];
+        break;
+
+      default:
+        formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
+        break;
+    }
 
     const url = `https://api.iugu.com/v1/invoices?api_token=${API_TOKEN}`;
     const opt = {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        //ensure_workday_due_date: true,
+        //ensure_workday_due_date: true, //Garantir que a data da fatura caia em dia útil
         items: [
           arrItems
         ],
