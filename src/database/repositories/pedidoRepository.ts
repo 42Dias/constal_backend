@@ -153,22 +153,34 @@ class PedidoRepository {
   }
 
   static async findById(id, options: IRepositoryOptions) {
+    //id = '08d42fa0-916f-4e59-89f6-c5f4d9e5f9e8'
     let queryPedido =
-      'SELECT p.id as `id`, p.codigo as `codigo`, p.quantidadeProdutos as `quantidadeProdutos`, p.formaPagamento `formaPagamento`, p.valorTotal as `valorTotal`,' +
-      ' p.valorFrete as `valorFrete`, p.dataPedido as `dataPedido`, p.dataProcessamento as `dataProcessamento`, p.dataEnvio as `dataEnvio`,' +
-      ' p.dataEntrega as `dataEntrega`, p.dataFaturamento as `dataFaturamento`, p.status as `status`,' +
-      ' p.compradorUserId as `compradorUserId`,' +
-      ' e.id as `empresa.id`, e.razaoSocial as `empresa.razaoSocial`, e.cnpj as `empresa.cnpj`,' +
-      'pf.*' +
-      `FROM pedidos p
-
-    LEFT JOIN empresas e
-    ON p.fornecedorEmpresaId = e.id
-
-    LEFT JOIN pessoaFisicas pf
-    ON p.compradorUserId = pf.userId
-
-    WHERE p.id = '${id}';`;
+      `SELECT 
+          p.id AS 'id',
+          p.codigo AS 'codigo',
+          p.quantidadeProdutos AS 'quantidadeProdutos',
+          p.formaPagamento 'formaPagamento',
+          p.valorTotal AS 'valorTotal',
+          p.valorFrete AS 'valorFrete',
+          p.dataPedido AS 'dataPedido',
+          p.dataProcessamento AS 'dataProcessamento',
+          p.dataEnvio AS 'dataEnvio',
+          p.dataEntrega AS 'dataEntrega',
+          p.dataFaturamento AS 'dataFaturamento',
+          p.status AS 'status',
+          p.compradorUserId AS 'compradorUserId',
+          e.id AS 'empresa.id',
+          e.razaoSocial AS 'empresa.razaoSocial',
+          e.cnpj AS 'empresa.cnpj',
+          pf.*
+      FROM
+          pedidos p
+              LEFT JOIN
+          empresas e ON p.fornecedorEmpresaId = e.id
+              LEFT JOIN
+          pessoaFisicas pf ON p.compradorUserId = pf.userId
+      WHERE
+          p.id = '${id}'`;
 
     let record = await seq.query(queryPedido, {
       nest: true,
@@ -189,16 +201,19 @@ class PedidoRepository {
      LEFT JOIN produtos p
      ON pp.produtoId = p.id
 
-     WHERE pp.pedidoId = '${record.id}';`;
+     WHERE pp.pedidoId = '${id}';`;
 
     let produtos = await seq.query(queryProdutos, {
       type: QueryTypes.SELECT,
     });
-
+    var total = 0.00
     produtos.forEach((e) => {
+      console.log(e.precoTotal);
+      total += parseFloat(e.precoTotal);
+      console.log(total);
       record.produtos.push(e);
     });
-
+    record.valorTotal = total.toFixed(2)
     return record;
   }
 
