@@ -64,5 +64,6 @@ export default (app) => {
     require('./authVerifyEmail').default,
   );
 
-  app.get(`/auth/me`, require('./authMe').default);
+  app.get(`/auth/me`, 
+  require('./authMe').default);
 };

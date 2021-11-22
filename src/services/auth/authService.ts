@@ -11,12 +11,14 @@ import TenantRepository from '../../database/repositories/tenantRepository';
 import { tenantSubdomain } from '../tenantSubdomain';
 import Error401 from '../../errors/Error401';
 import moment from 'moment';
+import empresa from '../../database/models/empresa';
 
 const BCRYPT_SALT_ROUNDS = 12;
 
 class AuthService {
 
   static async signup(
+    fullName,
     email,
     password,
     invitationToken,
@@ -24,7 +26,11 @@ class AuthService {
     role,
     options: any = {},
   ) {
-    
+    if(role == 1){
+      role = 'pessoa'
+    }else if(role == 2){
+      role = 'empresa'
+    }
     const transaction = await SequelizeRepository.createTransaction(
       options.database,
     );
@@ -129,7 +135,8 @@ class AuthService {
 
       const newUser = await UserRepository.createFromAuth(
         {
-          firstName: email.split('@')[0],
+          fullName: fullName,
+          firstName: fullName.split(' ')[0],
           password: hashedPassword,
           email: email,
         },

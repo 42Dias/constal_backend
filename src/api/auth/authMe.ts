@@ -2,6 +2,7 @@ import ApiResponseHandler from '../apiResponseHandler';
 import Error403 from '../../errors/Error403';
 
 export default async (req, res, next) => {
+  
   try {
     if (!req.currentUser || !req.currentUser.id) {
       throw new Error403(req.language);

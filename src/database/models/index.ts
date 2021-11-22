@@ -30,7 +30,7 @@ function models() {
               }),
             )
           : false,
-      timezone: getConfig().DATABASE_TIMEZONE,
+      //timezone: getConfig().DATABASE_TIMEZONE,
     },
   );
 
