@@ -323,12 +323,12 @@ class Permissions {
 
       carrinhoImport: {
         id: 'carrinhoImport',
-        allowedRoles: [roles.admin],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
       carrinhoCreate: {
         id: 'carrinhoCreate',
-        allowedRoles: [roles.admin, roles.pessoa],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
 
@@ -336,7 +336,7 @@ class Permissions {
       },
       carrinhoEdit: {
         id: 'carrinhoEdit',
-        allowedRoles: [roles.admin, roles.pessoa],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
 
@@ -344,7 +344,7 @@ class Permissions {
       },
       carrinhoDestroy: {
         id: 'carrinhoDestroy',
-        allowedRoles: [roles.admin, roles.pessoa],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
 
@@ -352,12 +352,12 @@ class Permissions {
       },
       carrinhoRead: {
         id: 'carrinhoRead',
-        allowedRoles: [roles.admin, roles.pessoa],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
       carrinhoAutocomplete: {
         id: 'carrinhoAutocomplete',
-        allowedRoles: [roles.admin],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
 

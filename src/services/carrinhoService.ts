@@ -115,7 +115,7 @@ export default class CarrinhoService {
     );
   }
 
-  async import(data, importHash) {
+  async imcaort(data, importHash) {
     if (!importHash) {
       throw new Error400(
         this.options.language,

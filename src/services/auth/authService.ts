@@ -195,8 +195,7 @@ class AuthService {
       await SequelizeRepository.commitTransaction(
         transaction,
       );
-
-      return token;
+      return token;    
     } catch (error) {
       await SequelizeRepository.rollbackTransaction(
         transaction,
