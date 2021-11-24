@@ -27,6 +27,12 @@ export default (app) => {
     `/tenant/fa22705e-cf27-41d0-bebf-9a6ab52948c4/produto`,
     require('./produtoList').default,
   );
+
+  app.get(
+    `/produtos`,
+    require('./produtoListWithoutLogin').default,
+  );
+
   app.get(
     `/tenant/:tenantId/produto/:id`,
     require('./produtoFind').default,

@@ -578,6 +578,49 @@ class ProdutoRepository {
     return { rows, count };
   }
 
+  static async findAllWithoutLogin() {
+
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
+
+    );
+
+    let record = await seq.query(
+      `SELECT 
+        p.*, f.publicUrl
+        FROM
+            produtos p
+                INNER JOIN
+            files f ON f.belongsToId = p.id
+        ORDER BY createdAt DESC;`
+      ,
+      {
+        nest: true,
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    // console.log(record)
+    return { record };
+  }
+
   static async findAllAutocomplete(query, limit, options: IRepositoryOptions) {
     const tenant = SequelizeRepository.getCurrentTenant(
       options,

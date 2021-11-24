@@ -127,6 +127,10 @@ export default class ProdutoService {
     );
   }
 
+  async findAllWithoutLogin() {
+    return ProdutoRepository.findAllWithoutLogin();
+  }
+
   async import(data, importHash) {
     if (!importHash) {
       throw new Error400(
