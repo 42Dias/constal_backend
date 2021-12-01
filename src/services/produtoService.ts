@@ -133,6 +133,9 @@ export default class ProdutoService {
   async findLimitedWithoutLogin() {
     return ProdutoRepository.findLimitedWithoutLogin();
   }
+  async findProdutobyId(id) {
+    return ProdutoRepository.findProdutobyId(id);
+  }
 
   async import(data, importHash) {
     if (!importHash) {

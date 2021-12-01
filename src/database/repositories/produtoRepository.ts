@@ -652,7 +652,7 @@ class ProdutoRepository {
             produtos p
                 INNER JOIN
             files f ON f.belongsToId = p.id
-        WHERE isOferta == 0
+        WHERE isOferta = 0
         ORDER BY createdAt DESC
         LIMIT 0, 10;`
       ,
@@ -787,6 +787,31 @@ class ProdutoRepository {
 
     return record[0].preco;
   }
+  
+  static async findProdutobyId(id: number) {
+
+    let query =
+    `SELECT 
+    p.*, f.publicUrl
+    FROM
+        produtos p
+            INNER JOIN
+        files f ON f.belongsToId = p.id
+        WHERE isOferta == 0
+        and p.useId = '${id}';`;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record[0].preco;
+  }
 }
+
+
 
 export default ProdutoRepository;

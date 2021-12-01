@@ -40,4 +40,8 @@ export default (app) => {
     `/tenant/:tenantId/produto/:id`,
     require('./produtoFind').default,
   );
+  app.get(
+    `/produto/:id`,
+    require('./produtoFindById').default,
+  );
 };
