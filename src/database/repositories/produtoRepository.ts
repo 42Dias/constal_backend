@@ -621,6 +621,52 @@ class ProdutoRepository {
     return { record };
   }
 
+  static async findLimitedWithoutLogin() {
+
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
+
+    );
+
+    let record = await seq.query(
+      `SELECT 
+        p.*, f.publicUrl
+        FROM
+            produtos p
+                INNER JOIN
+            files f ON f.belongsToId = p.id
+        WHERE isOferta == 0
+        ORDER BY createdAt DESC
+        LIMIT 0, 10;`
+      ,
+      {
+        nest: true,
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    // console.log(record)
+    return { record };
+  }
+
+
   static async findAllAutocomplete(query, limit, options: IRepositoryOptions) {
     const tenant = SequelizeRepository.getCurrentTenant(
       options,

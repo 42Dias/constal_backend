@@ -7,6 +7,10 @@ import ProdutoRepository from '../database/repositories/produtoRepository';
 import UserRepository from '../database/repositories/userRepository';
 
 export default class CarrinhoService {
+  import(data: any, importHash: any) { //APENAS DECLARADO PARA RODAR O npm run db:create
+    //throw new Error('Method not implemented.');
+    console.log("deveria ter um erro aqui")
+  }
   options: IServiceOptions;
 
   constructor(options) {

@@ -41,12 +41,12 @@ export default function (sequelize) {
         validate: {
           isIn: [[
             "pendente",
-            "pago", // pendente
-            "cancelado", //devolvido
-            "enviado", //pendente
-            "recebido", // pendente
-            "transito", // pendente
-            "entregue" // confirmado
+            "pago",       // pendente
+            "cancelado",  // devolvido
+            "enviado",    // pendente
+            "recebido",   // pendente
+            "transito",   // pendente
+            "entregue"    // confirmado
           ]],
         }
       },
@@ -87,13 +87,6 @@ export default function (sequelize) {
       as: 'fornecedorEmpresa',
       constraints: false,
     });
-
-    /* models.pedido.belongsToMany(models.produto, {
-      as: 'produto',
-      constraints: false,
-      through: 'pedidoProdutoProduto',
-    });
- */
 
     
     models.pedido.belongsTo(models.tenant, {

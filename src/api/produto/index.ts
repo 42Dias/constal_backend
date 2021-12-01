@@ -32,7 +32,10 @@ export default (app) => {
     `/produtos`,
     require('./produtoListWithoutLogin').default,
   );
-
+  app.get(
+    `/limit-produtos`,
+    require('./produtoFindLimitedWithoutLogin').default,
+  );
   app.get(
     `/tenant/:tenantId/produto/:id`,
     require('./produtoFind').default,

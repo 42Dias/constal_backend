@@ -42,6 +42,10 @@ export default function (sequelize) {
       as: 'produto',
       constraints: false,
       through: pedidoProduto,
+      scope: {
+        belongsTo: models.produto.getTableName(),
+        belongsToColumn: 'id',
+      },
     });
     // Fim
 

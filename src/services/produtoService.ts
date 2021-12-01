@@ -130,6 +130,9 @@ export default class ProdutoService {
   async findAllWithoutLogin() {
     return ProdutoRepository.findAllWithoutLogin();
   }
+  async findLimitedWithoutLogin() {
+    return ProdutoRepository.findLimitedWithoutLogin();
+  }
 
   async import(data, importHash) {
     if (!importHash) {

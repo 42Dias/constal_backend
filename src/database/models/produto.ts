@@ -27,6 +27,9 @@ export default function (sequelize) {
       codigo: {
         type: DataTypes.TEXT,
       },
+      caracteristicasTecnicas: {
+        type: DataTypes.TEXT,
+      },
       preco: {
         type: DataTypes.DECIMAL(10, 2),
       },
@@ -39,6 +42,9 @@ export default function (sequelize) {
       volumeVendas: {
         type: DataTypes.INTEGER,
       },
+      quantidadeNoEstoque : {
+        type: DataTypes.INTEGER,
+      },
       isOferta: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -46,6 +52,12 @@ export default function (sequelize) {
       },
       precoOferta: {
         type: DataTypes.DECIMAL(10, 2),
+      },
+      //PARA SER AUTOINCREMENT DEVERIA SER PRIMARY KEY
+      useId: {
+        type: DataTypes.INTEGER, 
+        autoIncrement: true,
+        unique: true,
       },
       importHash: {
         type: DataTypes.STRING(255),

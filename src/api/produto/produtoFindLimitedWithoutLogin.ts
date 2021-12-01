@@ -1,20 +1,15 @@
 import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
-import CarrinhoService from '../../services/carrinhoService';
+import ProdutoService from '../../services/produtoService';
 
 export default async (req, res, next) => {
   try {
-    new PermissionChecker(req).validateHas(
-      Permissions.values.carrinhoImport,
-    );
-      //Algo de errado não está certo com esse comando abaixo
-    await new CarrinhoService(req).import(
-      req.body.data,
-      req.body.importHash,
-    );
+   
 
-    const payload = true;
+    const payload = await new ProdutoService(
+      req,
+    ).findLimitedWithoutLogin();
 
     await ApiResponseHandler.success(req, res, payload);
   } catch (error) {

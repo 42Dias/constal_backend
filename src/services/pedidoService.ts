@@ -18,9 +18,9 @@ export default class PedidoService {
   async create(data) {
 
     try {
-      /* data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
+      data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
       data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options }); */
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options }); 
 
       data.codigo = await PedidoRepository.findProximoCodigo();
 
@@ -77,9 +77,9 @@ export default class PedidoService {
   async update(id, data) {
 
     try {
-      /* data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
+      data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
       data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options }); */
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options });
 
       const record = await PedidoRepository.update(
         id,
