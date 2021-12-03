@@ -1,0 +1,22 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/pedidoProduto`,
+    require('./pedidoProdutoCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/pedidoProduto/:id`,
+    require('./pedidoProdutoUpdate').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/pedidoProduto`,
+    require('./pedidoProdutoDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/pedidoProduto`,
+    require('./pedidoProdutoList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/pedidoProduto/:id`,
+    require('./pedidoProdutoFind').default,
+  );
+};

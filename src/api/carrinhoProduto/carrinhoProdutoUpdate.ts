@@ -1,18 +1,17 @@
 import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
-import CarrinhoService from '../../services/carrinhoService';
+import CarrinhoProdutoService from '../../services/carrinhoProdutoService';
 
 export default async (req, res, next) => {
   try {
     new PermissionChecker(req).validateHas(
-      Permissions.values.carrinhoEdit,
+      Permissions.values.carrinhoProdutoEdit,
     );
 
-    const payload = await new CarrinhoService(req).update(
-      req.params.id,
-      // req.body.data,
-      req.body,
+    const payload = await new CarrinhoProdutoService(req).update(
+      req.body.id,
+      req.body.data,
     );
 
     await ApiResponseHandler.success(req, res, payload);

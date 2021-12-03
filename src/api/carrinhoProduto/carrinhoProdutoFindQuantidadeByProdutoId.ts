@@ -1,18 +1,16 @@
-import PermissionChecker from '../../services/user/permissionChecker';
+/* import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
-import CarrinhoService from '../../services/carrinhoService';
+import CarrinhoProdutoService from '../../services/carrinhoProdutoService';
 
 export default async (req, res, next) => {
   try {
     new PermissionChecker(req).validateHas(
-      Permissions.values.carrinhoEdit,
+      Permissions.values.carrinhoProdutoRead,
     );
 
-    const payload = await new CarrinhoService(req).update(
-      req.params.id,
-      // req.body.data,
-      req.body,
+    const payload = await new CarrinhoProdutoService(req).findQuantidadeByProdutoId(
+      req.params.produtoId,
     );
 
     await ApiResponseHandler.success(req, res, payload);
@@ -20,3 +18,4 @@ export default async (req, res, next) => {
     await ApiResponseHandler.error(req, res, error);
   }
 };
+ */

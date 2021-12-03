@@ -68,7 +68,8 @@ class CarrinhoProdutoRepository {
     let record = await options.database.carrinhoProduto.findByPk(
       id,
     );
-
+    console.log("data: ");
+    console.log(data);
     record = await record.update(
       {
         quantidade: data.quantidade,
@@ -270,7 +271,7 @@ class CarrinhoProdutoRepository {
     const where = { [Op.and]: whereAnd };
 
     let query =
-      'SELECT cp.id, cp.quantidade, p.id AS `produto.id`, p.nome AS `produto.nome`, IFNULL(p.precoOferta, p.preco) AS `produto.preco`, f.privateUrl AS `produto.fotos`' +
+      'SELECT cp.id, cp.quantidade, cp.carrinhoId, p.id AS `produto.id`, p.nome AS `produto.nome`, IFNULL(p.precoOferta, p.preco) AS `produto.preco`, f.privateUrl AS `produto.fotos`' +
       ` FROM carrinhoProdutos cp
           JOIN produtos p
           ON cp.produtoId = p.id

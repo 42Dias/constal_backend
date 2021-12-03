@@ -9,7 +9,7 @@ export default async (req, res, next) => {
     //   Permissions.values.produtoRead,
     // );
 
-    const payload = await new ProdutoService(req).findById(
+    const payload = await new ProdutoService(req).findProdutobyId(
       req.params.id,
     );
 
