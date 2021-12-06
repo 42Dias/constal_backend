@@ -322,22 +322,22 @@ class Permissions {
       },
      pedidoProdutoCreate: {
         id: 'pedidoProdutoCreate',
-        allowedRoles: [roles.admin, roles.cliente],
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
       pedidoProdutoEdit: {
         id: 'pedidoProdutoEdit',
-        allowedRoles: [roles.admin, roles.cliente],
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
       pedidoProdutoDestroy: {
         id: 'pedidoProdutoDestroy',
-        allowedRoles: [roles.admin, roles.cliente],
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
       pedidoProdutoRead: {
         id: 'pedidoProdutoRead',
-        allowedRoles: [roles.admin, roles.cliente, roles.custom],
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
       carrinhoImport: {
@@ -369,6 +369,47 @@ class Permissions {
 
         ],
       },
+      
+      carrinhoProdutoImport: {
+        id: 'carrinhoProdutoImport',
+        allowedRoles: [roles.admin],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      carrinhoProdutoCreate: {
+        id: 'carrinhoProdutoCreate',
+        allowedRoles: [roles.admin],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+        allowedStorage: [
+
+        ],
+      },
+      carrinhoProdutoEdit: {
+        id: 'carrinhoProdutoEdit',
+        allowedRoles: [roles.admin],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+        allowedStorage: [
+
+        ],
+      },
+      carrinhoProdutoDestroy: {
+        id: 'carrinhoProdutoDestroy',
+        allowedRoles: [roles.admin],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+        allowedStorage: [
+
+        ],
+      },
+      carrinhoProdutoRead: {
+        id: 'carrinhoProdutoRead',
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      carrinhoProdutoAutocomplete: {
+        id: 'carrinhoProdutoAutocomplete',
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+
       carrinhoRead: {
         id: 'carrinhoRead',
         allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
