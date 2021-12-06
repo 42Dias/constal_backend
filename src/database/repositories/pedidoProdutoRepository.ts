@@ -205,6 +205,11 @@ class PedidoProdutoRepository {
       {
         model: options.database.empresa,
         as: 'fornecedorEmpresa',
+      },     
+
+      {
+        model: options.database.produto,
+        as: 'produto',
       },      
     ];
 
