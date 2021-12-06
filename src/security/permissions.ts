@@ -320,7 +320,26 @@ class Permissions {
         allowedRoles: [roles.admin, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
-
+     pedidoProdutoCreate: {
+        id: 'pedidoProdutoCreate',
+        allowedRoles: [roles.admin, roles.cliente],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      pedidoProdutoEdit: {
+        id: 'pedidoProdutoEdit',
+        allowedRoles: [roles.admin, roles.cliente],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      pedidoProdutoDestroy: {
+        id: 'pedidoProdutoDestroy',
+        allowedRoles: [roles.admin, roles.cliente],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      pedidoProdutoRead: {
+        id: 'pedidoProdutoRead',
+        allowedRoles: [roles.admin, roles.cliente, roles.custom],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
       carrinhoImport: {
         id: 'carrinhoImport',
         allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
