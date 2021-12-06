@@ -1,12 +1,12 @@
+import CarrinhoProdutoRepository from '../database/repositories/carrinhoProdutoRepository';
 import Error400 from '../errors/Error400';
 import SequelizeRepository from '../database/repositories/sequelizeRepository';
 import { IServiceOptions } from './IServiceOptions';
-import PedidoProdutoRepository from '../database/repositories/pedidoProdutoRepository';
 
 /**
- * Handles Pedido operations
+ * Handles Carrinho operations
  */
-export default class PedidoProdutoService {
+export default class CarrinhoProdutoService {
   options: IServiceOptions;
 
   constructor(options) {
@@ -14,7 +14,7 @@ export default class PedidoProdutoService {
   }
 
   /**
-   * Creates a Pedido.
+   * Creates a Carrinho Produto.
    *
    * @param {*} data
    */
@@ -24,7 +24,7 @@ export default class PedidoProdutoService {
     );
 
     try {
-      const record = await PedidoProdutoRepository.create(data, {
+      const record = await CarrinhoProdutoRepository.create(data, {
         ...this.options,
         transaction,
       });
@@ -42,7 +42,7 @@ export default class PedidoProdutoService {
       SequelizeRepository.handleUniqueFieldError(
         error,
         this.options.language,
-        'pedido',
+        'carrinhoProduto',
       );
 
       throw error;
@@ -50,7 +50,7 @@ export default class PedidoProdutoService {
   }
 
   /**
-   * Updates a Pedido.
+   * Updates a Carrinho.
    *
    * @param {*} id
    * @param {*} data
@@ -61,7 +61,7 @@ export default class PedidoProdutoService {
     );
 
     try {
-      const record = await PedidoProdutoRepository.update(
+      const record = await CarrinhoProdutoRepository.update(
         id,
         data,
         {
@@ -83,7 +83,7 @@ export default class PedidoProdutoService {
       SequelizeRepository.handleUniqueFieldError(
         error,
         this.options.language,
-        'pedido',
+        'carrinhoProduto',
       );
 
       throw error;
@@ -91,7 +91,7 @@ export default class PedidoProdutoService {
   }
 
   /**
-   * Destroy all Pedidos with those ids.
+   * Destroy all Carrinhos with those ids.
    *
    * @param {*} ids
    */
@@ -102,7 +102,7 @@ export default class PedidoProdutoService {
 
     try {
       for (const id of ids) {
-        await PedidoProdutoRepository.destroy(id, {
+        await CarrinhoProdutoRepository.destroy(id, {
           ...this.options,
           transaction,
         });
@@ -119,36 +119,81 @@ export default class PedidoProdutoService {
     }
   }
 
-  /**
-   * Finds the Pedido by Id.
-   *
-   * @param {*} id
-   */
-  async findById(id) {
-    return PedidoProdutoRepository.findById(id, this.options);
+  async destroy(id) {
+    const transaction = await SequelizeRepository.createTransaction(
+      this.options.database,
+    );
+
+    try {
+
+      await CarrinhoProdutoRepository.destroy(id, {
+        ...this.options,
+        transaction,
+      });
+
+      await SequelizeRepository.commitTransaction(
+        transaction,
+      );
+    } catch (error) {
+      await SequelizeRepository.rollbackTransaction(
+        transaction,
+      );
+      throw error;
+    }
   }
 
+  async destroyByEmpresa(id) {
+    const transaction = await SequelizeRepository.createTransaction(
+      this.options.database,
+    );
+
+    try {
+
+      await CarrinhoProdutoRepository.destroyByEmpresa(id, {
+        ...this.options,
+        transaction,
+      });
+
+      await SequelizeRepository.commitTransaction(
+        transaction,
+      );
+    } catch (error) {
+      await SequelizeRepository.rollbackTransaction(
+        transaction,
+      );
+      throw error;
+    }
+  }
+ 
+  async findByBusca(busca, tipo) {
+    return CarrinhoProdutoRepository.findByBusca(busca, tipo, this.options);
+  }
+
+  /* async findQuantidadeByProdutoId(produtoId) {
+    return CarrinhoProdutoRepository.findQuantidadeByProdutoId(produtoId, this.options);
+  } */
+
   /**
-   * Finds Pedidos for Autocomplete.
+   * Finds Carrinhos for Autocomplete.
    *
    * @param {*} search
    * @param {*} limit
    */
-  async findAllAutocomplete(search, limit) {
-    return PedidoProdutoRepository.findAllAutocomplete(
+  /* async findAllAutocomplete(search, limit) {
+    return CarrinhoRepository.findAllAutocomplete(
       search,
       limit,
       this.options,
     );
-  }
+  } */
 
   /**
-   * Finds Pedidos based on the query.
+   * Finds Carrinhos based on the query.
    *
    * @param {*} args
    */
   async findAndCountAll(args) {
-    return PedidoProdutoRepository.findAndCountAll(
+    return CarrinhoProdutoRepository.findAndCountAll(
       args,
       this.options,
     );
