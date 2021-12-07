@@ -7,6 +7,7 @@ import PedidoProdutoRepository from '../database/repositories/pedidoProdutoRepos
  * Handles Pedido operations
  */
 export default class PedidoProdutoService {
+
   options: IServiceOptions;
 
   constructor(options) {
@@ -24,9 +25,8 @@ export default class PedidoProdutoService {
     );
 
     try {
-      const record = await PedidoProdutoRepository.create(data, {
+      const record = await PedidoProdutoRepository.create(data, transaction, {
         ...this.options,
-        transaction,
       });
 
       await SequelizeRepository.commitTransaction(

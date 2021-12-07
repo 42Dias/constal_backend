@@ -797,7 +797,6 @@ class ProdutoRepository {
         produtos p
             INNER JOIN
         files f ON f.belongsToId = p.id
-        WHERE p.isOferta = 0
         and p.useId = ${id};`;
 
     let record = await seq.query(query, {

@@ -47,6 +47,7 @@ export default function (sequelize) {
         belongsToColumn: 'id',
       },
     });
+  
     // Fim
 
   };

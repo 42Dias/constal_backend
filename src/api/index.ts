@@ -83,6 +83,8 @@ require('./produto').default(routes);
 require('./pedido').default(routes);
 require('./carrinho').default(routes);
 require('./categoria').default(routes);
+require('./carrinhoProduto').default(routes);
+require('./pedidoProduto').default(routes);
 
 // Loads the Tenant if the :tenantId param is passed
 routes.param('tenantId', tenantMiddleware);
