@@ -17,9 +17,8 @@ export default class CarrinhoService {
   async create(data) {
 
     try {
-      /* data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction }); */
-
+      data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction }); 
       const carrinho = await CarrinhoRepository.create({
         ...this.options,
       });
@@ -74,7 +73,7 @@ export default class CarrinhoService {
 
     try {
       for (const id of ids) {
-        await CarrinhoProdutoRepository.destroy(id, {
+        await CarrinhFoProdutoRepository.destroy(id, {
           ...this.options,
         });
       }

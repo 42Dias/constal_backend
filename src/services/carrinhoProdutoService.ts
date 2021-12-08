@@ -143,15 +143,15 @@ export default class CarrinhoProdutoService {
   }
 
   async destroyByEmpresa(id) {
-    const transaction = await SequelizeRepository.createTransaction(
+    console.log("await CarrinhoProdutoRepository.destroyByEmpresa")
+    /*const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
     );
 
     try {
-
       await CarrinhoProdutoRepository.destroyByEmpresa(id, {
-        ...this.options,
-        transaction,
+       ...this.options,
+       transaction,
       });
 
       await SequelizeRepository.commitTransaction(
@@ -162,11 +162,12 @@ export default class CarrinhoProdutoService {
         transaction,
       );
       throw error;
-    }
+    }*/
   }
  
-  async findByBusca(busca, tipo) {
-    return CarrinhoProdutoRepository.findByBusca(busca, tipo, this.options);
+  findByBusca(busca, tipo) {
+    console.log("CarrinhoProdutoRepository.findByBusca")
+    //return CarrinhoProdutoRepository.findByBusca(busca, tipo, this.options);
   }
 
   /* async findQuantidadeByProdutoId(produtoId) {

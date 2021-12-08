@@ -12,6 +12,11 @@ class PedidoProdutoRepository {
 
   static async create(pedido, data, options: IRepositoryOptions) {
 
+    const transaction = SequelizeRepository.getTransaction(
+      options,
+      ); 
+
+
     const record = await options.database.pedidoProduto.create(
       {
         ...lodash.pick(data, [
@@ -19,10 +24,18 @@ class PedidoProdutoRepository {
           'precoUnitario',
           'precoTotal'
         ]),
+        userId: data.user.id, 
         pedidoId: pedido,
         produtoId: data.id,
       },
+        {
+        transaction,
+        }, 
     );
+
+    await record.setUserId(data.userId || null, {
+      transaction,
+    }); 
   
     await this._createAuditLog(
       AuditLogRepository.CREATE,
@@ -570,14 +583,13 @@ class PedidoProdutoRepository {
 
     const output = record.get({ plain: true });
 
-    
-
     output.compradorUser = UserRepository.cleanupForRelationships(output.compradorUser);
 
     output.produto = await record.getProduto();
 
     return output;
   }
+
 }
 
 export default PedidoProdutoRepository;

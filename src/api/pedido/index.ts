@@ -32,4 +32,8 @@ export default (app) => {
     `/tenant/:tenantId/pedido/:id`,
     require('./pedidoFind').default,
   );
+  app.get(
+  `/tenant/:tenantId/pedidoWithProduct`,
+  require('./pedidoWithProduct').default,
+);
 };

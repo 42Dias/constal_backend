@@ -45,9 +45,13 @@ export default function (sequelize) {
       scope: {
         belongsTo: models.produto.getTableName(),
         belongsToColumn: 'id',
-      },
+      }
     });
-  
+
+    models.pedidoProduto.belongsTo(models.user, {
+      as: 'compradorUser',
+      constraints: false,//ID DO USUARIO DO USUARIO
+    });
     // Fim
 
   };

@@ -377,7 +377,7 @@ class Permissions {
       },
       carrinhoProdutoCreate: {
         id: 'carrinhoProdutoCreate',
-        allowedRoles: [roles.admin],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
 

@@ -157,6 +157,7 @@ export default function (sequelize, DataTypes) {
     models.user.belongsTo(models.user, {
       as: 'updatedBy',
     });
+
   };
 
   user.beforeCreate((user, options) => {

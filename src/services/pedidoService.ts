@@ -169,4 +169,9 @@ export default class PedidoService {
 
     return count > 0;
   }
+
+  async findPedidoWithProduct() {
+    return PedidoRepository.findPedidoWithProduct(this.options);
+  }
+  
 }

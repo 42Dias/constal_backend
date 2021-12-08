@@ -761,6 +761,35 @@ class PedidoRepository {
 
     return record;
   }
+  static async findPedidoWithProduct(options: IRepositoryOptions) {
+    const currentUser = SequelizeRepository.getCurrentUser(options);
+    let query =
+    `SELECT 
+     p.nome AS nomeProduto,
+     p.preco,
+     f.publicUrl,
+     ped.compradorUserId
+    FROM
+      pedidos ped
+    INNER JOIN
+        pedidoProdutos pp ON pp.pedidoId = ped.id
+            LEFT JOIN
+        produtos p ON pp.produtoId = p.id
+    INNER JOIN
+      files f ON f.belongsToId = p.id 
+        
+    where ped.compradorUserId = "${currentUser}"`;
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
+  }
+
 }
 
 export default PedidoRepository;
