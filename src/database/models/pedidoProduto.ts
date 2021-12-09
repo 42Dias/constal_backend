@@ -48,9 +48,14 @@ export default function (sequelize) {
       }
     });
 
-    models.pedidoProduto.belongsTo(models.user, {
+    models.pedidoProduto.belongsTo(models.pedido, {
       as: 'compradorUser',
-      constraints: false,//ID DO USUARIO DO USUARIO
+      constraints: false,
+      scope: {
+        belongsTo: models.user.getTableName(),
+        belongsToColumn: 'compradorUserId',
+      }
+      //ID DO USUARIO DO USUARIO
     });
     // Fim
 

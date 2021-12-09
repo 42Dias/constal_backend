@@ -75,7 +75,6 @@ export default class PedidoService {
   }
 
   async update(id, data) {
-
     try {
       data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
       data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
@@ -171,6 +170,7 @@ export default class PedidoService {
   }
 
   async findPedidoWithProduct(args) {
+    console.log(args)
     return PedidoRepository.findPedidoWithProduct(this.options);
   }
   

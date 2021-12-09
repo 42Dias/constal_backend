@@ -766,13 +766,21 @@ class PedidoRepository {
     ) {
     const currentUser = SequelizeRepository.getCurrentUser(options);
     
+      /*
+
+      
+
+      */
 
     let query =
     `SELECT 
+     p.id,
      p.nome AS nomeProduto,
      p.preco,
      f.publicUrl,
-     ped.compradorUserId
+     ped.compradorUserId,
+     ped.status,
+     ped.valorTotal
     FROM
       pedidos ped
     INNER JOIN
@@ -782,17 +790,15 @@ class PedidoRepository {
     INNER JOIN
       files f ON f.belongsToId = p.id 
         
-    where ped.compradorUserId = "${currentUser.id}"`;
-    console.log("==================================================")
-    console.log("==================================================")
-    console.log("==================================================")
-    console.log(currentUser)
-    console.log("==================================================")
-    console.log("==================================================")
-    console.log("==================================================")
+    where pp.compradorUserId = "${currentUser.id}"`;
+    
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
     });
+
+    console.log(record)
+
+
 
     if (!record) {
       throw new Error404();

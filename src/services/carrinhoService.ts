@@ -51,6 +51,15 @@ export default class CarrinhoService {
   }
 
   async update(id, data) {
+    
+    console.log("================================")
+    console.log(id)
+    console.log("================================")
+    
+    console.log("*-*-*-*-**-***-*****-*-*-*-*-**-")
+    console.log(data)
+    console.log("*-*-*-*-**-***-*****-*-*-*-*-**-")
+
 
     try {
       /* data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });

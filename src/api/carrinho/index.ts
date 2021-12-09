@@ -1,10 +1,10 @@
 export default (app) => {
   app.post(
-    `/tenant/:tenantId/carrinho`,        //cria o carrinho
+    `/tenant/:tenantId/carrinho`,        //cria o produto no carrinho!!
     require('./carrinhoCreate').default,
   );
   app.post(
-    `/tenant/:tenantId/carrinho/:id`,    //add item o carrinho
+    `/tenant/:tenantId/carrinho/:id`,    //altera
     require('./carrinhoUpdate').default,
   );
   app.post(

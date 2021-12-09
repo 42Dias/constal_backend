@@ -13,11 +13,7 @@ export default async (req, res, next) => {
       req.body,
     );
 
-    console.log("=================================")
-    console.log("=================================")
     console.log(payload)
-    console.log("=================================")
-    console.log("=================================")
 
     await ApiResponseHandler.success(req, res, payload);
   } catch (error) {
