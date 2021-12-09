@@ -16,9 +16,17 @@ export default class CarrinhoService {
 
   async create(data) {
 
+    const transaction = await SequelizeRepository.createTransaction(
+      this.options.database,
+    );
+    
     try {
-      data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options, transaction });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options, transaction }); 
+      const userData = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      data.userId = userData.id;
+  
+      data.produto = await ProdutoRepository.filterIdsInTenant(data.product, { ...this.options, transaction }); 
       const carrinho = await CarrinhoRepository.create({
         ...this.options,
       });
@@ -73,7 +81,7 @@ export default class CarrinhoService {
 
     try {
       for (const id of ids) {
-        await CarrinhFoProdutoRepository.destroy(id, {
+        await CarrinhoProdutoRepository.destroy(id, {
           ...this.options,
         });
       }

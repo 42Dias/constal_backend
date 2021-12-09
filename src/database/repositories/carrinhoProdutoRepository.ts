@@ -36,22 +36,20 @@ const { QueryTypes } = require('sequelize');
 class CarrinhoProdutoRepository {
 
   static async create(data, options: IRepositoryOptions) {
-
     const record = await options.database.carrinhoProduto.findOrCreate(
       {
         where:
         {
           carrinhoId: data.carrinho,
-          produtoId: data.produto,
+          produtoId: data.product.id,
         },
         defaults: {
-          carrinhoId: data.carrinho,
-          produtoId: data.produto,
+          carrinhoId: data.carrinho.id,
+          produtoId: data.product.id,
           quantidade: data.quantidade,
         }
       }
     );
-
 
     await this._createAuditLog(
       AuditLogRepository.CREATE,

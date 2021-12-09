@@ -10,8 +10,14 @@ export default async (req, res, next) => {
     );
 
     const payload = await new CarrinhoService(req).create(
-      req.body.data,
+      req.body,
     );
+
+    console.log("=================================")
+    console.log("=================================")
+    console.log(payload)
+    console.log("=================================")
+    console.log("=================================")
 
     await ApiResponseHandler.success(req, res, payload);
   } catch (error) {

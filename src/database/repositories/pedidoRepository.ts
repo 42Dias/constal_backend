@@ -761,8 +761,12 @@ class PedidoRepository {
 
     return record;
   }
-  static async findPedidoWithProduct(options: IRepositoryOptions) {
+  static async findPedidoWithProduct(
+    options: IRepositoryOptions
+    ) {
     const currentUser = SequelizeRepository.getCurrentUser(options);
+    
+
     let query =
     `SELECT 
      p.nome AS nomeProduto,
@@ -778,7 +782,14 @@ class PedidoRepository {
     INNER JOIN
       files f ON f.belongsToId = p.id 
         
-    where ped.compradorUserId = "${currentUser}"`;
+    where ped.compradorUserId = "${currentUser.id}"`;
+    console.log("==================================================")
+    console.log("==================================================")
+    console.log("==================================================")
+    console.log(currentUser)
+    console.log("==================================================")
+    console.log("==================================================")
+    console.log("==================================================")
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
     });
