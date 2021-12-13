@@ -284,6 +284,34 @@ class ProdutoRepository {
     return records.map((record) => record.id);
   }
 
+  static async filterIdsInTenantGettingFornecedor(
+    ids,
+    options: IRepositoryOptions,
+  ) {
+    if (!ids || !ids.length) {
+      return [];
+    }
+
+    const currentTenant =
+      SequelizeRepository.getCurrentTenant(options);
+
+    const where = {
+      id: {
+        [Op.in]: ids,
+      },
+      tenantId: currentTenant.id,
+    };
+
+    const records = await options.database.produto.findAll(
+      {
+        attributes: ['id'],
+        where,
+      },
+    );
+
+    return records.map((record) => record.empresaId);
+  }
+
   static async count(filter, options: IRepositoryOptions) {
     const transaction = SequelizeRepository.getTransaction(
       options,
@@ -795,9 +823,9 @@ class ProdutoRepository {
     p.*, f.publicUrl
     FROM
         produtos p
-            INNER JOIN
+            LEFT JOIN
         files f ON f.belongsToId = p.id
-        and p.useId = ${id};`;
+        where p.useId = '${id}';`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,

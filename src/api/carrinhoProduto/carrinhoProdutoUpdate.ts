@@ -11,7 +11,7 @@ export default async (req, res, next) => {
 
     const payload = await new CarrinhoProdutoService(req).update(
       req.body.id,
-      req.body.data,
+      req.body,
     );
 
     await ApiResponseHandler.success(req, res, payload);

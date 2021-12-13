@@ -87,7 +87,6 @@ export default class CarrinhoService {
   }
 
   async destroyAll(ids) {
-
     try {
       for (const id of ids) {
         await CarrinhoProdutoRepository.destroy(id, {

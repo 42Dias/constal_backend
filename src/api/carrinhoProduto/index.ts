@@ -16,6 +16,10 @@ export default (app) => {
     require('./carrinhoProdutoDestroy').default,
   );
   app.delete(
+    `/tenant/:tenantId/carrinhoProdutoAll`,
+    require('./carrinhoProdutoDestroyAll').default,
+  );
+  app.delete(
     `/tenant/:tenantId/carrinhoProduto/:empresaId`,
     require('./carrinhoProdutoDestroyByEmpresa').default,
   );

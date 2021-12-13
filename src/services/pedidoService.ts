@@ -16,11 +16,37 @@ export default class PedidoService {
   }
 
   async create(data) {
+    console.log("==============")
+    console.log("data")
+    console.log(data)
+    console.log("==============")
 
     try {
-      data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
-      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options }); 
+      //pegar de forma igual a outros, pelo options e pelo back
+      const currentUser = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      console.log(currentUser)
+      data.compradorUserId = currentUser.id
+
+      const fornecedorEmpresaId = await ProdutoRepository.filterIdsInTenantGettingFornecedor(data.produto.id, { ...this.options }); 
+      //vincular o fornecedorEmpresa pelo productId
+       
+      console.log("------------")
+      console.log("data depois do fornecedor e do produto")
+      console.log(data)
+      console.log("------------")
+
+      //data.produto = await ProdutoRepository.filterIdsInTenant(data.produto.id, { ...this.options });
+      
+      
+      console.log("==========")
+      console.log("fornecedorEmpresaId")
+      console.log(fornecedorEmpresaId)
+      console.log("==========")
+
+      //data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
+      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(fornecedorEmpresaId, { ...this.options });
 
       data.codigo = await PedidoRepository.findProximoCodigo();
 
@@ -33,6 +59,8 @@ export default class PedidoService {
         e.precoUnitario = await ProdutoRepository.findPrecoById(e.id);
         e.precoTotal = e.precoUnitario * e.quantidade;
 
+        //depois de criar o pedido é criado o pedido produto, 
+        // provavlemente necessário o pedidoProduto para a criação da fatura
         await PedidoProdutoRepository.create(pedido.id, e, {
           ...this.options,
         });

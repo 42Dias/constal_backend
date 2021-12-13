@@ -9,7 +9,7 @@ export default async (req, res, next) => {
       Permissions.values.carrinhoProdutoDestroy,
     );
 
-    await new CarrinhoProdutoService(req).destroy(
+    await new CarrinhoProdutoService(req).destroyAll(
       req.body.id,
     );
 

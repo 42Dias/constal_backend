@@ -56,6 +56,19 @@ export default class CarrinhoProdutoService {
    * @param {*} data
    */
   async update(id, data) {
+    console.log("+++++++++++++++++++++++++++++++")
+    console.log("id")
+    console.log(id)
+    console.log("+++++++++++++++++++++++++++++++")
+
+    console.log("==============================")
+    console.log("data")
+    console.log( data)
+    console.log("==============================")
+
+
+
+
     const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
     );
@@ -96,12 +109,23 @@ export default class CarrinhoProdutoService {
    * @param {*} ids
    */
   async destroyAll(ids) {
+
+    console.log("===ids===")
+    console.log(ids)
+    console.log("===ids===")
+
     const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
     );
 
     try {
       for (const id of ids) {
+        
+        console.log("===id===")        
+        console.log(id)
+        console.log("===id===")
+        
+
         await CarrinhoProdutoRepository.destroy(id, {
           ...this.options,
           transaction,

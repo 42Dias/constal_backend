@@ -385,15 +385,20 @@ class Permissions {
       },
       carrinhoProdutoEdit: {
         id: 'carrinhoProdutoEdit',
-        allowedRoles: [roles.admin],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
 
         ],
       },
+      carrinhoProdutoUpdate: {
+        id: 'carrinhoProdutoUpdate',
+        allowedRoles: [roles.admin],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
       carrinhoProdutoDestroy: {
         id: 'carrinhoProdutoDestroy',
-        allowedRoles: [roles.admin],
+        allowedRoles: [roles.admin, roles.pessoa, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
 

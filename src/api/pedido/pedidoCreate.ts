@@ -10,7 +10,7 @@ export default async (req, res, next) => {
     );
 
     const payload = await new PedidoService(req).create(
-      req.body.data,
+      req.body,
     );
 
     await ApiResponseHandler.success(req, res, payload);
