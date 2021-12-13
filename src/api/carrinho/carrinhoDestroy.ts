@@ -10,7 +10,7 @@ export default async (req, res, next) => {
     );
 
     await new CarrinhoService(req).destroyAll(
-      req.query.ids,
+      req.query.ids
     );
 
     const payload = true;
