@@ -11,6 +11,7 @@ export default async (req, res, next) => {
       req.body.invitationToken,
       req.body.tenantId,
       req.body.role,
+      req.body.status,
       req,
     );
 

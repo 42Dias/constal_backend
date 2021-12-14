@@ -27,4 +27,8 @@ export default (app) => {
     `/tenant/:tenantId/user/:id`,
     require('./userFind').default,
   );
+  app.get(
+    `/tenant/:tenantId/adm/:id`,
+    require('./admFind').default,
+  );
 };

@@ -140,8 +140,9 @@ class ProdutoRepository {
           'isOferta',
           'precoOferta',
           'importHash',
+          'status'
         ]),
-        empresaId: data.empresa || null,
+        empresaId: data.empresaId || null,
         categoriaId: data.categoria || null,
         updatedById: currentUser.id,
       },
@@ -511,6 +512,11 @@ class ProdutoRepository {
       ) {
         whereAnd.push({
           isOferta: filter.isOferta
+        });
+      }
+      if (filter.status) {
+        whereAnd.push({
+          status: filter.status
         });
       }
 

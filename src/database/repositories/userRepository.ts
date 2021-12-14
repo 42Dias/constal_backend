@@ -4,12 +4,13 @@ import AuditLogRepository from './auditLogRepository';
 import crypto from 'crypto';
 import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
-import Sequelize from 'sequelize';
+import Sequelize, { QueryTypes } from 'sequelize';
 import { isUserInTenant } from '../utils/userTenantUtils';
 import { getConfig } from '../../config';
 import { IRepositoryOptions } from './IRepositoryOptions';
 import SequelizeArrayUtils from '../utils/sequelizeArrayUtils';
 import lodash from 'lodash';
+import highlight from 'cli-highlight';
 
 const Op = Sequelize.Op;
 
@@ -28,6 +29,7 @@ export default class UserRepository {
         id: data.id || undefined,
         email: data.email,
         firstName: data.firstName || null,
+        fullName: data.fullName || null,
         lastName: data.lastName || null,
         phoneNumber: data.phoneNumber || null,
         importHash: data.importHash || null,
@@ -76,6 +78,7 @@ export default class UserRepository {
 
     const user = await options.database.user.create(
       {
+        fullName: data.fullName,
         email: data.email,
         firstName: data.firstName,
         password: data.password,
@@ -483,7 +486,17 @@ export default class UserRepository {
           },
         });
       }
-
+      if(filter.role == "empresa"){
+        include.push({
+          model: options.database.empresa,
+          as: 'empresas'
+        });
+      }else{
+        include.push({
+          model: options.database.pessoaFisica,
+          as: 'pessoaFisica'
+        });
+      }
       if (filter.createdAtRange) {
         const [start, end] = filter.createdAtRange;
 
@@ -1028,5 +1041,52 @@ export default class UserRepository {
       },
     );
 
+  }
+  static async findAdmId(id, options: IRepositoryOptions){
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+      },
+    );
+    let query =
+    'SELECT cp.id, cp.quantidade,' +
+    ' p.id AS `produto.id`, p.nome AS `produto.nome`, IFNULL(p.precoOferta, p.preco) AS `produto.preco`,' +
+    ' p.descricao AS `produto.descricao`, p.marca AS `produto.marca`, p.modelo AS `produto.modelo`,'+
+    ' p.caracteristicas AS `produto.caracteristicas`, p.codigo AS `produto.codigo`, ca.id AS `produto.categoria.id`, ca.nome AS `produto.categoria.nome`,'+
+    ' f.privateUrl AS `produto.fotos`' +
+    ` FROM carrinhoProdutos cp
+
+        JOIN produtos p
+        ON cp.produtoId = p.id
+        
+        LEFT JOIN files f
+        ON p.id = f.belongsToId
+        
+        LEFT JOIN categoria ca
+        ON p.categoriaId = ca.id
+
+      WHERE cp.id = '${id}';`;
+
+
+  let record = await seq.query(query, {
+    nest: true,
+    type: QueryTypes.SELECT,
+  });
+
+  return record;
   }
 }

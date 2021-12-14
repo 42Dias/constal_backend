@@ -52,7 +52,7 @@ export default class ProdutoService {
     );
 
     try {
-      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresa, { ...this.options, transaction });
+      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
       const record = await ProdutoRepository.update(
