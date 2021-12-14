@@ -50,7 +50,11 @@ export default class EmpresaService {
     );
 
     try {
-      data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options, transaction });
+      const currentUser = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      data.user = currentUser.id
+      //data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options, transaction });
 
       const record = await EmpresaRepository.update(
         id,
