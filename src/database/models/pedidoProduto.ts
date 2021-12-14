@@ -41,6 +41,7 @@ export default function (sequelize) {
     models.pedido.belongsToMany(models.produto, {
       as: 'produto',
       constraints: false,
+      unique: false,
       through: pedidoProduto,
       scope: {
         belongsTo: models.produto.getTableName(),
@@ -48,15 +49,6 @@ export default function (sequelize) {
       }
     });
 
-    models.pedidoProduto.belongsTo(models.pedido, {
-      as: 'compradorUser',
-      constraints: false,
-      scope: {
-        belongsTo: models.user.getTableName(),
-        belongsToColumn: 'compradorUserId',
-      }
-      //ID DO USUARIO DO USUARIO
-    });
     // Fim
 
   };
