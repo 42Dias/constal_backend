@@ -27,6 +27,9 @@ export default function (sequelize) {
       status: {
         type: DataTypes.TEXT
       },
+      imagemUrl: {
+        type: DataTypes.TEXT
+      },
       codigo: {
         type: DataTypes.TEXT,
       },
