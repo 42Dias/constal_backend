@@ -24,6 +24,9 @@ export default function (sequelize) {
       caracteristicas: {
         type: DataTypes.TEXT,
       },
+      status: {
+        type: DataTypes.TEXT
+      },
       codigo: {
         type: DataTypes.TEXT,
       },
