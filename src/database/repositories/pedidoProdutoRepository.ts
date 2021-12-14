@@ -11,41 +11,57 @@ const Op = Sequelize.Op;
 class PedidoProdutoRepository {
 
   static async create(pedido, data, options: IRepositoryOptions) {
-
-    const transaction = SequelizeRepository.getTransaction(
-      options,
-      ); 
-
-
-    const record = await options.database.pedidoProduto.create(
-      {
-        ...lodash.pick(data, [
-          'quantidade',
-          'precoUnitario',
-          'precoTotal'
-        ]),
-        userId: data.user.id, 
-        pedidoId: pedido,
-        produtoId: data.id,
-      },
-        {
-        transaction,
-        }, 
-    );
-
-    await record.setUserId(data.userId || null, {
-      transaction,
-    }); 
-  
-    await this._createAuditLog(
-      AuditLogRepository.CREATE,
-      record,
-      data,
-      options,
-    );
-
-    //return this.findById(record.id, options);
-  }
+    try{
+        const transaction = SequelizeRepository.getTransaction(
+          options,
+          ); 
+          const currentUser =
+          SequelizeRepository.getCurrentUser(options);
+          
+          console.log('*-*-**-*-***-*-*-')
+          console.log("currentUser")
+          console.log(currentUser.id)
+          console.log('*-*-**-*-***-*-*-')
+    
+    
+        const record = await options.database.pedidoProduto.create(//da onde vem esse record
+          {
+            ...lodash.pick(data, [
+              'quantidade',
+              'precoUnitario',
+              'precoTotal'
+            ]),
+            compradorUserId: currentUser.id, 
+            pedidoId: pedido,
+            produtoId: data.produto.id,
+          },
+            {
+            transaction,
+            }, 
+        );
+    
+        await record.setUserId(currentUser.id || null, {
+          transaction,
+        }); 
+        console.log("+++++++++++++++++++++++++++++++++++++")
+        console.log("record")
+        console.log(record)
+        console.log("+++++++++++++++++++++++++++++++++++++")
+    
+        //Erro de validação associação
+        await this._createAuditLog(
+          AuditLogRepository.CREATE,
+          record,
+          data,
+          options,
+        );
+    
+        //return this.findById(record.id, options);
+      }
+      catch (e){
+        console.log(e)
+      }
+    }
 
   static async update(id, data, options: IRepositoryOptions) {
 
