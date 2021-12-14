@@ -65,6 +65,7 @@ class ProdutoRepository {
             'precoOferta',
             'importHash',
             'status',
+            'imagemUrl'
           ]), //como se pegasse o data.algo
           empresaId: currentUser.id,
           categoriaId: data.categoria || null,
