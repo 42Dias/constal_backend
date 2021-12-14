@@ -13,7 +13,7 @@ export default async (req, res, next) => {
       if (!req.query.filter){
         req.query.filter = []
       }
-      req.query.filter.empresa = req.empresa.id
+      req.query.filter.empresa = req.currentUser.id //adiciona o filtro de empresa
     }
 
     const payload = await new ProdutoService(
