@@ -45,55 +45,62 @@ class ProdutoRepository {
     const transaction = SequelizeRepository.getTransaction(
       options,
     );
+    try{
 
-    const record = await options.database.produto.create(
-      {
-        ...lodash.pick(data, [
-          'nome',
-          'descricao',
-          'marca',
-          'modelo',
-          'caracteristicas',
-          'codigo',
-          'preco',
-          'somatoriaAvaliacoes',
-          'quantidadeAvaliacoes',
-          'volumeVendas',
-          'isOferta',
-          'precoOferta',
-          'importHash',
-        ]),
-        empresaId: data.empresa || null,
-        categoriaId: data.categoria || null,
-        tenantId: tenant.id,
-        createdById: currentUser.id,
-        updatedById: currentUser.id,
-      },
-      {
-        transaction,
-      },
-    );
-
-
-
-    await FileRepository.replaceRelationFiles(
-      {
-        belongsTo: options.database.produto.getTableName(),
-        belongsToColumn: 'fotos',
-        belongsToId: record.id,
-      },
-      data.fotos,
-      options,
-    );
-
-    await this._createAuditLog(
-      AuditLogRepository.CREATE,
-      record,
-      data,
-      options,
-    );
-
-    return this.findById(record.id, options);
+      const record = await options.database.produto.create(
+        {
+          ...lodash.pick(data, [
+            'nome',
+            'descricao',
+            // 'marca',
+            // 'modelo',
+            'caracteristicasTecnicas',
+            'codigo',
+            'preco',
+            'somatoriaAvaliacoes',
+            'quantidadeAvaliacoes',
+            'volumeVendas',
+            'isOferta',
+            'quantidadeNoEstoque',
+            'precoOferta',
+            'importHash',
+            'status',
+          ]), //como se pegasse o data.algo
+          empresaId: currentUser.id,
+          categoriaId: data.categoria || null,
+          tenantId: tenant.id,
+          createdById: currentUser.id,
+          updatedById: currentUser.id,
+        },
+        {
+          transaction,
+        },
+      );
+  
+  
+  
+      await FileRepository.replaceRelationFiles(
+        {
+          belongsTo: options.database.produto.getTableName(),
+          belongsToColumn: 'fotos',
+          belongsToId: record.id,
+        },
+        data.fotos,
+        options,
+      );
+  
+      await this._createAuditLog(
+        AuditLogRepository.CREATE,
+        record,
+        data,
+        options,
+      );
+  
+      return this.findById(record.id, options);
+    }
+    catch (e){
+      console.log(e)
+    }
   }
 
   static async update(id, data, options: IRepositoryOptions) {
@@ -141,7 +148,7 @@ class ProdutoRepository {
           'precoOferta',
           'importHash',
         ]),
-        empresaId: data.empresa || null,
+        empresaId: currentUser.id,
         categoriaId: data.categoria || null,
         updatedById: currentUser.id,
       },
