@@ -29,7 +29,7 @@ export default (app) => {
     require('./pedidoList').default,
   );
   app.get(
-    `/tenant/:tenantId/pedido/:id`,
+    `/tenant/:tenantId/find-pedido/:id`,
     require('./pedidoFind').default,
   );
   app.get(
