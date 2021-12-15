@@ -45,7 +45,7 @@ class ProdutoRepository {
     const transaction = SequelizeRepository.getTransaction(
       options,
     );
-    try{
+    try {
 
       const record = await options.database.produto.create(
         {
@@ -77,9 +77,9 @@ class ProdutoRepository {
           transaction,
         },
       );
-  
-  
-  
+
+
+
       await FileRepository.replaceRelationFiles(
         {
           belongsTo: options.database.produto.getTableName(),
@@ -89,17 +89,17 @@ class ProdutoRepository {
         data.fotos,
         options,
       );
-  
+
       await this._createAuditLog(
         AuditLogRepository.CREATE,
         record,
         data,
         options,
       );
-  
+
       return this.findById(record.id, options);
     }
-    catch (e){
+    catch (e) {
       console.log(e)
     }
   }
@@ -646,14 +646,13 @@ class ProdutoRepository {
 
     let record = await seq.query(
       `SELECT 
-        p.*, f.publicUrl
-        FROM
-            produtos p
-                INNER JOIN
-            files f ON f.belongsToId = p.id
-
-            where p.status = 'aprovado'
-        ORDER BY createdAt DESC;`
+      p.*
+      FROM
+          produtos p
+      WHERE
+          p.status = 'aprovado'
+      GROUP BY p.id
+      ORDER BY p.createdAt DESC;`
       ,
       {
         nest: true,
@@ -831,11 +830,11 @@ class ProdutoRepository {
 
     return record[0].preco;
   }
-  
+
   static async findProdutobyId(id: number) {
 
     let query =
-    `SELECT 
+      `SELECT 
     p.*, f.publicUrl
     FROM
         produtos p
