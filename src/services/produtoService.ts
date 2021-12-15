@@ -53,7 +53,12 @@ export default class ProdutoService {
     );
 
     try {
-      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
+      // data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
+      const userData = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      data.empresaId = userData.id;
+
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
       const record = await ProdutoRepository.update(
@@ -97,6 +102,32 @@ export default class ProdutoService {
           transaction,
         });
       }
+
+      await SequelizeRepository.commitTransaction(
+        transaction,
+      );
+    } catch (error) {
+      await SequelizeRepository.rollbackTransaction(
+        transaction,
+      );
+      throw error;
+    }
+  }
+
+
+  async destroyOne(id) {
+    console.log("id")
+    console.log(id)
+
+    const transaction = await SequelizeRepository.createTransaction(
+      this.options.database,
+    );
+
+    try {
+      await ProdutoRepository.destroy(id, {
+        ...this.options,
+        transaction,
+      });
 
       await SequelizeRepository.commitTransaction(
         transaction,

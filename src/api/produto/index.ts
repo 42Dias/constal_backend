@@ -15,6 +15,10 @@ export default (app) => {
     `/tenant/:tenantId/produto`,
     require('./produtoDestroy').default,
   );
+  app.delete(
+    `/tenant/:tenantId/produtoDeleteOne/:id`,
+    require('./produtoDestroyOne').default,
+  );
   app.get(
     `/tenant/:tenantId/produto/autocomplete`,
     require('./produtoAutocomplete').default,
