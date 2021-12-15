@@ -167,9 +167,22 @@ export default class EmpresaService {
   }
 
   async createOrUpdate(data) {
+    
+    console.log(data)
 
     try {
-      data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options });
+      // data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options });
+      
+      const currentUser = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      
+      data.user = currentUser.id
+
+      console.log("-*-*----*")
+      console.log("data.user")
+      console.log(data.user)
+      console.log("-*-*----*")
 
       const record = await EmpresaRepository.createOrUpdate(data, {
         ...this.options,
