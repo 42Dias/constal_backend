@@ -22,6 +22,11 @@ export default function (sequelize) {
       precoTotal: {
         type: DataTypes.DECIMAL(10, 2),
       },
+      produtoId: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        unique: false
+      },
     },
     {
       timestamps: true,
@@ -36,17 +41,6 @@ export default function (sequelize) {
       as: 'pedido',
       constraints: false,
       through: pedidoProduto,
-    });
-
-    models.pedido.belongsToMany(models.produto, {
-      as: 'produto',
-      constraints: false,
-      unique: false,
-      through: pedidoProduto,
-      scope: {
-        belongsTo: models.produto.getTableName(),
-        belongsToColumn: 'id',
-      }
     });
 
     // Fim
