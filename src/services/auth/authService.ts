@@ -24,12 +24,15 @@ class AuthService {
     invitationToken,
     tenantId,
     role,
+    status,
     options: any = {},
   ) {
     if(role == 1){
       role = 'pessoa'
+      status = 'active'
     }else if(role == 2){
       role = 'empresa'
+      status = 'pendente'
     }
     const transaction = await SequelizeRepository.createTransaction(
       options.database,

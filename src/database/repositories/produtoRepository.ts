@@ -148,8 +148,9 @@ class ProdutoRepository {
           'isOferta',
           'precoOferta',
           'importHash',
+          'status'
         ]),
-        empresaId: currentUser.id,
+        empresaId: data.empresaId || null,
         categoriaId: data.categoria || null,
         updatedById: currentUser.id,
       },
@@ -521,6 +522,11 @@ class ProdutoRepository {
           isOferta: filter.isOferta
         });
       }
+      if (filter.status) {
+        whereAnd.push({
+          status: filter.status
+        });
+      }
 
       if (filter.precoOfertaRange) {
         const [start, end] = filter.precoOfertaRange;
@@ -645,6 +651,8 @@ class ProdutoRepository {
             produtos p
                 INNER JOIN
             files f ON f.belongsToId = p.id
+
+            where p.status = 'aprovado'
         ORDER BY createdAt DESC;`
       ,
       {
