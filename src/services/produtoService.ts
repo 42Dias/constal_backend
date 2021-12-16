@@ -168,6 +168,9 @@ export default class ProdutoService {
   async findProdutobyId(id) {
     return ProdutoRepository.findProdutobyId(id);
   }
+  async listPromocionalImagem() {
+    return ProdutoRepository.listPromocionalImagem();
+  }
 
   async import(data, importHash) {
     if (!importHash) {

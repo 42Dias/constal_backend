@@ -48,4 +48,8 @@ export default (app) => {
     `/produto/:id`,
     require('./produtoFindById').default,
   );
+  app.get(
+    `/produto-imagens-promocionais/`,
+    require('./produtoImagemPromocao').default,
+  );
 };

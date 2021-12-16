@@ -30,6 +30,9 @@ export default function (sequelize) {
       imagemUrl: {
         type: DataTypes.TEXT
       },
+      imagemPromocional: {
+        type: DataTypes.TEXT
+      },
       codigo: {
         type: DataTypes.TEXT,
       },

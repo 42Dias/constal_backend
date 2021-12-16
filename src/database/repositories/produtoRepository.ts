@@ -852,6 +852,26 @@ class ProdutoRepository {
 
     return record;
   }
+
+  static async listPromocionalImagem() {
+
+    let query =
+      'SELECT IFNULL(p.precoOferta, p.preco) AS `preco`' +
+      ` FROM produtos p
+
+        WHERE p.id = ;`;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
+  }
+
 }
 
 
