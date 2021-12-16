@@ -859,10 +859,7 @@ class ProdutoRepository {
   static async listPromocionalImagem() {
 
     let query =
-      'SELECT IFNULL(p.precoOferta, p.preco) AS `preco`' +
-      ` FROM produtos p
-
-        WHERE p.id = ;`;
+      `select distinct * from produtos p where p.imagemPromocional is not null order by promocaoCriacao;`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
