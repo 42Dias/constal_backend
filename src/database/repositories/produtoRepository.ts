@@ -148,7 +148,8 @@ class ProdutoRepository {
           'isOferta',
           'precoOferta',
           'importHash',
-          'status'
+          'status',
+          'imagemPromocional'
         ]),
         empresaId: data.empresaId || null,
         categoriaId: data.categoria || null,
