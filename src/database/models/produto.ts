@@ -59,6 +59,16 @@ export default function (sequelize) {
         allowNull: false,
         defaultValue: false,
       },
+      promocaoEncerramento: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: false,
+      },
+      promocaoCriacao: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: false,
+      },
       precoOferta: {
         type: DataTypes.DECIMAL(10, 2),
       },
