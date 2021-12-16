@@ -30,9 +30,6 @@ export default function (sequelize) {
       imagemUrl: {
         type: DataTypes.TEXT
       },
-      imagemPromocional: {
-        type: DataTypes.TEXT
-      },
       codigo: {
         type: DataTypes.TEXT,
       },
@@ -54,6 +51,9 @@ export default function (sequelize) {
       quantidadeNoEstoque : {
         type: DataTypes.INTEGER,
       },
+      imagemPromocional: {
+        type: DataTypes.TEXT
+      },
       isOferta: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -61,13 +61,11 @@ export default function (sequelize) {
       },
       promocaoEncerramento: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: false,
+
       },
       promocaoCriacao: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: false,
+
       },
       precoOferta: {
         type: DataTypes.DECIMAL(10, 2),
