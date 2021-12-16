@@ -22,7 +22,7 @@ class PedidoProdutoRepository {
           console.log("currentUser")
           console.log(currentUser.id)
           console.log('*-*-**-*-***-*-*-')
-    
+          console.log(data)
     
         const record = await options.database.pedidoProduto.create(//da onde vem esse record
           {
