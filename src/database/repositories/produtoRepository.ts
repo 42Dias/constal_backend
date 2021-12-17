@@ -375,6 +375,12 @@ class ProdutoRepository {
         });
       }
 
+      if (filter.promocaoId) {
+        whereAnd.push({
+          ['promocaoId']: SequelizeFilterUtils.uuid(filter.promocaoId),
+        });
+      }
+
       if (filter.nome) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
