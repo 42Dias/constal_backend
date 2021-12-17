@@ -28,6 +28,7 @@ class CategoriaRepository {
         ...lodash.pick(data, [
           'nome',          
           'importHash',
+          'status'
         ]),
 
         tenantId: tenant.id,
