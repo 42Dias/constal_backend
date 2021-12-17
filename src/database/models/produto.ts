@@ -65,7 +65,9 @@ export default function (sequelize) {
       },
       promocaoCriacao: {
         type: DataTypes.DATE,
-
+      },
+      promocaoId: {
+        type: DataTypes.TEXT,
       },
       precoOferta: {
         type: DataTypes.DECIMAL(10, 2),
