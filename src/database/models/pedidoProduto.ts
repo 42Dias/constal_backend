@@ -25,7 +25,8 @@ export default function (sequelize) {
       produtoId: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
-        unique: false
+        unique: false,
+        primaryKey: false,
       },
     },
     {

@@ -27,4 +27,8 @@ export default (app) => {
     `/tenant/:tenantId/categoria/:id`,
     require('./categoriaFind').default,
   );
+  app.get(
+    `/categoria-aprovados`,
+    require('./categoriaListAprovados').default,
+  );
 };

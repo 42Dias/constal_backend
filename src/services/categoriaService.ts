@@ -122,6 +122,10 @@ export default class CategoriaService {
       this.options,
     );
   }
+  
+  async categoriaListAprovados() {
+    return CategoriaRepository.categoriaListAprovados();
+  }
 
   async import(data, importHash) {
     if (!importHash) {
@@ -156,4 +160,5 @@ export default class CategoriaService {
 
     return count > 0;
   }
+  
 }
