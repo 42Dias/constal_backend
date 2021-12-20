@@ -18,8 +18,15 @@ export default class ProdutoService {
     );
 
     try {
-            
-      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresa, { ...this.options, transaction });
+
+      const userData = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      data.empresa = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
+      console.log("//////////////////////////")
+      console.log("data.empresa")
+      console.log(data.empresa)
+      console.log("//////////////////////////")
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
       const record = await ProdutoRepository.create(data, {
@@ -57,7 +64,7 @@ export default class ProdutoService {
       const userData = SequelizeRepository.getCurrentUser(
         this.options,
       );
-      data.empresaId = userData.id;
+      data.empresaId = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
 
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
