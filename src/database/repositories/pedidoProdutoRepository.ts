@@ -40,9 +40,9 @@ class PedidoProdutoRepository {
             }, 
         );
     
-        await record.setUserId(currentUser.id || null, {
-          transaction,
-        }); 
+        // await record.setUserId(currentUser.id || null, {
+        //   transaction,
+        // }); 
         console.log("+++++++++++++++++++++++++++++++++++++")
         console.log("record")
         console.log(record)
