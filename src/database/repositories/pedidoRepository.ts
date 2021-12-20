@@ -70,8 +70,8 @@ class PedidoRepository {
       data,
       options,
     );
-
-    return this.findById(record.id, options);
+    return record
+    // return this.findById(record.id, options);
   }
 
   static async update(
@@ -773,24 +773,14 @@ class PedidoRepository {
       */
 
     let query =
-    `SELECT 
-     p.id,
-     p.nome AS nomeProduto,
-     p.preco,
-     f.publicUrl,
-     ped.compradorUserId,
-     ped.status,
-     ped.valorTotal
-    FROM
-      pedidos ped
-    INNER JOIN
-        pedidoProdutos pp ON pp.pedidoId = ped.id
-            LEFT JOIN
-        produtos p ON pp.produtoId = p.id
-    INNER JOIN
-      files f ON f.belongsToId = p.id 
-        
-    where pp.compradorUserId = "${currentUser.id}"`;
+    `select 
+      p.* ,
+      ped.status,
+      pp.precoTotal
+      from pedidoProdutos pp
+        inner join produtos p  on pp.produtoId = p.id
+          inner join pedidos ped on pp.pedidoId = ped.id
+          where pp.compradorUserId = '${currentUser.id}'`;
     
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,

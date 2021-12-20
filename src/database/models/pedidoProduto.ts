@@ -23,15 +23,30 @@ export default function (sequelize) {
         type: DataTypes.DECIMAL(10, 2),
       },
       produtoId: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: false,
+        primaryKey: false,
+      },
+      compradorUserId: {
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: false,
         primaryKey: false,
       },
     },
     {
+      indexes: [
+        {
+          unique: false,
+          fields: ['createdAt', 'compradorUserId'],
+          where: {
+            deletedAt: null,
+          },
+        },
+      ],
       timestamps: true,
-      paranoid: false,
+      paranoid: true,
     },
   );
 
@@ -41,6 +56,7 @@ export default function (sequelize) {
     models.produto.belongsToMany(models.pedido, {
       as: 'pedido',
       constraints: false,
+      unique: false,
       through: pedidoProduto,
     });
 

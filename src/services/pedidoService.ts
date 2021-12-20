@@ -75,6 +75,10 @@ export default class PedidoService {
         ...this.options,
       });
 
+      console.log("*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-**")
+      console.log("pedido")
+      console.log(pedido) 
+      console.log("*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-**")
 
       data.produtos.forEach(
          async e => {
