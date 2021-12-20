@@ -15,6 +15,10 @@ export default (app) => {
     `/tenant/:tenantId/empresa/:id`,
     require('./empresaUpdate').default,
   );
+  app.put(
+    `/tenant/:tenantId/empresaStatusUpdate/:id`,
+    require('./empresaStatusUpdate').default,
+  );
   app.post(
     `/tenant/:tenantId/empresa/import`,
     require('./empresaImport').default,
@@ -30,6 +34,10 @@ export default (app) => {
   app.get(
     `/tenant/:tenantId/empresa`,
     require('./empresaList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/empresaStatus`,
+    require('./empresaStatus').default,
   );
   app.get(
     `/tenant/:tenantId/empresa/:id`,

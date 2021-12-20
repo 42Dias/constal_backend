@@ -3,9 +3,11 @@ import AuditLogRepository from '../../database/repositories/auditLogRepository';
 import lodash from 'lodash';
 import SequelizeFilterUtils from '../../database/utils/sequelizeFilterUtils';
 import Error404 from '../../errors/Error404';
-import Sequelize from 'sequelize'; import UserRepository from './userRepository';
+import Sequelize, { QueryTypes } from 'sequelize'; import UserRepository from './userRepository';
 import FileRepository from './fileRepository';
 import { IRepositoryOptions } from './IRepositoryOptions';
+import { getConfig } from '../../config';
+import highlight from 'cli-highlight';
 
 const Op = Sequelize.Op;
 
@@ -89,7 +91,57 @@ class EmpresaRepository {
 
     return record
   }
+  static async empresaStatusUpdate(id, data) {
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
 
+    );
+    let rows = await seq.query(
+      `
+      UPDATE tenantUsers tu
+      SET tu.status = '${data.status}'
+      WHERE tu.id = '${id}';
+      `
+    );
+    let rows2 = await seq.query(
+      `SELECT 
+      e. *, tu.status, tu.id as tId
+      FROM
+          empresas e
+              LEFT JOIN
+          users u ON e.userId = u.id
+              LEFT JOIN
+          tenantUsers tu ON u.id = tu.userId
+      WHERE
+          tu.id = '${id}'
+      `
+      ,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    let count = rows2.length;
+    console.log(rows)
+    
+    return { rows2, count };
+  }
   static async update(id, data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
@@ -401,7 +453,61 @@ class EmpresaRepository {
       },
     );
   }
+  static async empresaStatus({ filter, limit = 0, offset = 0, orderBy = '' },
+  options: IRepositoryOptions,) 
+  {
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
 
+    );
+    var where = '';
+    if(filter.status != 'Todas'){
+      where = `AND tu.status = '${filter.status}'`
+    }
+    if(filter.id){
+      where = where+`and e.id = '${filter.id}'`
+    }
+    let rows = await seq.query(
+      `SELECT 
+      e. *, tu.status, tu.id as tId
+      FROM
+          empresas e
+              LEFT JOIN
+          users u ON e.userId = u.id
+              LEFT JOIN
+          tenantUsers tu ON u.id = tu.userId
+      WHERE
+          tu.roles LIKE '%empresa%'
+          ${where}
+      `
+      ,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    let count = rows.length;
+    console.log(rows)
+    
+    return { rows, count };
+  }
   static async findAndCountAll(
     { filter, limit = 0, offset = 0, orderBy = '' },
     options: IRepositoryOptions,
