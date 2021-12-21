@@ -55,10 +55,22 @@ class PagamentoRepository {
     if (!pessoa) {
       throw new Error404();
     }
+    console.log(data)
+    console.log("-------------------------------")
+    console.log("pessoa")
+    console.log(pessoa)
+    console.log("-------------------------------")
 
-    pessoa.cep = pessoa.cep.replace(/\.|-/g, '');
-    pessoa.cpf = pessoa.cpf.replace(/\.|-/g, '');
-    pessoa.celular = pessoa.celular.replace(/\+|\(|\)| |-/g, '');
+
+    if(pessoa.cpf){
+      pessoa.cpf = pessoa.cpf.replace(/\.|-/g, '');
+    }
+    if(pessoa.cep){
+      pessoa.cep = pessoa.cep.replace(/\.|-/g, '');
+    }
+    if(pessoa.celular){
+      pessoa.celular = pessoa.celular.replace(/\+|\(|\)| |-/g, '');
+    }
 
     let dataVencimento = new Date();
     dataVencimento.setDate(dataVencimento.getDate() + 3);

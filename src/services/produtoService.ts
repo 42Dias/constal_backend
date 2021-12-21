@@ -18,6 +18,12 @@ export default class ProdutoService {
     );
 
     try {
+      /*
+      Quando for dar o get no produto deve-se ser passada o id da empresa
+      onde ele é passado?
+      localStorage?
+      
+      */
 
       const userData = SequelizeRepository.getCurrentUser(
         this.options,
@@ -60,11 +66,11 @@ export default class ProdutoService {
     );
 
     try {
-      // data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
-      const userData = SequelizeRepository.getCurrentUser(
-        this.options,
-      );
-      data.empresaId = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
+      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
+      // const userData = SequelizeRepository.getCurrentUser(
+      //   this.options,
+      // );
+      // data.empresaId = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
 
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
