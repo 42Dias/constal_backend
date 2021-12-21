@@ -11,10 +11,42 @@ import { IRepositoryOptions } from './IRepositoryOptions';
 import SequelizeArrayUtils from '../utils/sequelizeArrayUtils';
 import lodash from 'lodash';
 import highlight from 'cli-highlight';
+import Error400 from '../../errors/Error400';
 
 const Op = Sequelize.Op;
 
 export default class UserRepository {
+
+  static async userVerificarEmail(id) {
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
+
+    );
+    let rows = await seq.query(
+      `
+      UPDATE users u
+      SET u.emailVerified = true
+      WHERE u.id = '${id}';
+      `
+    );
+  }
   static async create(data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
@@ -1088,5 +1120,47 @@ export default class UserRepository {
   });
 
   return record;
+  }
+
+  static sendVerificationUpdateToken (
+    id,
+    token,
+    options: IRepositoryOptions,
+  ) {
+    let record = options.database.user.update(
+      {
+        token: token,
+      },
+      {
+        where: {
+          id: id,
+        },
+      },
+    )
+  }
+
+  static async generateRecuperarSenhaToken (
+    id,
+    token,
+    options: IRepositoryOptions,
+  ) {
+    const hash = SequelizeFilterUtils.uuid(id)
+
+    let record = await options.database.user.update(
+      {
+        passwordResetToken: hash,
+      },
+      {
+        where: {
+          id: id
+        },
+      },
+    )
+
+    if (record == 1) {
+      return hash
+    } else {
+      throw new Error400()
+    }
   }
 }

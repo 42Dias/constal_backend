@@ -7,6 +7,10 @@ export default (app) => {
     `/tenant/:tenantId/produto/:id`,
     require('./produtoUpdate').default,
   );
+  app.put(
+    `/tenant/:tenantId/produtoStatusUpdate/:id`,
+    require('./produtoStatusUpdate').default,
+  );
   app.post(
     `/tenant/:tenantId/produto/import`,
     require('./produtoImport').default,
@@ -35,6 +39,10 @@ export default (app) => {
   app.get(
     `/produtos`,
     require('./produtoListWithoutLogin').default,
+  );
+  app.get(
+    `/produtosTrue`,
+    require('./produtoListWithoutLoginTrue').default,
   );
   app.get(
     `/limit-produtos`,
