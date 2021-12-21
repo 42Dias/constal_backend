@@ -30,6 +30,7 @@ export default function (sequelize) {
 
     models.pagamento.belongsTo(models.pedido, {
       as: 'pedido',
+      foreignKey: true,
     });
 
   };

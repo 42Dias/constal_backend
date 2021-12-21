@@ -113,6 +113,9 @@ export default class PedidoService {
 
     try {
       const pedido = await PedidoRepository.findById(id, this.options);
+      /*
+      deveria ter o campo de forma de pagamento
+      */
       let fatura = await PagamentoRepository.create(pedido, {
         ... this.options
       });

@@ -18,8 +18,21 @@ export default class ProdutoService {
     );
 
     try {
-            
-      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresa, { ...this.options, transaction });
+      /*
+      Quando for dar o get no produto deve-se ser passada o id da empresa
+      onde ele é passado?
+      localStorage?
+      
+      */
+
+      const userData = SequelizeRepository.getCurrentUser(
+        this.options,
+      );
+      data.empresa = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
+      console.log("//////////////////////////")
+      console.log("data.empresa")
+      console.log(data.empresa)
+      console.log("//////////////////////////")
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
       const record = await ProdutoRepository.create(data, {
@@ -55,11 +68,11 @@ export default class ProdutoService {
     );
 
     try {
-      // data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
-      const userData = SequelizeRepository.getCurrentUser(
-        this.options,
-      );
-      data.empresaId = userData.id;
+      data.empresa = await EmpresaRepository.filterIdInTenant(data.empresaId, { ...this.options, transaction });
+      // const userData = SequelizeRepository.getCurrentUser(
+      //   this.options,
+      // );
+      // data.empresaId = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
 
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 

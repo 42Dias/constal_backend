@@ -47,6 +47,11 @@ class ProdutoRepository {
     );
     try {
 
+      console.log("//////////////////////////")
+      console.log("data.empresa")
+      console.log(data.empresa)
+      console.log("//////////////////////////")
+
       const record = await options.database.produto.create(
         {
           ...lodash.pick(data, [
@@ -67,7 +72,7 @@ class ProdutoRepository {
             'status',
             'imagemUrl'
           ]), //como se pegasse o data.algo
-          empresaId: currentUser.id,
+          empresaId: data.empresa.id,
           categoriaId: data.categoria || null,
           tenantId: tenant.id,
           createdById: currentUser.id,

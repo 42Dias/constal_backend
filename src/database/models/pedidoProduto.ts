@@ -23,15 +23,17 @@ export default function (sequelize) {
         type: DataTypes.DECIMAL(10, 2),
       },
       produtoId: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: false,
         primaryKey: false,
+        foreignKey: true,
       },
       compradorUserId: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: false,
+        foreignKey: false,
         primaryKey: false,
       },
     },
@@ -39,7 +41,7 @@ export default function (sequelize) {
       indexes: [
         {
           unique: false,
-          fields: ['createdAt', 'compradorUserId'],
+          fields: ['produtoId'],
           where: {
             deletedAt: null,
           },
