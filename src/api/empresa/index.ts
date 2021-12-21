@@ -43,4 +43,8 @@ export default (app) => {
     `/tenant/:tenantId/empresa/:id`,
     require('./empresaFind').default,
   );
+  app.get(
+    `/tenant/:tenantId/empresaUser/:id`,
+    require('./empresaFindByUser').default,
+  );
 };
