@@ -106,9 +106,9 @@ export default class PermissionChecker {
     }
 
     const tenant = this.currentUser.tenants
-      .filter(
+      /*.filter(
         (tenantUser) => tenantUser.status === 'active',
-      )
+      )*/
       .find((tenantUser) => {
         return (
           tenantUser.tenant.id === this.currentTenant.id
