@@ -158,6 +158,11 @@ export default function (sequelize, DataTypes) {
       as: 'updatedBy',
     });
 
+
+    // models.user.belongsTo(models.comentarios, {
+    //   as: 'user',
+    // });
+
   };
 
   user.beforeCreate((user, options) => {
