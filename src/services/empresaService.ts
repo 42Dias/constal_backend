@@ -3,6 +3,9 @@ import SequelizeRepository from '../database/repositories/sequelizeRepository';
 import { IServiceOptions } from './IServiceOptions';
 import EmpresaRepository from '../database/repositories/empresaRepository';
 import UserRepository from '../database/repositories/userRepository';
+import highlight from 'cli-highlight';
+import { Sequelize, QueryTypes } from 'sequelize/types';
+import { getConfig } from '../config';
 
 export default class EmpresaService {
   options: IServiceOptions;
@@ -84,6 +87,12 @@ export default class EmpresaService {
       throw error;
     }
   }
+  async empresaStatusUpdate(id, data) {
+    await EmpresaRepository.empresaStatusUpdate(
+      id,
+      data
+    );
+  }
 
   async destroyAll(ids) {
     const transaction = await SequelizeRepository.createTransaction(
@@ -131,7 +140,12 @@ export default class EmpresaService {
       this.options,
     );
   }
-
+  async empresaStatus(args) {
+    return EmpresaRepository.empresaStatus(
+      args,
+      this.options,
+    );
+  }
   async import(data, importHash) {
     if (!importHash) {
       throw new Error400(
