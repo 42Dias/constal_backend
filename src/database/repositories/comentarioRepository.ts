@@ -127,19 +127,18 @@ class ComentarioRepository {
     let rows = await seq.query(
       `
       UPDATE comentarios c
-      SET c.isRespondido = '${data.isRespondido}'
-      SET c.status = '${data.status}'
-      SET c.isDenunciado = '${data.isDenunciado}'
-      SET c.comentario = '${data.comentario}'
-      SET c.resposta = '${data.resposta}'
-      WHERE tu.id = '${id}';
+      SET c.isRespondido = '${data.isRespondido}',
+      c.isDenunciado = '${data.isDenunciado}',
+      c.comentario = '${data.comentario}',
+      c.resposta = '${data.resposta}'
+      WHERE c.id = '${id}';
       `
     );
     let rows2 = await seq.query(
       `SELECT 
-      * from comentarios
+      * from comentarios c
       WHERE
-          tu.id = '${id}'
+          c.id = '${id}'
       `
       ,
       {
@@ -208,6 +207,30 @@ class ComentarioRepository {
        inner JOIN
     users u ON u.id = c.userId 
         where c.produtoId = '${id}';`;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
+    
+  }
+
+  static async findByEmpresa(id) {
+    let query =
+      `SELECT 
+      c.*,
+      u.fullName,
+      u.firstName
+      FROM
+      comentarios c
+       inner JOIN
+    users u ON u.id = c.userId 
+        where c.fornecedorEmpresaId = '${id}';`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
