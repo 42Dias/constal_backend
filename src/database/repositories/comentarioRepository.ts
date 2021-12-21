@@ -37,7 +37,6 @@ class ComentarioRepository {
   static async create(data, options: IRepositoryOptions) {
     const currentUser =
       SequelizeRepository.getCurrentUser(options);
-
     const tenant =
       SequelizeRepository.getCurrentTenant(options);
 
@@ -46,13 +45,16 @@ class ComentarioRepository {
         'comentario',
         'resposta',
         'produtoId',
+        'fornecedorEmpresaId',
+        'userId'
       ]),
       dataComentario: new Date(),
       compradorUserId: currentUser.id || null,
-      fornecedorEmpresaId: data.fornecedorEmpresa || null,
       tenantId: tenant.id,
       createdById: currentUser.id,
       updatedById: currentUser.id,
+      fornecedorEmpresaId: data.fornecedorEmpresaId,
+      userId: data.userId,
     });
 
     await this._createAuditLog(
@@ -61,6 +63,7 @@ class ComentarioRepository {
       data,
       options,
     );
+    console.log(record)
     return record
     // return this.findById(record.id, options);
   }
@@ -69,37 +72,84 @@ class ComentarioRepository {
     id,
     data,
     options: IRepositoryOptions,
-  ) {
-    const currentUser =
-      SequelizeRepository.getCurrentUser(options);
+   ) {
+  //   const currentUser =
+  //     SequelizeRepository.getCurrentUser(options);
 
-    const currentTenant =
-      SequelizeRepository.getCurrentTenant(options);
+  //   const currentTenant =
+  //     SequelizeRepository.getCurrentTenant(options);
 
-    let record = await options.database.comentarios.findOne({
-      where: {
-        id,
-        tenantId: currentTenant.id,
+  //   let record = await options.database.comentarios.findOne({
+  //     where: {
+  //       id,
+  //       tenantId: currentTenant.id,
+  //     },
+  //   });
+
+  //   if (!record) {
+  //     throw new Error404();
+  //   }
+
+  //   record = await record.update({
+  //     status: data.status,
+  //     updatedById: currentUser.id,
+  //   });
+
+  //   await this._createAuditLog(
+  //     AuditLogRepository.UPDATE,
+  //     record,
+  //     data,
+  //     options,
+  //   );
+
+  //   return this.findById(record.id, options);
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
       },
-    });
 
-    if (!record) {
-      throw new Error404();
-    }
-
-    record = await record.update({
-      status: data.status,
-      updatedById: currentUser.id,
-    });
-
-    await this._createAuditLog(
-      AuditLogRepository.UPDATE,
-      record,
-      data,
-      options,
     );
-
-    return this.findById(record.id, options);
+    let rows = await seq.query(
+      `
+      UPDATE comentarios c
+      SET c.isRespondido = '${data.isRespondido}'
+      SET c.status = '${data.status}'
+      SET c.isDenunciado = '${data.isDenunciado}'
+      SET c.comentario = '${data.comentario}'
+      SET c.resposta = '${data.resposta}'
+      WHERE tu.id = '${id}';
+      `
+    );
+    let rows2 = await seq.query(
+      `SELECT 
+      * from comentarios
+      WHERE
+          tu.id = '${id}'
+      `
+      ,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    let count = rows2.length;
+    console.log(rows)
+    
+    return { rows2, count };
   }
 
   static async destroy(id, options: IRepositoryOptions) {
@@ -128,69 +178,47 @@ class ComentarioRepository {
   }
 
   static async findById(id, options: IRepositoryOptions) {
-    //id = '08d42fa0-916f-4e59-89f6-c5f4d9e5f9e8'
-    let queryComentario =
+    let query =
       `SELECT 
-          p.id AS 'id',
-          p.codigo AS 'codigo',
-          p.quantidadeProdutos AS 'quantidadeProdutos',
-          p.formaPagamento 'formaPagamento',
-          p.valorTotal AS 'valorTotal',
-          p.valorFrete AS 'valorFrete',
-          p.dataPedido AS 'dataPedido',
-          p.dataProcessamento AS 'dataProcessamento',
-          p.dataEnvio AS 'dataEnvio',
-          p.dataEntrega AS 'dataEntrega',
-          p.dataFaturamento AS 'dataFaturamento',
-          p.status AS 'status',
-          p.compradorUserId AS 'compradorUserId',
-          e.id AS 'empresa.id',
-          e.razaoSocial AS 'empresa.razaoSocial',
-          e.cnpj AS 'empresa.cnpj',
-          pf.*
-      FROM
-          pedidos p
-              LEFT JOIN
-          empresas e ON p.fornecedorEmpresaId = e.id
-              LEFT JOIN
-          pessoaFisicas pf ON p.compradorUserId = pf.userId
-      WHERE
-          p.id = '${id}'`;
+        *
+        FROM
+        comentarios
 
-    let record = await seq.query(queryComentario, {
-      nest: true,
+        where id = '${id}';`;
+
+    let record = await seq.query(query, {
       type: QueryTypes.SELECT,
     });
 
-    if (record.length == 0) {
+    if (!record) {
       throw new Error404();
     }
 
-    record = record[0];
+    return record;
+  }
+  
+  static async findByProduto(id) {
+    let query =
+      `SELECT 
+      c.*,
+      u.fullName,
+      u.firstName
+      FROM
+      comentarios c
+       inner JOIN
+    users u ON u.id = c.userId 
+        where c.produtoId = '${id}';`;
 
-    record.produtos = new Array();
-
-    let queryProdutos = `
-    SELECT pp.id, pp.quantidade, pp.produtoId, pp.precoUnitario, pp.precoTotal, p.nome
-     FROM pedidoProdutos pp
-     
-     LEFT JOIN produtos p
-     ON pp.produtoId = p.id
-
-     WHERE pp.pedidoId = '${id}';`;
-
-    let produtos = await seq.query(queryProdutos, {
+    let record = await seq.query(query, {
       type: QueryTypes.SELECT,
     });
-    var total = 0.00
-    produtos.forEach((e) => {
-      console.log(e.precoTotal);
-      total += parseFloat(e.precoTotal);
-      console.log(total);
-      record.produtos.push(e);
-    });
-    record.valorTotal = total.toFixed(2)
+
+    if (!record) {
+      throw new Error404();
+    }
+
     return record;
+    
   }
 
   static async filterIdInTenant(
