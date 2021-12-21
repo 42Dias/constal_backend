@@ -11,7 +11,7 @@ export default async (req, res, next) => {
       Permissions.values.pedidoRead,
     );
 
-    const payload = await new PedidoService(req).findById(
+    const payload = await new comentarioService(req).findById(
       req.params.id,
     );
 
