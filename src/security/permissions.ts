@@ -451,9 +451,6 @@ class Permissions {
         id: 'categoriaDestroy',
         allowedRoles: [roles.admin, roles.empresa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
-        allowedStorage: [
-
-        ],
       },
       categoriaRead: {
         id: 'categoriaRead',
@@ -464,7 +461,28 @@ class Permissions {
         id: 'categoriaAutocomplete',
         allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
-      },      
+      },
+      
+      comentarioCreate: {
+        id: 'comentarioCreate',
+        allowedRoles: [roles.admin, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      comentarioEdit: {
+        id: 'comentarioEdit',
+        allowedRoles: [roles.admin, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      comentarioDestroy: {
+        id: 'comentarioDestroy',
+        allowedRoles: [roles.admin, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      comentarioRead: {
+        id: 'comentarioRead',
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
     };
   }
 
