@@ -16,6 +16,7 @@ export default async (req, res, next) => {
       console.log(req.currentUser)
       // req.query.filter.empresa = req.empresa.id //adiciona o filtro de empresa
       req.query.filter.empresa = req.currentUser.id //adiciona o filtro de empresa
+      
     }
 
     const payload = await new ProdutoService(
