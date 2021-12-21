@@ -11,7 +11,7 @@ export default async (req, res, next) => {
 
     const payload = await new comentarioService(req).update(
       req.params.id,
-      req.body.data,
+      req.body,
     );
 
     console.log(payload)
