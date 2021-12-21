@@ -20,6 +20,11 @@ export default (app) => {
     `/tenant/:tenantId/findByProduto/:id`,
     require('./comentarioListByProduto').default,
   );
+
+  app.get(
+    `/tenant/:tenantId/findByEmpresa/:id`,
+    require('./comentarioByEmpresa').default,
+  );
   // app.post(
   //   `/tenant/:tenantId/comentario`,
   //   require('./comentarioFindByProduto').default,
