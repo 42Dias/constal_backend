@@ -12,7 +12,7 @@ export default async (req, res, next) => {
     );
 
     const payload = await new comentarioService(req).create(
-      req.body,
+      req.body.data,
     );
 
     await ApiResponseHandler.success(req, res, payload);
