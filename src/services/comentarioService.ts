@@ -45,10 +45,8 @@ export default class PedidoService {
   async update(id, data) {
 
     try {
-      data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options });
-      data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
-      data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options });
-
+      console.log(data)
+      console.log(id)
       const record = await ComentarioRepository.update(
         id,
         data,
@@ -76,6 +74,10 @@ export default class PedidoService {
 
   async findByProduto(id) {
     return ComentarioRepository.findByProduto(id);
+  }
+
+  async findByEmpresa(id) {
+    return ComentarioRepository.findByEmpresa(id);
   }
 
 
