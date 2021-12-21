@@ -16,14 +16,12 @@ export default class PedidoService {
 
   async create(data) {
     try {
-      data.fornecedorEmpresa = data.fornecedorId;
-
       const currentUser = SequelizeRepository.getCurrentUser(
         this.options,
       );
       data.compradorUserId = currentUser.id
       
-
+      console.log(data)
       
 
       const comentario = await ComentarioRepository.create(data, {
@@ -47,7 +45,7 @@ export default class PedidoService {
   async update(id, data) {
 
     try {
-      data.compradorUser = await UserRepository.filterIdInTenant(data.compradorUser, { ...this.options });
+      data.userId = await UserRepository.filterIdInTenant(data.userId, { ...this.options });
       data.fornecedorEmpresa = await EmpresaRepository.filterIdInTenant(data.fornecedorEmpresa, { ...this.options });
       data.produto = await ProdutoRepository.filterIdsInTenant(data.produto, { ...this.options });
 
@@ -72,8 +70,12 @@ export default class PedidoService {
     }
   }
 
-  async findByProduto(id) {
+  async findById(id) {
     return ComentarioRepository.findById(id, this.options);
+  }
+
+  async findByProduto(id) {
+    return ComentarioRepository.findByProduto(id);
   }
 
 
