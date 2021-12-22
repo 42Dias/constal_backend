@@ -55,11 +55,6 @@ class PagamentoRepository {
     if (!pessoa) {
       throw new Error404();
     }
-    console.log(data)
-    console.log("-------------------------------")
-    console.log("pessoa")
-    console.log(pessoa)
-    console.log("-------------------------------")
 
 
     if(pessoa.cpf){
@@ -164,7 +159,7 @@ class PagamentoRepository {
     return record;
   }
 
-  /* static async update(id, data, options: IRepositoryOptions) {
+   static async update(id, data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
@@ -735,7 +730,7 @@ class PagamentoRepository {
     output.produto = await record.getProduto();
  
     return output;
-  } */
+  } 
 
 }
 
