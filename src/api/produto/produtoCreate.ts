@@ -10,8 +10,8 @@ export default async (req, res, next) => {
     );
 
     if (req.currentUser.tenants[0].roles[0] == 'empresa') {
-      // req.body.data.empresa = req.currentUser.id
-      req.body.data.empresa = req.empresa.id
+      req.body.data.empresa = req.empresa.dataValues.id
+      // req.body.data.empresa = req.empresa.id
     }
 
     const payload = await new ProdutoService(req).create(
