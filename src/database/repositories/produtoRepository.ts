@@ -8,6 +8,9 @@ import { IRepositoryOptions } from './IRepositoryOptions';
 import { getConfig } from '../../config';
 import highlight from 'cli-highlight';
 
+
+
+
 const Op = Sequelize.Op;
 
 let seq = new (<any>Sequelize)(
@@ -940,6 +943,82 @@ class ProdutoRepository {
     }
 
     return record;
+  }
+  static async updateAllDatabaseOfPagementos(){
+    
+    const sdk = require('api')('@iugu-dev/v1.0#d6ie79kw6g1afm');
+
+
+    let query =
+      `SELECT
+      *
+      FROM 
+      pagamentos`;
+
+      let record = await seq.query(query, {
+        type: QueryTypes.SELECT,
+      });
+
+    if (!record) {
+      throw new Error404();
+    }
+    
+    //Token Usado na Fatura
+    const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
+    // const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
+
+
+
+    const pagamentos = await record
+
+    pagamentos.map(
+      (pagamento => {
+
+        
+
+        const axios = require("axios").default;
+
+
+        const options = {
+        
+          method: 'GET',
+        
+          url: `https://api.iugu.com/v1/invoices/${pagamento.idIugu}?api_token=${API_TOKEN}`,
+        
+          headers: {Accept: 'application/json'}
+        
+        };
+        
+        
+        axios.request(options).then(async function (response) {
+        
+
+        
+
+            if(response.data.status == 'paid'){
+
+              let rows = await seq.query(
+                `
+                UPDATE pagamentos p
+                SET p.status = 'pago'
+                WHERE p.idIugu = '${response.data.id}';
+                `
+              );
+              console.log(rows)
+            }
+        })
+        .catch(function (error) {
+        
+          console.error(error);
+        
+        });
+
+
+      }
+      )
+      )
+      return 
+    // return record;
   }
 }
 
