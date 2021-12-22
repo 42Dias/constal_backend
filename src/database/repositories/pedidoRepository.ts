@@ -208,10 +208,7 @@ class PedidoRepository {
     });
     var total = 0.00
     produtos.forEach((e) => {
-      console.log(e.precoTotal);
       total += parseFloat(e.precoTotal);
-      console.log(total);
-      record.produtos.push(e);
     });
     record.valorTotal = total.toFixed(2)
     return record;
@@ -786,7 +783,7 @@ class PedidoRepository {
       type: QueryTypes.SELECT,
     });
 
-    console.log(record)
+
 
 
 

@@ -1020,6 +1020,47 @@ class ProdutoRepository {
       return 
     // return record;
   }
+  static async updateAllIsOferta(){
+    let nowDate = new Date();
+    console.log(nowDate)
+    let query =
+    `SELECT
+    *
+    FROM 
+    produtos`;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    record.map(
+      async (produtos) =>{
+        if(produtos.isOferta){
+          console.log(
+            nowDate >= produtos.promocaoEncerramento
+          )
+          if(nowDate >= produtos.promocaoEncerramento){
+            let rows = await seq.query(
+              `
+              UPDATE produtos p
+              SET p.isOferta = 0,
+              p.imagemPromocional = null,
+              p.promocaoEncerramento = null,
+              p.promocaoCriacao = null,
+              p.promocaoId = null
+              
+              WHERE p.id = '${produtos.id}';
+              `
+            );
+            console.log(rows)
+   
+          }
+        }
+      }
+    )
+
+
+  }
 }
 
 

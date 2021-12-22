@@ -223,4 +223,10 @@ export default class ProdutoService {
 
     return count > 0;
   }
+  async updateAllDatabaseOfPagementos(){
+    return ProdutoRepository.updateAllDatabaseOfPagementos();
+  }
+  async updateAllIsOferta(){
+    return ProdutoRepository.updateAllIsOferta();
+  }
 }
