@@ -85,6 +85,7 @@ require('./carrinho').default(routes);
 require('./categoria').default(routes);
 require('./carrinhoProduto').default(routes);
 require('./pedidoProduto').default(routes);
+require('./smtp').default(routes);
 require('./comentario').default(routes);
 
 

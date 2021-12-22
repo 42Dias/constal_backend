@@ -5,13 +5,13 @@ import Permissions from '../../security/permissions';
 
 export default async (req, res) => {
   try {
-    new PermissionChecker(req).validateHas(
+    /*new PermissionChecker(req).validateHas(
       Permissions.values.userEdit,
-    );
+    );*/
 
     let editor = new UserEditor(req);
 
-    await editor.userVerificarEmail(req.body.data);
+    await editor.userVerificarEmail(req.params.id);
 
     const payload = true;
 

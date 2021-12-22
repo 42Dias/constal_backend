@@ -59,7 +59,9 @@ export default class ProdutoService {
       throw error;
     }
   }
-
+  async produtoUpdateStatus(id, data) {
+    await ProdutoRepository.produtoUpdateStatus(id, data);
+  }
   async update(id, data) {
     const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
@@ -174,6 +176,9 @@ export default class ProdutoService {
 
   async findAllWithoutLogin() {
     return ProdutoRepository.findAllWithoutLogin();
+  }
+  async findAllWithoutLoginTrue() {
+    return ProdutoRepository.findAllWithoutLoginTrue();
   }
   async findLimitedWithoutLogin() {
     return ProdutoRepository.findLimitedWithoutLogin();

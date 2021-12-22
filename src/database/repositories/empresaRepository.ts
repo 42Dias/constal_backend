@@ -478,7 +478,9 @@ class EmpresaRepository {
 
     );
     var where = '';
-    if(filter.status != 'Todas'){
+    if(filter.status == 'Todas'){
+      where = `AND tu.status != 'pendente'`
+    }else{
       where = `AND tu.status = '${filter.status}'`
     }
     if(filter.id){

@@ -8,6 +8,10 @@ export default (app) => {
     require('./userEdit').default,
   );
   app.post(
+    `/tenant/:tenantId/userVerificarEmail/:id`,
+    require('./userVerificarEmail').default,
+  );
+  app.post(
     `/tenant/:tenantId/user/import`,
     require('./userImport').default,
   );

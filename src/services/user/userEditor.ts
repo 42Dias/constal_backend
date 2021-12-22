@@ -20,6 +20,9 @@ export default class UserEditor {
     this.options = options;
   }
 
+  async userVerificarEmail(id){
+    await UserRepository.userVerificarEmail(id);
+  }
   /**
    * Updates a user via the User page.
    */

@@ -1,19 +1,15 @@
-import UserEditor from '../../services/user/userEditor';
 import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
+import ProdutoService from '../../services/produtoService';
 
-export default async (req, res) => {
+export default async (req, res, next) => {
   try {
-    new PermissionChecker(req).validateHas(
-      Permissions.values.userEdit,
-    );
+   
 
-    let editor = new UserEditor(req);
-
-    await editor.userVerificarEmail(req.body.data);
-
-    const payload = true;
+    const payload = await new ProdutoService(
+      req,
+    ).findAllWithoutLoginTrue();
 
     await ApiResponseHandler.success(req, res, payload);
   } catch (error) {
