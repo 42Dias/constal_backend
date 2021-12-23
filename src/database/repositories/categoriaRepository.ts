@@ -451,7 +451,27 @@ class CategoriaRepository {
   static async categoriaListAprovados() {
 
     let query =
-      `select distinct * from produtos p where p.imagemPromocional is not null order by promocaoCriacao;`;
+      `
+      select c.nome, c.id from categoria c where c.status = 'aprovado';
+      `;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
+  }
+  static async categoriaFindByName(id) {
+
+    let query =
+      `
+      SELECT c.id, c.nome FROM categoria c WHERE c.nome like '%${id}%' AND status = 'aprovado';
+
+      `;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
