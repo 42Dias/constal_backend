@@ -62,6 +62,11 @@ class PagamentoRepository {
     if (!pessoa) {
       throw new Error404();
     }
+    console.log("--------------------")
+    console.log("data")
+    console.log(data)
+    console.log("--------------------")
+
 
 
     if(pessoa.cpf){
