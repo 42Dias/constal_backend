@@ -30,6 +30,13 @@ let seq = new (<any>Sequelize)(
         : false,
   },
 );
+/*
+
+https://dev.iugu.com/docs/marketplace
+
+*/
+const moderadorIdIugu = 'B4CE264C2A374693B3E3E1F8E72D40E6'
+
 
 const { QueryTypes } = require('sequelize');
 
@@ -128,6 +135,17 @@ class PagamentoRepository {
           cpf_cnpj: pessoa.cpf,
           email: pessoa.email
         },
+        ensure_workday_due_date: false,
+
+        // splits: [{
+        //   percent: 5,
+        //   bank_slip_percent: 5,
+        //   credit_card_percent: 5,
+        //   pix_percent: 5,
+        //   permit_aggregated: true,
+        //   recipient_account_id: moderadorIdIugu
+        // }],
+
         email: pessoa.email,
         due_date: dataVencimento
       })

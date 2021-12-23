@@ -43,10 +43,6 @@ class PedidoProdutoRepository {
         // await record.setUserId(currentUser.id || null, {
         //   transaction,
         // }); 
-        console.log("+++++++++++++++++++++++++++++++++++++")
-        console.log("record")
-        console.log(record)
-        console.log("+++++++++++++++++++++++++++++++++++++")
     
         //Erro de validação associação
         await this._createAuditLog(

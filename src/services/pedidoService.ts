@@ -80,7 +80,7 @@ export default class PedidoService {
       console.log(pedido) 
       console.log("*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-**")
 
-      data.produtos.forEach(
+      await data.produtos.forEach(
          async e => {
           console.log(e)
           e.precoUnitario = await ProdutoRepository.findPrecoById(e.produto.id);
@@ -88,14 +88,14 @@ export default class PedidoService {
   
           await PedidoProdutoRepository.create(pedido.id, e, {
             ...this.options,
-          
-        });
+                  });
 
       });
 
-      
+      console.log("data.produtos")
+      console.log(data.produtos)
 
-      return pedido;
+      return await pedido;
 
     } catch (error) {
 

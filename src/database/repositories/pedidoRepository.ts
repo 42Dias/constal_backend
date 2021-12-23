@@ -195,17 +195,20 @@ class PedidoRepository {
 
     record.produtos = new Array();
 
-    let queryProdutos = `SELECT pp.id, pp.quantidade, pp.produtoId, pp.precoUnitario, pp.precoTotal, p.nome
-     FROM pedidoProdutos pp
-     
-     LEFT JOIN produtos p
-     ON pp.produtoId = p.id
+    let queryProdutos = `
+    SELECT pp.id, pp.quantidade, pp.produtoId, pp.precoUnitario, pp.precoTotal, p.nome
+    FROM pedidoProdutos pp
+    
+    LEFT JOIN produtos p
+    ON pp.produtoId = p.id
 
-     WHERE pp.pedidoId = '${id}';`;
+    WHERE pp.pedidoId = '${id}'; `;
 
     let produtos = await seq.query(queryProdutos, {
       type: QueryTypes.SELECT,
     });
+    record.produtos = produtos
+
     var total = 0.00
     produtos.forEach((e) => {
       total += parseFloat(e.precoTotal);
