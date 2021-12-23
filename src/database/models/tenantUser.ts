@@ -43,7 +43,7 @@ export default function (sequelize, DataTypes) {
         allowNull: false,
         validate: {
           notEmpty: true,
-          isIn: [['active', 'invited', 'empty-permissions']],
+          isIn: [['active','pendente', 'invited', 'empty-permissions']],
         }
       },
     },

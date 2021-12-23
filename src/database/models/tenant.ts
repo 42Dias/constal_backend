@@ -44,7 +44,7 @@ export default function (sequelize, DataTypes) {
         validate: {
           notEmpty: true,
           isIn: [
-            ['active', 'cancel_at_period_end', 'error'],
+            ['active','pendente', 'cancel_at_period_end', 'error'],
           ],
         },
         defaultValue: 'active'

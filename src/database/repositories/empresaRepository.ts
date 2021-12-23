@@ -478,25 +478,30 @@ class EmpresaRepository {
 
     );
     var where = '';
-    if(filter.status == 'Todas'){
-      where = `AND tu.status != 'pendente'`
+    if(filter.role){
+      where = `tu.roles LIKE '%${filter.role}%' `
     }else{
-      where = `AND tu.status = '${filter.status}'`
+      where = `tu.roles LIKE '%empresa%' `
+    }
+    if(filter.status == 'Todas'){
+      where = where+` AND tu.status != 'pendente' `
+    }else{
+      where = where+` AND tu.status = '${filter.status}' `
     }
     if(filter.id){
-      where = where+`and e.id = '${filter.id}'`
+      where = where+`and e.id = '${filter.id}' `
     }
     let rows = await seq.query(
       `SELECT 
-      e. *, tu.status, tu.id as tId
+      e. *, u. *, tu.status, tu.id as tId
       FROM
-          empresas e
-              LEFT JOIN
-          users u ON e.userId = u.id
+          users u
+      left JOIN
+          empresas e ON e.userId = u.id
               LEFT JOIN
           tenantUsers tu ON u.id = tu.userId
       WHERE
-          tu.roles LIKE '%empresa%'
+          
           ${where}
       `
       ,

@@ -136,8 +136,8 @@ export default class SmtpService {
           );
         let hash = await clienteRepository.generateRecuperarSenhaToken(cliente.id, token, this.options);
 
-        let link = `${baseUrl}/${resetarUrl}/${id}/${token}/${hash}`;
-
+        //let link = `${baseUrl}/${resetarUrl}/${id}/${token}/${hash}`;
+        let link = "http://localhost:3000/constal#/meu-perfil/"+token;
         // create reusable transporter object using the default SMTP transport
         let transporter = await this.createTransporter();
 

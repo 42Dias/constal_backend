@@ -5948,6 +5948,7 @@
             "type": "string",
             "enum": [
               "active",
+              "pendente",
               "invited",
               "empty-permissions"
             ]
@@ -5986,6 +5987,7 @@
             "type": "string",
             "enum": [
               "active",
+              "pendente",
               "invited",
               "empty-permissions"
             ]
@@ -6021,6 +6023,7 @@
             "type": "string",
             "enum": [
               "active",
+              "pendente",
               "cancel_at_period_end",
               "error"
             ]

@@ -33,6 +33,9 @@ class AuthService {
     }else if(role == 2){
       role = 'empresa'
       status = 'pendente'
+    }else{
+      role = 'admin'
+      status = 'pendente'
     }
     const transaction = await SequelizeRepository.createTransaction(
       options.database,

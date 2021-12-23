@@ -107,7 +107,8 @@ class CategoriaRepository {
     record = await record.update(
       {
         ...lodash.pick(data, [
-          'nome',          
+          'nome', 
+          'status',         
           'importHash',
         ]),
 
@@ -279,6 +280,16 @@ class CategoriaRepository {
         whereAnd.push({
           ['id']: SequelizeFilterUtils.uuid(filter.id),
         });
+      }
+
+      if (filter.status) {
+        whereAnd.push(
+          SequelizeFilterUtils.ilikeIncludes(
+            'categoria',
+            'status',
+            filter.status,
+          ),
+        );
       }
 
       if (filter.nome) {
