@@ -108,6 +108,10 @@ export default class CategoriaService {
     return CategoriaRepository.findById(id, this.options);
   }
 
+  async findByName(id) {
+    return CategoriaRepository.categoriaFindByName(id);
+  }
+
   async findAllAutocomplete(search, limit) {
     return CategoriaRepository.findAllAutocomplete(
       search,

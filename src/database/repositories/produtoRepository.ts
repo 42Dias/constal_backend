@@ -970,54 +970,55 @@ class ProdutoRepository {
 
 
     const pagamentos = await record
+    
+    const axios = require("axios").default;
 
     pagamentos.map(
       (pagamento => {
 
-        
+        if(pagamento.status == 'pendente'){
+          const options = {
+          
+            method: 'GET',
+          
+            url: `https://api.iugu.com/v1/invoices/${pagamento.idIugu}?api_token=${API_TOKEN}`,
+          
+            headers: {Accept: 'application/json'}
+          
+          };
+          
+          
+          axios.request(options).then(async function (response) {
+          
+  
+  
+              if(response.data.status == 'paid'){
+  
 
-        const axios = require("axios").default;
+                let rows = await seq.query(
+                  `
+                  UPDATE pagamentos p
+                  SET p.status = 'pago'
+                  WHERE p.idIugu = '${response.data.id}';
+                  `
+                );
 
-
-        const options = {
+                console.log(rows)
+              }
+          
+                  })
+                  .catch(function (error) {
+                  
+                    console.error(error);
+                  
+                  });
+        }
         
-          method: 'GET',
         
-          url: `https://api.iugu.com/v1/invoices/${pagamento.idIugu}?api_token=${API_TOKEN}`,
-        
-          headers: {Accept: 'application/json'}
-        
-        };
-        
-        
-        axios.request(options).then(async function (response) {
-        
-
-        
-
-            if(response.data.status == 'paid'){
-
-              let rows = await seq.query(
-                `
-                UPDATE pagamentos p
-                SET p.status = 'pago'
-                WHERE p.idIugu = '${response.data.id}';
-                `
-              );
-              console.log(rows)
-            }
-        })
-        .catch(function (error) {
-        
-          console.error(error);
-        
-        });
-
-
-      }
-      )
-      )
-      return 
+              }
+              )
+              )
+              return 
     // return record;
   }
   static async updateAllIsOferta(){

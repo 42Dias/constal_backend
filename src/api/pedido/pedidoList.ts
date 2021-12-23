@@ -9,6 +9,9 @@ export default async (req, res, next) => {
       Permissions.values.pedidoRead,
     );
 
+    console.log(
+      req.empresa.dataValues.id
+    )
     //apenas pedidos da pessoa
     if (req.currentUser.tenants[0].roles[0] == 'pessoa') {
       if (!req.query.filter){
@@ -22,7 +25,7 @@ export default async (req, res, next) => {
       if (!req.query.filter){
         req.query.filter = []
       }
-      req.query.filter.fornecedorEmpresa = req.currentUser.id
+      req.query.filter.fornecedorEmpresa = req.empresa.dataValues.id
     }
 
     const payload = await new PedidoService(

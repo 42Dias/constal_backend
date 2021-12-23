@@ -21,7 +21,8 @@ export default async (req, res, next) => {
       if (!req.query.filter){
         req.query.filter = []
       }
-      req.query.filter.fornecedorEmpresa = req.empresa.id
+      req.query.filter.fornecedorEmpresa = req.empresa.dataValues.id
+
     }
 
 
