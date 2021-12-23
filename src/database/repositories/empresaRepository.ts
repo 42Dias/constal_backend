@@ -493,7 +493,7 @@ class EmpresaRepository {
     }
     let rows = await seq.query(
       `SELECT 
-      e. *, u. *, tu.status, tu.id as tId
+      e.id as empresaId, e. *, u. *, tu.status, tu.id as tId
       FROM
           users u
       left JOIN
