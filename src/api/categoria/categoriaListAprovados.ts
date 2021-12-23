@@ -1,15 +1,11 @@
-import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
-import Permissions from '../../security/permissions';
-import ProdutoService from '../../services/produtoService';
+import CategoriaService from '../../services/categoriaService';
 
 export default async (req, res, next) => {
   try {
-   
-
-    const payload = await new ProdutoService(
+    const payload = await new CategoriaService(
       req,
-    ).findAllWithoutLogin();
+    ).categoriaListAprovados();
 
     await ApiResponseHandler.success(req, res, payload);
   } catch (error) {
