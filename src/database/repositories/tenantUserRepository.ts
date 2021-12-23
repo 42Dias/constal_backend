@@ -51,9 +51,12 @@ export default class TenantUserRepository {
     const transaction = SequelizeRepository.getTransaction(
       options,
     );
-
-    const status = selectStatus('active', roles);
-
+    let status;
+    if(roles === 'pessoa'){
+      status = selectStatus('active', roles);
+    }else{
+      status = selectStatus('pendente', roles);
+    }
     await options.database.tenantUser.create(
       {
         tenantId: tenant.id,
@@ -301,7 +304,9 @@ function selectStatus(oldStatus, newRoles) {
   if (oldStatus === 'invited') {
     return oldStatus;
   }
-
+  if (oldStatus === 'pendente') {
+    return oldStatus;
+  }
   if (!newRoles.length) {
     return 'empty-permissions';
   }

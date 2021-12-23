@@ -732,11 +732,11 @@ export default class UserRepository {
 
     const record = await options.database.user.findOne({
       where: {
-        passwordResetToken: token,
+        id: token,
         // Find only not expired tokens
-        passwordResetTokenExpiresAt: {
+        /*passwordResetTokenExpiresAt: {
           [options.database.Sequelize.Op.gt]: Date.now(),
-        },
+        },*/
       },
       transaction,
     });
