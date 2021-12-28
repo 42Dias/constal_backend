@@ -31,6 +31,11 @@ export default (app) => {
     `/tenant/:tenantId/produto`,
     require('./produtoList').default,
   );
+
+  app.put(
+    `/tenant/:tenantId/produtos/:id`,
+    require('./produtoAfterBuy').default,
+  );
   // app.get(
   //   `/tenant/fa22705e-cf27-41d0-bebf-9a6ab52948c4/produto`,
   //   require('./produtoList').default,
