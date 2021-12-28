@@ -103,7 +103,7 @@ export default class SmtpService {
             to: email, // list of receivers
             subject: env.NODEMAILER_VERIFY_SUBJECT, // Subject line
             text: "", // plain text body
-            html: "Verifique sua conta para o app/site Constal <p>Olá,</p><p>Clique no link abaixo para verificar o seu email.</p><p><a href=" + link + ">Verificar email</a></p><p>Se você não solicitou essa verificação, ignore este email.</p><p>Obrigado,</p><p>Constal</p>" // html body
+            html: "Verifique sua conta para o app/site Constal </h1> <h2 color: 'red',>Olá,</h2><p>Clique no link abaixo para confirmar seu email.</p><p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px' href=" + link + ">Verificar email</a></p><p>Se você não solicitou, ignore este email.</p><p>Obrigado,</p><img src='http://7dd208931cad.sn.mynetname.net:42080/constal/static/media/logo.6dd21001.png' />" // html body
         });
 
         transporter.close();
