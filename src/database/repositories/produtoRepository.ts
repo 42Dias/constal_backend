@@ -50,10 +50,6 @@ class ProdutoRepository {
     );
     try {
 
-      console.log("//////////////////////////")
-      console.log("data.empresa")
-      console.log(data.empresa)
-      console.log("//////////////////////////")
 
       const record = await options.database.produto.create(
         {
@@ -86,7 +82,9 @@ class ProdutoRepository {
         },
       );
 
-
+      /*
+          JÁ HÁ O A LINKEGEM, MAS COMO ENVIAR????
+      */
 
       await FileRepository.replaceRelationFiles(
         {
@@ -690,7 +688,7 @@ class ProdutoRepository {
     // console.log(record)
     return { record };
   }
-  static async findAllWithoutLoginTrue(filter) {
+  static async findAllWithoutLoginTrue() {
 
     let seq = new (<any>Sequelize)(
       getConfig().DATABASE_DATABASE,
@@ -715,13 +713,13 @@ class ProdutoRepository {
     );
     let where = ''
 
-    console.log(filter)
-    console.log(filter.filter.categoria)
+    // console.log(filter)
+    // console.log(filter.filter.categoria)
 
-    if(filter.filter.categoria){
-      console.log("filter")
-      where = `and p.categoriaId = '${filter.filter.categoria}' `
-    }
+    // if(filter.filter.categoria){
+    //   console.log("filter")
+    //   where = `and p.categoriaId = '${filter.filter.categoria}' `
+    // }
     
     let record = await seq.query(
       `SELECT 

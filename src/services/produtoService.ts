@@ -29,10 +29,6 @@ export default class ProdutoService {
         this.options,
       );
       data.empresa = await EmpresaRepository.findByUserId(userData.id, { ...this.options, transaction });
-      console.log("//////////////////////////")
-      console.log("data.empresa")
-      console.log(data.empresa)
-      console.log("//////////////////////////")
       data.categoria = await CategoriaRepository.filterIdInTenant(data.categoria, { ...this.options, transaction });
 
       const record = await ProdutoRepository.create(data, {
@@ -177,8 +173,8 @@ export default class ProdutoService {
   async findAllWithoutLogin() {
     return ProdutoRepository.findAllWithoutLogin();
   }
-  async findAllWithoutLoginTrue(args) {
-    return ProdutoRepository.findAllWithoutLoginAndTenant(args);
+  async findAllWithoutLoginTrue() {
+    return ProdutoRepository.findAllWithoutLoginTrue();
   }
 
   async findAllWithoutLoginAndTenant(args) {
