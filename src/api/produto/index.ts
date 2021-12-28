@@ -45,6 +45,12 @@ export default (app) => {
     `/produtos`,
     require('./produtoListWithoutLogin').default,
   );
+
+  app.get(
+    `/produtos-list`,
+    require('./produtoListWithoutLoginAndWithoutTenant').default,
+  );
+
   app.get(
     `/produtosTrue`,
     require('./produtoListWithoutLoginTrue').default,

@@ -177,9 +177,14 @@ export default class ProdutoService {
   async findAllWithoutLogin() {
     return ProdutoRepository.findAllWithoutLogin();
   }
-  async findAllWithoutLoginTrue() {
-    return ProdutoRepository.findAllWithoutLoginTrue();
+  async findAllWithoutLoginTrue(args) {
+    return ProdutoRepository.findAllWithoutLoginAndTenant(args);
   }
+
+  async findAllWithoutLoginAndTenant(args) {
+    return ProdutoRepository.findAllWithoutLoginAndTenant(args);
+  }
+  
   async findLimitedWithoutLogin() {
     return ProdutoRepository.findLimitedWithoutLogin();
   }

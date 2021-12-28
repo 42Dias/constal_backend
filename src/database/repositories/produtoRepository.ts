@@ -360,6 +360,13 @@ class ProdutoRepository {
       options,
     );
 
+
+    console.log("--------------")
+    console.log("filter")
+    console.log(filter)
+    console.log("--------------")
+
+
     let whereAnd: Array<any> = [];
     let include = [
       {
@@ -574,6 +581,8 @@ class ProdutoRepository {
       }
 
       if (filter.categoria) {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        console.log(filter.categoria)
         whereAnd.push({
           ['categoriaId']: SequelizeFilterUtils.uuid(
             filter.categoria,
@@ -681,7 +690,7 @@ class ProdutoRepository {
     // console.log(record)
     return { record };
   }
-  static async findAllWithoutLoginTrue() {
+  static async findAllWithoutLoginTrue(filter) {
 
     let seq = new (<any>Sequelize)(
       getConfig().DATABASE_DATABASE,
@@ -704,7 +713,16 @@ class ProdutoRepository {
       },
 
     );
+    let where = ''
 
+    console.log(filter)
+    console.log(filter.filter.categoria)
+
+    if(filter.filter.categoria){
+      console.log("filter")
+      where = `and p.categoriaId = '${filter.filter.categoria}' `
+    }
+    
     let record = await seq.query(
       `SELECT 
       p.*
@@ -713,8 +731,11 @@ class ProdutoRepository {
       WHERE
           p.status = 'aprovado'
           and p.isOferta = true
+          ${where}
       GROUP BY p.id
-      ORDER BY p.createdAt DESC;`
+      ORDER BY p.createdAt DESC
+      ;
+      `
       ,
       {
         nest: true,
@@ -725,6 +746,64 @@ class ProdutoRepository {
     // console.log(record)
     return { record };
   }
+
+  static async findAllWithoutLoginAndTenant(filter) {
+
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
+
+    );
+    let where = ''
+
+    console.log(filter)
+    console.log(filter.filter.categoria)
+
+    if(filter.filter.categoria){
+      console.log("filter")
+      where = `and p.categoriaId = '${filter.filter.categoria}' `
+    }
+    
+    let record = await seq.query(
+      `SELECT 
+      p.*
+      FROM
+          produtos p
+      WHERE
+          p.status = 'aprovado'
+          ${where}
+      GROUP BY p.id
+      ORDER BY p.createdAt DESC
+      ;
+      `
+      ,
+      {
+        nest: true,
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    // console.log(record)
+    return { record };
+  }
+
+  
   static async findLimitedWithoutLogin() {
 
     let seq = new (<any>Sequelize)(
