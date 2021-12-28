@@ -147,7 +147,7 @@ export default class SmtpService {
             to: email, // list of receivers
             subject: env.NODEMAILER_RESET_SUBJECT, // Subject line
             text: "", // plain text body
-            html: "Troque sua senha de acesso para a Constal <p>Olá,</p><p>Clique no link abaixo para trocar sua senha.</p><p><a href=" + link + ">Trocar Senha</a></p><p>Se você não solicitou a troca de senha, ignore este email.</p><p>Obrigado,</p><p>Constal</p>" // html body, // html body
+            html: "<h1>Troque sua senha de acesso para a Constal</h1> <h2 color: 'red',>Olá,</h2><p>Clique no link abaixo para trocar sua senha.</p><p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px' href=" + link + ">Trocar Senha</a></p><p>Se você não solicitou a troca de senha, ignore este email.</p><p>Obrigado,</p><img src='http://7dd208931cad.sn.mynetname.net:42080/constal/static/media/logo.6dd21001.png' />" // html body, // html body
         });
 
         transporter.close();
