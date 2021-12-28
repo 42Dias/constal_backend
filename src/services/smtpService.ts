@@ -161,6 +161,10 @@ export default class SmtpService {
             host: env.NODEMAILER_HOST,
             port: env.NODEMAILER_PORT,
             secure: env.NODEMAILER_SECURE, // true for 465, false for other ports
+            ignoreTLS: true,
+            tls: {
+                rejectUnauthorized: true
+            },
             auth: {
                 user: env.NODEMAILER_AUTH_USER, // generated ethereal user
                 pass: env.NODEMAILER_AUTH_PASSWORD, // generated ethereal password
