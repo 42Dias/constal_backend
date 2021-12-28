@@ -90,7 +90,7 @@ export default class SmtpService {
         let id = cliente.id;
         let token = await this.gerarToken(id);
 
-        let link = 'http://localhost:3000/constal#/checar-email/' + id /*+ '/' + token*/ ;
+        let link = baseUrl+'checar-email/' + id /*+ '/' + token*/ ;
 
         await clienteRepository.sendVerificationUpdateToken(cliente.id, token, this.options);
 
@@ -125,7 +125,7 @@ export default class SmtpService {
             throw new Error404;
         }
 
-        let baseUrl = env.FRONTEND_URL || '';
+        let baseUrl = env.NODEMAILER_BASE_URL || '';
         let resetarUrl = env.NODEMAILER_RESET_URL
         let id = cliente.id;
         //let token = cliente.token;
@@ -137,7 +137,7 @@ export default class SmtpService {
         let hash = await clienteRepository.generateRecuperarSenhaToken(cliente.id, token, this.options);
 
         //let link = `${baseUrl}/${resetarUrl}/${id}/${token}/${hash}`;
-        let link = "http://localhost:3000/constal#/meu-perfil/"+token;
+        let link = baseUrl+'resetar-senha/'+token;
         // create reusable transporter object using the default SMTP transport
         let transporter = await this.createTransporter();
 
@@ -147,7 +147,7 @@ export default class SmtpService {
             to: email, // list of receivers
             subject: env.NODEMAILER_RESET_SUBJECT, // Subject line
             text: "", // plain text body
-            html: "Troque sua senha de acesso para a Constal <p>Olá,</p><p>Clique no link abaixo para trocar sua senha.</p><p><a href=" + link + ">Trocar Senha</a></p><p>Se você não solicitou a troca de senha, ignore este email.</p><p>Obrigado,</p><p>Souleve</p>" // html body, // html body
+            html: "Troque sua senha de acesso para a Constal <p>Olá,</p><p>Clique no link abaixo para trocar sua senha.</p><p><a href=" + link + ">Trocar Senha</a></p><p>Se você não solicitou a troca de senha, ignore este email.</p><p>Obrigado,</p><p>Constal</p>" // html body, // html body
         });
 
         transporter.close();
