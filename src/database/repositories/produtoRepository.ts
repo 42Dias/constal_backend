@@ -1059,8 +1059,25 @@ class ProdutoRepository {
         }
       }
     )
+  }
 
+  static async produtoAfterBuy(id, quantidade){
+    
 
+    let query =
+    `UPDATE produtos p
+              SET p.quantidadeNoEstoque = quantidadeNoEstoque - ${quantidade},
+              volumeVendas =  volumeVendas + ${quantidade}
+              WHERE p.id = '${id}';
+    `;
+
+    let record = await seq.query(query);
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
   }
 }
 

@@ -190,6 +190,10 @@ export default class ProdutoService {
     return ProdutoRepository.listPromocionalImagem();
   }
 
+  async produtoAfterBuy(id, quantidade) {
+    return ProdutoRepository.produtoAfterBuy(id, quantidade);
+  }
+
   async import(data, importHash) {
     if (!importHash) {
       throw new Error400(

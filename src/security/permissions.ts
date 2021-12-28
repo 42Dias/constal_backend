@@ -256,7 +256,7 @@ class Permissions {
       },
       produtoEdit: {
         id: 'produtoEdit',
-        allowedRoles: [roles.admin, roles.empresa],
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
         allowedStorage: [
           storage.produtoFotos,
