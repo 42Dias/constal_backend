@@ -339,10 +339,12 @@ class EmpresaRepository {
         },
         defaults: {
           ...lodash.pick(data, [
+            'nome',
             'marca',
             'razaoSocial',
             'cnpj',
             'telefone',
+            'celular',
             'ramal',
             'email',
             'website',
@@ -368,12 +370,14 @@ class EmpresaRepository {
       record[0] = await record[0].update(
         {
           ...lodash.pick(data, [
+            'nome',
             'marca',
             'razaoSocial',
             'cnpj',
             'telefone',
             'ramal',
             'email',
+            'celular',
             'website',
             'cep',
             'logradouro',

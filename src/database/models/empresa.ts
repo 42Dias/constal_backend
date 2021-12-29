@@ -9,6 +9,9 @@ export default function (sequelize) {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
+      nome: {
+        type: DataTypes.TEXT,
+      },
       marca: {
         type: DataTypes.TEXT,
       },
@@ -20,6 +23,9 @@ export default function (sequelize) {
         allowNull: false,
       },
       telefone: {
+        type: DataTypes.TEXT,
+      },
+      celular: {
         type: DataTypes.TEXT,
       },
       ramal: {
