@@ -157,6 +157,7 @@ class ProdutoRepository {
           'status',
           'imagemUrl',
           'imagemPromocional',
+          'promocaoId',
           'promocaoEncerramento',
           'promocaoCriacao',
         ]),
@@ -995,7 +996,11 @@ class ProdutoRepository {
   static async listPromocionalImagem() {
 
     let query =
-      `select distinct * from produtos p where p.imagemPromocional is not null order by promocaoCriacao;`;
+      `
+      select 
+        distinct imagemPromocional, promocaoId
+           from produtos
+              where imagemPromocional is not null;`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
