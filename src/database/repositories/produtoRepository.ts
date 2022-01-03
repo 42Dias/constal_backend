@@ -996,11 +996,7 @@ class ProdutoRepository {
   static async listPromocionalImagem() {
 
     let query =
-      `
-      select 
-        distinct imagemPromocional, promocaoId
-           from produtos
-              where imagemPromocional is not null;`;
+      `select distinct imagemPromocional, promocaoId from produtos  where imagemPromocional is not null;`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
