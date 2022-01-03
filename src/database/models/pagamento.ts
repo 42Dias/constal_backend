@@ -13,6 +13,10 @@ export default function (sequelize) {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
+      pedidoId: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+      },
       urlFaturaIugu: {
         type: DataTypes.STRING
       },
