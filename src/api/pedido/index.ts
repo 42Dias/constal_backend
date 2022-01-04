@@ -36,4 +36,9 @@ export default (app) => {
   `/tenant/:tenantId/pedidoWithProduct`,
   require('./pedidoWithProduct').default,
 );
+
+app.post(
+  `/tenant/:tenantId/findPedidoWithProductToEmpresa`,
+  require('./findPedidoWithProductToEmpresa').default,
+);
 };
