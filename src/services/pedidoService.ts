@@ -238,6 +238,19 @@ export default class PedidoService {
     console.log(args)
     return PedidoRepository.findPedidoWithProduct(this.options);
   }
+
+
+  async findPedidoWithProductToEmpresa(userId, args) {
+    console.log(userId)
+
+    const empresa = await EmpresaRepository.findByUserId(userId, this.options);
+
+
+    console.log('empresa.id')
+    console.log(empresa.id)
+    
+    return PedidoRepository.findPedidoWithProductToEmpresa(empresa.id, args);
+  }
   
 }
 
