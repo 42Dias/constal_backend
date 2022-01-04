@@ -797,6 +797,65 @@ class PedidoRepository {
     return record;
   }
 
+  static async findPedidoWithProductToEmpresa(
+    empresaId, { filter, limit = 0, offset = 0, orderBy = '' }
+    ) {
+
+    let where = '';
+    if(filter){
+      if(filter.pedidoId){
+        where = `and ped.id = '${filter.pedidoId}' `
+      }
+      else if(filter.produtoId){
+        where = `and p.id = '${filter.produtoId}' `
+      }else{
+        where = ``
+      }
+    }
+
+    let query =
+        `SELECT 
+        p.nome,
+        p.preco,
+        p.imagemUrl,
+        ped.status,
+        ped.id AS pedidoId,
+        pp.precoTotal,
+        ped.compradorUserId,
+        pp.id AS pedidoProdutoId,
+        pp.pedidoId AS ppId,
+        pf.nome AS fullname,
+        pf.cpf,
+        pf.celular,
+        pf.cep,
+        pf.logradouro,
+        pf.numero,
+        pf.bairro,
+        pf.cidade,
+        pf.estado
+          FROM
+              pedidoProdutos pp
+                  INNER JOIN
+              produtos p ON pp.produtoId = p.id
+                  INNER JOIN
+              pedidos ped ON pp.pedidoId = ped.id
+                  INNER JOIN
+              pessoaFisicas pf ON pp.compradorUserId = pf.userId
+        where ped.fornecedorEmpresaId = '${empresaId}'
+        ${where}
+          order by ped.createdAt;`;
+    
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
+  }
+
 }
 
 export default PedidoRepository;
