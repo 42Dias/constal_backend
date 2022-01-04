@@ -7,5 +7,10 @@ export default (app) => {
       `/cliente/trocarSenha`,
       require('./appEnviarResetarSenha').default,
     );
+
+    app.post(
+      `/produto/enviarEmailRecusado`,
+      require('./sendEmailProduto').default,
+    );
   };
   
