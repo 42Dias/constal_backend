@@ -1080,9 +1080,45 @@ class ProdutoRepository {
                   SET p.status = 'pago'
                   WHERE p.idIugu = '${response.data.id}';
                   `
-                );
+                )
+
+                let query =
+                `SELECT
+                  p.pedidoId
+                  FROM pagamentos p
+                    WHERE p.idIugu = '${response.data.id}';
+                `;
+            
+                let record = await seq.query(query, {
+                  type: QueryTypes.SELECT,
+                }).then(
+                  async (record) => {
+
+                    //[ { pedidoId: 'dcbc4724-6bf8-44fa-aad4-c5bff3e3437e' } ]
+
+                    let newquery =
+                    `UPDATE pedidos p
+                      SET p.status = 'pago'
+                        WHERE p.id = '${record[0].pedidoId}';;
+                    `;
+                
+                    let newrecord = await seq.query(newquery, {
+                      type: QueryTypes.SELECT,
+                    })
+    
+                    console.log("newrecord")
+                    console.log(newrecord)
+
+                  }
+                )
+                  
+                  
+                
 
                 console.log(rows)
+              }
+              else{
+                console.log("passa")
               }
           
                   })
