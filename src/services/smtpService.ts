@@ -103,7 +103,7 @@ export default class SmtpService {
             to: email, // list of receivers
             subject: env.NODEMAILER_VERIFY_SUBJECT, // Subject line
             text: "", // plain text body
-            html: "Verifique sua conta para o app/site Constal </h1> <h2 color: 'red',>Olá,</h2><p>Clique no link abaixo para confirmar seu email.</p><p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px' href=" + link + ">Verificar email</a></p><p>Se você não solicitou, ignore este email.</p><p>Obrigado,</p><img src='http://7dd208931cad.sn.mynetname.net:42080/constal/static/media/logo.6dd21001.png' />" // html body
+            html: "Verifique sua conta para o app/site Constal </h1> <h2 color: 'red',>Olá,</h2><p>Clique no link abaixo para confirmar seu email.</p><p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px' href=" + link + ">Verificar email</a></p><p>Se você não solicitou, ignore este email.</p><p>Obrigado,</p><img src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' />" // html body
         });
 
         transporter.close();
@@ -204,18 +204,20 @@ export default class SmtpService {
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: env.NODEMAILER_FROM, // sender address
-            to: cliente.email, // list of receivers
-            subject: env.NODEMAILER_VERIFY_SUBJECT, // Subject line
+            to: 'ryan.r.c.339ac@gmail.com', // list of receivers
+            subject: "Devolutiva da aprovação do seu produto, Constal", // Subject line
             text: "", // plain text body
             html: `
-            <p>Verifique seu produto ${product.nome} Constal</p>
+            <p>Verifique seu produto ${product.nome}, Constal</p>
             <h2>Ol&aacute;,</h2>
             <p>Seu produto ${product.nome} foi recursado</p>
             <p>Mensagem do admin:</p>
             <p>"${emailContent}"</p>
             <p><a style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58a4b0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px;" href="http://dev.42dias.com.br/Clientes/constal/#/produto/${product.id}">Ir para produto</a></p>
             <p>Obrigado,</p>
-            <p><img src='http://7dd208931cad.sn.mynetname.net:42080/constal/static/media/logo.6dd21001.png' /></p>
+            <p><img
+            style='width: 180px;' 
+            src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' /></p>
             ` // html body
         });
     
