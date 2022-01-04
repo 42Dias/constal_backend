@@ -10,6 +10,7 @@ import { languageMiddleware } from '../middlewares/languageMiddleware';
 import authSocial from './auth/authSocial';
 import setupSwaggerUI from './apiDocumentation';
 import { getEmpresaMiddleware } from '../middlewares/getEmpresaMiddleware';
+import path from 'path';
 
 const app = express();
 
@@ -95,4 +96,12 @@ routes.param('tenantId', tenantMiddleware);
 // Add the routes to the /api endpoint
 app.use('/api', routes);
 
-export default app;
+let https = require('https');
+const fs = require('fs');
+
+let sslServer = https.createServer({
+  key: fs.readFileSync(path.join(__dirname, '../../cert', 'privada25294.key'), 'ascii'),
+  cert: fs.readFileSync(path.join(__dirname, '../../cert', 'certificado25294.pem'), 'ascii')
+}, app)
+
+export default sslServer;
