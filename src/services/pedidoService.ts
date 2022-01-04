@@ -7,6 +7,7 @@ import ProdutoRepository from '../database/repositories/produtoRepository';
 import UserRepository from '../database/repositories/userRepository';
 import PedidoProdutoRepository from '../database/repositories/pedidoProdutoRepository';
 import PagamentoRepository from '../database/repositories/pagamentoRepository';
+import { databaseInit } from '../database/databaseConnection';
 
 export default class PedidoService {
   options: IServiceOptions;
@@ -116,6 +117,9 @@ export default class PedidoService {
       /*
       deveria ter o campo de forma de pagamento
       */
+
+      pedido.pedidoId = id
+      
       let fatura = await PagamentoRepository.create(pedido, {
         ... this.options
       });
