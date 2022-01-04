@@ -44,6 +44,12 @@ const { QueryTypes } = require('sequelize');
 const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
 // const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
 
+/*
+api_token deve ser o user_token da empresa
+
+O split abaixo ira ser usado também
+*/
+
 class PagamentoRepository {
 
   static async create(data, options: IRepositoryOptions) {
@@ -173,7 +179,7 @@ class PagamentoRepository {
           'urlFaturaIugu',
         ]),
         status: 'pendente',
-        pedidoId: data.id,
+        pedidoId: data.pedidoId,
         createdById: currentUser.id,
         updatedById: currentUser.id,
       },
