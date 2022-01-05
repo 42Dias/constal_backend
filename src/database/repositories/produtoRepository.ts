@@ -779,6 +779,10 @@ class ProdutoRepository {
       console.log("filter")
       where = `and p.categoriaId = '${filter.filter.categoria}' `
     }
+    if(filter.filter.id){
+      console.log("id")
+      where = `and p.id = '${filter.filter.id}' `
+    }
     
     let record = await seq.query(
       `SELECT 
