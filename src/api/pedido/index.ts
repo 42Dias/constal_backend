@@ -41,4 +41,9 @@ app.post(
   `/tenant/:tenantId/findPedidoWithProductToEmpresa`,
   require('./findPedidoWithProductToEmpresa').default,
 );
+
+app.get(
+  `/tenant/:tenantId/pedido/fatura`,
+  require('./listaFaturas').default,
+);
 };
