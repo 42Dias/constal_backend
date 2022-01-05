@@ -808,7 +808,8 @@ class PedidoRepository {
       }
       else if(filter.produtoId){
         where = `and p.id = '${filter.produtoId}' `
-      }else{
+      }
+      else{
         where = ``
       }
     }
