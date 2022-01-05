@@ -756,7 +756,7 @@ class PagamentoRepository {
  
     output.compradorUser = UserRepository.cleanupForRelationships(output.compradorUser);
  
-    output.produto = await record.getProduto();
+    // output.produto = await record.getProduto();
  
     return output;
   } 
