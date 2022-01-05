@@ -198,13 +198,15 @@ export default class SmtpService {
             transaction
           });
         
-          console.log(cliente)
+          console.log("cliente.email")
+          console.log(cliente.email)
+
 
     
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: env.NODEMAILER_FROM, // sender address
-            to: 'ryan.r.c.339ac@gmail.com', // list of receivers
+            to: cliente.email, // list of receivers
             subject: "Devolutiva da aprovação do seu produto, Constal", // Subject line
             text: "", // plain text body
             html: `
