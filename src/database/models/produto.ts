@@ -18,6 +18,12 @@ export default function (sequelize) {
       marca: {
         type: DataTypes.TEXT,
       },
+      prazo: {
+        type: DataTypes.TEXT,
+      },
+      frete: {
+        type: DataTypes.TEXT,
+      },
       modelo: {
         type: DataTypes.TEXT,
       },
