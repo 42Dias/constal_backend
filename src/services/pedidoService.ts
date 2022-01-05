@@ -200,6 +200,13 @@ export default class PedidoService {
     );
   }
 
+  async listFaturas(args) {
+    let fatura = await PagamentoRepository.findAndCountAll(args, {
+      ... this.options
+    });
+    return fatura.rows
+  }
+
   async import(data, importHash) {
     if (!importHash) {
       throw new Error400(
