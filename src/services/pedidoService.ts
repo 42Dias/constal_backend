@@ -8,6 +8,7 @@ import UserRepository from '../database/repositories/userRepository';
 import PedidoProdutoRepository from '../database/repositories/pedidoProdutoRepository';
 import PagamentoRepository from '../database/repositories/pagamentoRepository';
 import { databaseInit } from '../database/databaseConnection';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 
 export default class PedidoService {
   options: IServiceOptions;
@@ -248,15 +249,27 @@ export default class PedidoService {
 
 
   async findPedidoWithProductToEmpresa(userId, args) {
-    console.log(userId)
-
-    const empresa = await EmpresaRepository.findByUserId(userId, this.options);
 
 
-    console.log('empresa.id')
-    console.log(empresa.id)
+
+    if(args.filter.role){
+      console.log("----------------")
+      console.log("args.filter.role")
+      console.log(args.filter.role)
+      return PedidoRepository.findPedidoWithProductToEmpresa(args.filter.role, args);
+    }
+    else{
+      console.log("----------------")
+      
+      const empresa = await EmpresaRepository.findByUserId(userId, this.options);
+  
+  
+      console.log('empresa.id')
+      console.log(empresa.id)
+      
+      return PedidoRepository.findPedidoWithProductToEmpresa(empresa.id, args);
+    }
     
-    return PedidoRepository.findPedidoWithProductToEmpresa(empresa.id, args);
   }
   
 }
