@@ -69,6 +69,8 @@ class ProdutoRepository {
             'precoOferta',
             'importHash',
             'status',
+            'frete',
+            'prazo',
             'imagemUrl'
           ]), //como se pegasse o data.algo
           empresaId: data.empresa.id,
@@ -158,6 +160,8 @@ class ProdutoRepository {
           'imagemUrl',
           'imagemPromocional',
           'promocaoId',
+          'frete',
+          'prazo',
           'promocaoEncerramento',
           'promocaoCriacao',
         ]),
