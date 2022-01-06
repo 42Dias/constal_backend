@@ -157,6 +157,7 @@ class ProdutoRepository {
           'precoOferta',
           'importHash',
           'status',
+          'quantidadeNoEstoque',
           'imagemUrl',
           'imagemPromocional',
           'promocaoId',
