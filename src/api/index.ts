@@ -101,14 +101,11 @@ const fs = require('fs');
 
 let sslServer;
 
-if (process.env.BACKEND_URL == 'http://localhost:8157/api') {
-  sslServer = app
 
-} else {
   sslServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, '../../cert', 'privada25294.key'), 'ascii'),
     cert: fs.readFileSync(path.join(__dirname, '../../cert', 'certificado25294.pem'), 'ascii')
   }, app)
-}
+
 
 export default sslServer;
