@@ -61,6 +61,32 @@ export default function (sequelize) {
       bairro: {
         type: DataTypes.TEXT,
       },
+      account_id: {
+        type: DataTypes.TEXT,
+      },
+      live_api_token: {
+        type: DataTypes.TEXT,
+      },
+      test_api_token: {
+        type: DataTypes.TEXT,
+      },
+      user_token: {
+        type: DataTypes.TEXT,
+      },
+      cartaoTipo: {
+        type: DataTypes.TEXT,
+      },
+      cartaoNumero: {
+        type: DataTypes.TEXT,
+      },
+      cartaoBanco: {
+        type: DataTypes.TEXT,
+      },
+      cartaoAgencia: {
+        type: DataTypes.TEXT,
+      },
+      
+      
       pix: {
         type: DataTypes.TEXT,
       },

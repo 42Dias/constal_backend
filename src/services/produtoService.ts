@@ -4,6 +4,7 @@ import { IServiceOptions } from './IServiceOptions';
 import ProdutoRepository from '../database/repositories/produtoRepository';
 import EmpresaRepository from '../database/repositories/empresaRepository';
 import CategoriaRepository from '../database/repositories/categoriaRepository';
+import upload from '../api/file/localhost/upload';
 
 export default class ProdutoService {
   options: IServiceOptions;
@@ -234,4 +235,5 @@ export default class ProdutoService {
   async updateAllIsOferta(){
     return ProdutoRepository.updateAllIsOferta();
   }
+
 }

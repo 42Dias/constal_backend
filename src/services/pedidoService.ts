@@ -139,6 +139,38 @@ export default class PedidoService {
     }
   }
 
+  async geraNewFatura(data) {
+
+    try {
+      data.fornecedores.produtosNoCarinho.map(
+        async (fornecedorObjeto) => {
+          console.log(fornecedorObjeto.fornecedorId)
+          fornecedorObjeto.empresa = await EmpresaRepository.findIdBySQL(fornecedorObjeto.fornecedorId);
+          console.log(fornecedorObjeto)
+        }
+      )
+      setTimeout(async () => {
+        let fatura = await PagamentoRepository.createNewFaturaWithSplits(data, {
+          ... this.options
+        });
+  
+        return fatura;
+        
+      }, 5000);
+
+    } catch (error) {
+
+      SequelizeRepository.handleUniqueFieldError(
+        error,
+        this.options.language,
+        'pedido',
+      );
+
+      throw error;
+    }
+    
+  }
+
   async update(id, data) {
 
     try {

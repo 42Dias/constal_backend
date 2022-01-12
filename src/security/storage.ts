@@ -50,6 +50,14 @@ export default class Storage {
         maxSizeInBytes: 100 * 1024 * 1024,
       },
 
+      bannersFotos: {
+        id: 'bannerFotos',
+        folder: 'tenant/:tenantId/banner/fotos',
+        maxSizeInBytes: 100 * 1024 * 1024,
+        bypassWritingPermissions: true,
+        publicRead: true,
+      },
+
 
 
 
