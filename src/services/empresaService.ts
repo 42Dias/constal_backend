@@ -3,6 +3,7 @@ import SequelizeRepository from '../database/repositories/sequelizeRepository';
 import { IServiceOptions } from './IServiceOptions';
 import EmpresaRepository from '../database/repositories/empresaRepository';
 import UserRepository from '../database/repositories/userRepository';
+import pagamentoRepository from '../database/repositories/pagamentoRepository';
 import highlight from 'cli-highlight';
 import { Sequelize, QueryTypes } from 'sequelize/types';
 import { getConfig } from '../config';
@@ -15,23 +16,26 @@ export default class EmpresaService {
   }
 
   async create(data) {
+
     const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
     );
 
     try {
       data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options, transaction });
+      
+      
 
-      const record = await EmpresaRepository.create(data, {
+      
+      await SequelizeRepository.commitTransaction(
+        transaction,
+        );
+        const record = await EmpresaRepository.create(data, {
         ...this.options,
         transaction,
       });
+      return record
 
-      await SequelizeRepository.commitTransaction(
-        transaction,
-      );
-
-      return record;
     } catch (error) {
       await SequelizeRepository.rollbackTransaction(
         transaction,
@@ -181,8 +185,6 @@ export default class EmpresaService {
   }
 
   async createOrUpdate(data) {
-    
-    console.log(data)
 
     try {
       // data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options });
@@ -193,19 +195,61 @@ export default class EmpresaService {
       
       data.user = currentUser.id
 
-      console.log("-*-*----*")
-      console.log("data.user")
-      console.log(data.user)
-      console.log("-*-*----*")
+      const hasEmpresaProfile = await this.findByUserId(data.user)
+      console.log("hasEmpresaProfile")
+      console.log(hasEmpresaProfile)
 
-      const record = await EmpresaRepository.createOrUpdate(data, {
-        ...this.options,
+      if(hasEmpresaProfile){
+      console.log("hasEmpresaProfile")
+      console.log(hasEmpresaProfile)
 
-      });
+        
 
+
+        pagamentoRepository.configureEmpresaIugu(data, hasEmpresaProfile.account_id, hasEmpresaProfile.user_token).then(
+          async () => {
+              const record = await EmpresaRepository.createOrUpdate(data, {
+                ...this.options,
+              });
+            return record
+          }
+        )
+
+      }
+      else{
+        console.log('fase0 he he he')
+        
+        const responseIugu = await pagamentoRepository.createEmpresaIugu(data).then(
+          async (response) => {
+              console.log('fase1 he he he')
+
+              data.user_token = response.user_token
+              data.account_id = response.account_id
+              data.live_api_token = response.live_api_token
+              data.test_api_token = response.test_api_token
+              data.account_id = response.account_id
+
+
+              pagamentoRepository.configureEmpresaIugu(data, response.account_id, response.user_token).then(
+                async (response) => {
+                  console.log('fase2 he he he')
+
+
+                    const record = await EmpresaRepository.createOrUpdate(data, {
+                      ...this.options,
+                    });
+                  return record
+                }
+              )
+          }
+          )
+          return responseIugu;
+      }
+
+        
       await UserRepository.updateHasProfile({ ...this.options });
 
-      return record;
+
     } catch (error) {
       SequelizeRepository.handleUniqueFieldError(
         error,
