@@ -56,6 +56,9 @@ class BannersRepository {
       const record = await options.database.banners.create(
         {
           ...lodash.pick(data, [
+            'imagemUrl',
+            'status',
+            'nome'
           ]), 
           tenantId: tenant.id,
           createdById: currentUser.id,
@@ -124,7 +127,11 @@ class BannersRepository {
     record = await record.update(
       {
         ...lodash.pick(data, [
-        ]), 
+          'imagemUrl',
+          'status',
+          'nome'
+
+        ]),  
         createdById: currentUser.id,
         updatedById: currentUser.id,
       },
