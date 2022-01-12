@@ -483,6 +483,50 @@ class Permissions {
         allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
         allowedPlans: [plans.free, plans.growth, plans.enterprise],
       },
+      bannersImport: {
+        id: 'bannersImport',
+        allowedRoles: [roles.admin],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      bannersCreate: {
+        id: 'bannersCreate',
+        allowedRoles: [roles.admin, roles.empresa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+        allowedStorage: [
+          storage.bannersFotos,
+        ],
+      },
+      bannersEdit: {
+        id: 'bannersEdit',
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+        allowedStorage: [
+          storage.bannersFotos,
+        ],
+      },
+      bannersDestroy: {
+        id: 'bannersDestroy',
+        allowedRoles: [roles.admin, roles.empresa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+        allowedStorage: [
+          storage.bannersFotos,
+        ],
+      },
+      bannersRead: {
+        id: 'bannersRead',
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      bannersAutocomplete: {
+        id: 'bannersAutocomplete',
+        allowedRoles: [roles.admin, roles.empresa, roles.pessoa],
+        allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      },
+      // ImagemCreate: {
+      //   id: 'ImagemCreate',
+      //   allowedRoles: [roles.admin],
+      //   allowedPlans: [plans.free, plans.growth, plans.enterprise],
+      // },
     };
   }
 
