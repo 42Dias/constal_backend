@@ -3,6 +3,10 @@ export default (app) => {
     `/tenant/:tenantId/pedido/:id/fatura`,
     require('./pedidoGerarFatura').default,
   );
+  app.post(
+    `/tenant/:tenantId/pedido-newfatura`,
+    require('./pedidoGerarNewFatura').default,
+  );
   
   app.post(
     `/tenant/:tenantId/pedido`,
