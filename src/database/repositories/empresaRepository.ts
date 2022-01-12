@@ -53,6 +53,7 @@ class EmpresaRepository {
           'cartaoBanco',
           'teste_api_token',
           'user_token',
+          
         ]),
         userId: data.user || null,
         tenantId: tenant.id,
@@ -204,6 +205,11 @@ class EmpresaRepository {
           'live_api_token',
           'teste_api_token',
           'user_token',
+          'cartaoTipo',
+          'cartaoNumero',
+          'cartaoBanco',
+          'cartaoAgencia'
+
         ]),
         userId: data.user || null,
         updatedById: currentUser.id,
@@ -372,6 +378,17 @@ class EmpresaRepository {
             'bairro',
             'pix',
             'importHash',
+            'user_token',
+            'account_id',
+            'live_api_token',
+            'test_api_token',
+            'account_id',
+            'cartaoTipo',
+            'cartaoNumero',
+            'cartaoBanco',
+            'cartaoAgencia'
+
+
           ]),
           userId: currentUser.id || null,
           tenantId: tenant.id,
@@ -403,6 +420,17 @@ class EmpresaRepository {
             'bairro',
             'pix',
             'importHash',
+            'user_token',
+            'account_id',
+            'live_api_token',
+            'test_api_token',
+            'account_id',
+            'cartaoTipo',
+            'cartaoNumero',
+            'cartaoBanco',
+            'cartaoAgencia'
+
+
           ]),
           userId: currentUser.id || null,
           updatedById: currentUser.id,
@@ -896,6 +924,42 @@ class EmpresaRepository {
     output.user = UserRepository.cleanupForRelationships(output.user);
 
     return output;
+  }
+
+  static async findIdBySQL(id) {
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
+      )
+
+
+    let rows2 = await seq.query(
+      `SELECT 
+        * from empresas where id = '${id}'
+      `
+      ,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    
+    return rows2[0] ;
   }
 }
 
