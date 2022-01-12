@@ -10,6 +10,14 @@ const plans = Plans.values;
  * Checks the Permission of the User on a Tenant.
  */
 export default class PermissionChecker {
+  ImagemCreate(produtoEdit: {
+    id: string; allowedRoles: string[]; allowedPlans: string[]; allowedStorage: {
+      id: string; folder: string; maxSizeInBytes: number; /**
+ * Checks if the current user roles allows the permission.
+ */ }[];
+  }) {
+    throw new Error('Method not implemented.');
+  }
   currentTenant;
   language;
   currentUser;
