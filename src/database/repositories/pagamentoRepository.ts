@@ -7,9 +7,14 @@ import Sequelize from 'sequelize'; import UserRepository from './userRepository'
 import { IRepositoryOptions } from './IRepositoryOptions';
 import { getConfig } from '../../config';
 import highlight from 'cli-highlight';
+import EmpresaRepository from './empresaRepository';
+import { IServiceOptions } from '../../services/IServiceOptions';
 const fetch = require("node-fetch");
+const axios = require("axios").default;
 
 const Op = Sequelize.Op;
+
+
 
 let seq = new (<any>Sequelize)(
   getConfig().DATABASE_DATABASE,
@@ -41,8 +46,8 @@ const moderadorIdIugu = 'B4CE264C2A374693B3E3E1F8E72D40E6'
 const { QueryTypes } = require('sequelize');
 
 //Token Usado na Fatura
-const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
-// const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
+// const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
+const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
 
 /*
 api_token deve ser o user_token da empresa
@@ -51,6 +56,12 @@ O split abaixo ira ser usado também
 */
 
 class PagamentoRepository {
+
+  options: IServiceOptions;
+
+  constructor(options) {
+    this.options = options;
+  }
 
   static async create(data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
@@ -156,6 +167,183 @@ class PagamentoRepository {
         //   permit_aggregated: true,
         //   recipient_account_id: moderadorIdIugu
         // }],
+
+        email: pessoa.email,
+        due_date: dataVencimento
+      })
+    };
+
+    await fetch(url, opt)
+      .then(res => res.json())
+      .then(json => {
+        console.log(json)
+        data.idIugu = json.id
+        data.urlFaturaIugu = json.secure_url
+      }
+      )
+      .catch(err => console.error('error:' + err));
+
+    const record = await options.database.pagamento.create(
+      {
+        ...lodash.pick(data, [
+          'idIugu',
+          'urlFaturaIugu',
+        ]),
+        status: 'pendente',
+        pedidoId: data.pedidoId,
+        createdById: currentUser.id,
+        updatedById: currentUser.id,
+      },
+    );
+
+    return record;
+  }
+  static async createNewFaturaWithSplits(data, options: IRepositoryOptions){
+    /*
+    01 - passar os dados do carrinho no front
+    1 - PedidoProdutos? em um array com sua empresa com dados da iugu? 
+    2 - Valor total do pedidoProduto para  ser enviado dentro do split
+    3 - Varrer esse array    
+    */
+
+    /*
+    Passar para ele os dados da empresa específica dentro de um parâmetro do data
+    */
+
+    /*
+    "splits": [
+
+          {
+               "recipient_account_id": "aaa",
+               "cents": 120
+          },
+
+          {
+               "recipient_account_id": "bbbb",
+               "cents": 150
+          }
+     ]
+    */
+    let splits:any[] = []
+    let arrItems: any[] = []
+  
+
+    console.log(data)
+     data.precoTotal;
+    let precoPedido = 0;
+
+    data.fornecedores.produtosNoCarinho.map(
+      (dadoDoSplit) => {
+        console.log("dadoDoSplit")
+        console.log(dadoDoSplit)
+        
+        let newSplit = {
+          "recipient_account_id": dadoDoSplit.empresa.user_token,
+          "cents": dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100
+        }
+        arrItems.push(dadoDoSplit.produto.nome)
+
+        precoPedido += dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100
+
+        console.log(newSplit)
+
+        splits.push(newSplit)
+      }
+    )
+    console.log(splits)
+
+    const currentUser = SequelizeRepository.getCurrentUser(
+      options,
+    );
+
+    console.log("currentUser")
+    console.log(currentUser)
+
+    const pessoa = await options.database.pessoaFisica.findOne(
+      {
+        where: {
+          userId: currentUser.id
+        }
+      }
+    );
+
+    if (!pessoa) {
+      throw new Error404();
+    }
+    console.log(data)
+
+
+
+    if(pessoa.cpf){
+      pessoa.cpf = pessoa.cpf.replace(/\.|-/g, '');
+    }
+    if(pessoa.cep){
+      pessoa.cep = pessoa.cep.replace(/\.|-/g, '');
+    }
+    if(pessoa.celular){
+      pessoa.celular = pessoa.celular.replace(/\+|\(|\)| |-/g, '');
+    }
+
+    let dataVencimento = new Date();
+    dataVencimento.setDate(dataVencimento.getDate() + 3);
+
+    // let arrItems: any = data.produtos.map(e => {
+    //   return {
+    //     description: e.nome,
+    //     quantity: e.quantidade,
+    //     price_cents: e.precoUnitario * 100 //API Iugu considera centavos
+    //   }
+    // });
+
+
+
+    let formaPagamento;
+    switch (data.formaPagamento) {
+      case 'boleto':
+        formaPagamento = ['bank_slip'];
+        break;
+
+      case 'cartao':
+        formaPagamento = precoPedido < 100000 ? ['credit_card'] : ['bank_slip', 'pix'];
+        break;
+
+      case 'pix':
+        formaPagamento = ['pix'];
+        break;
+
+      default:
+        formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
+        break;
+    }
+
+    const url = `https://api.iugu.com/v1/invoices?api_token=${API_TOKEN}`;
+    const opt = {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        //ensure_workday_due_date: true, //Garantir que a data da fatura caia em dia útil
+        items: [
+          arrItems
+        ],
+        payable_with: formaPagamento,
+        payer: {
+          address: {
+            zip_code: pessoa.cep,
+            street: pessoa.estado,
+            number: pessoa.numero,
+            district: pessoa.bairro,
+            city: pessoa.cidade,
+            state: pessoa.estado,
+            country: 'brasil'
+          },
+          name: pessoa.nome,
+          phone: pessoa.celular,
+          cpf_cnpj: pessoa.cpf,
+          email: pessoa.email
+        },
+        ensure_workday_due_date: false,
+
+        splits: splits,
 
         email: pessoa.email,
         due_date: dataVencimento
@@ -760,7 +948,159 @@ class PagamentoRepository {
  
     return output;
   } 
+  static async createEmpresaIugu(empresa) {
 
+    const options = {
+
+      method: 'POST',
+    
+      url: `https://api.iugu.com/v1/marketplace/create_account?api_token=${API_TOKEN}`,
+    
+      headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+    
+      data: {
+        name: empresa.nome
+      }
+    
+    };
+    
+    
+    return axios.request(options).then(function (response) {
+    
+      return response.data;
+    
+    }).catch(function (error) {
+    
+      throw error;
+    
+    });
+  }
+  static async configureEmpresaIugu(data, subcontaId, userToken){
+
+    console.log(data)
+    
+    const options = {
+
+      method: 'POST',
+    
+      url: `https://api.iugu.com/v1/accounts/${subcontaId}/request_verification?api_token=${userToken}`,
+    
+      headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+    
+      data: {
+    
+        data: {
+    
+          physical_products: false,
+
+          
+          // price_range: 'Entre R$ 0,00 e R$ 100000,00',
+          price_range: 'Entre R$ 0,00 e R$ 100000,00',
+          
+          business_type: 'Vendas',
+          // business_type: 'Descrição do negócio',
+          
+          // person_type: '\'Pessoa Física\' ou \'Pessoa Jurídica\'',
+          person_type: 'Pessoa Jurídica',
+          
+          // automatic_transfer: true,
+          automatic_transfer: true,
+          
+          company_name: data.nome,
+
+          // cnpj: 'cnpj só numeros',
+          // cnpj: data.cnpj? data.cnpj: empresaData.cnpj,
+          cnpj: data.cnpj,
+    
+          // address: 'endereço',
+          address: data.logradouro,
+    
+          // cep: 'cep',
+          cep: data.cep,
+    
+          // city: 'cidade',
+          city: data.cidade,
+    
+          // district: 'bairro',
+          district: data.bairro,
+    
+          // state: 'estado',
+          state: data.estado,
+    
+          // telephone: 'telefone',
+          telephone: data.telefone.replace(/\+|\(|\)| |-/g, ''),
+    
+          // bank: '\'Itaú\', \'Bradesco\', \'Caixa Econômica\', \'Banco do Brasil\', \'Santander\', \'Banrisul\', \'Sicredi\', \'Sicoob\', \'Inter\', \'BRB\', \'Via Credi\', \'Neon\', \'Votorantim\', \'Nubank\', \'Pagseguro\', \'Banco Original\', \'Safra\', \'Modal\', \'Banestes\',\'Unicred\',\'Money Plus\',\'Mercantil do Brasil\',\'JP Morgan\',\'Gerencianet Pagamentos do Brasil\', \'Banco C6\', \'BS2\', \'Banco Topazio\', \'Uniprime\', \'Stone\', \'Banco Daycoval\', \'Rendimento\', \'Banco do Nordeste\', \'Citibank\', \'PJBank\', \'Cooperativa Central de Credito Noroeste Brasileiro\', \'Uniprime Norte do Paraná\', \'Global SCM\', \'Next\', \'Cora\', \'Mercado Pago\', \'Banco da Amazonia\', \'BNP Paribas Brasil\', \'Juno\',\'Cresol\',\'BRL Trust DTVM\',\'Banco Banese\',\'Banco BTG Pactual\',\'Banco Omni\',\'Acesso Soluções de Pagamento\',\'CCR de São Miguel do Oeste\',\'Polocred\',\'Ótimo\',',
+          
+          bank:data.cartaoBanco,
+    
+          // bank_ag: 'Agência da Conta',
+          bank_ag: data.cartaoAgencia,
+    
+          // bank_cc: 'Número da Conta'
+          bank_cc: data.cartaoNumero,
+    
+          // account_type: 'Poupança' 'Corrente' , 
+          account_type: data.cartaoTipo,
+    
+        }
+    
+      }
+    
+    };
+    
+    
+    return axios.request(options).then(function (response) {
+    
+      console.log("response.data");
+      console.log(response.data);
+
+      if(response.status == 200 ){
+        
+
+        return response.data;
+
+
+      }
+      else{
+        throw 'Verifique seus dados ou tente novamente'
+      }
+    
+    })
+    .catch( (error) => {
+
+      console.log("error.response");
+      console.log(error.response.data);
+      console.error(error);
+      
+    
+    });;
+  }
 }
 
 export default PagamentoRepository;
+
+/*
+Cadastrar
+*/
+/*
+{
+  "account_id": "C12C41B504C94F47AC82FB22E3DC5CD4",
+  "name": "Account #c12c41b5-04c9-4f47-ac82-fb22e3dc5cd4",
+  "live_api_token": "DD4921D64B4E5F578F61F89092E4E8E766C21D10D23F3D8BB07342D2FBC5A0CB",
+  "test_api_token": "C1847EAA3098E5E14E7442CBC0FC00E79DCCAFCC191E6A5B7BC1698D27512E32",
+  "user_token": "BEF2AD51B58CC1F117E34AF3AFF86C82875E0D643724F9B32453B29ABB2C5EFF",
+  "commissions": null
+}
+*/
+/*
+errors: {
+    company_name: [ 'é obrigatório' ], --
+    bank: [ 'não é válido' ],
+    bank_ag: [ 'é obrigatório' ],
+    account_type: [ 'não é válido' ]
+
+*/
+
+// D346EC6805F7058689D009576F63E11D0E9A9E2EF9C3473511121B2DCEC87AD6
+
