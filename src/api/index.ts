@@ -99,7 +99,6 @@ require('./comentario').default(routes);
 require('./banner').default(routes);
 
 
-
 // Loads the Tenant if the :tenantId param is passed
 routes.param('tenantId', tenantMiddleware);
 
@@ -108,6 +107,7 @@ app.use('/api', routes);
 
 // let https = require('https');
 let https = require('https');
+// let https = require('http');
 const fs = require('fs');
 
 let sslServer;
