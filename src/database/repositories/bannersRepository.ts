@@ -344,12 +344,6 @@ class BannersRepository {
         });
       }
 
-      if (filter.promocaoId) {
-        whereAnd.push({
-          ['promocaoId']: SequelizeFilterUtils.uuid(filter.promocaoId),
-        });
-      }
-
       if (filter.nome) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
@@ -360,135 +354,16 @@ class BannersRepository {
         );
       }
 
-      if (filter.descricao) {
+      if (filter.status) {
         whereAnd.push(
           SequelizeFilterUtils.ilikeIncludes(
             'banners',
-            'descricao',
-            filter.descricao,
+            'status',
+            filter.status,
           ),
         );
       }
 
-      if (filter.marca) {
-        whereAnd.push(
-          SequelizeFilterUtils.ilikeIncludes(
-            'banners',
-            'marca',
-            filter.marca,
-          ),
-        );
-      }
-
-      if (filter.modelo) {
-        whereAnd.push(
-          SequelizeFilterUtils.ilikeIncludes(
-            'banners',
-            'modelo',
-            filter.modelo,
-          ),
-        );
-      }
-
-      if (filter.caracteristicas) {
-        whereAnd.push(
-          SequelizeFilterUtils.ilikeIncludes(
-            'banners',
-            'caracteristicas',
-            filter.caracteristicas,
-          ),
-        );
-      }
-
-      if (filter.codigo) {
-        whereAnd.push(
-          SequelizeFilterUtils.ilikeIncludes(
-            'banners',
-            'codigo',
-            filter.codigo,
-          ),
-        );
-      }
-
-      if (filter.precoRange) {
-        const [start, end] = filter.precoRange;
-
-        if (start !== undefined && start !== null && start !== '') {
-          whereAnd.push({
-            preco: {
-              [Op.gte]: start,
-            },
-          });
-        }
-
-        if (end !== undefined && end !== null && end !== '') {
-          whereAnd.push({
-            preco: {
-              [Op.lte]: end,
-            },
-          });
-        }
-      }
-
-      if (filter.somatoriaAvaliacoesRange) {
-        const [start, end] = filter.somatoriaAvaliacoesRange;
-
-        if (start !== undefined && start !== null && start !== '') {
-          whereAnd.push({
-            somatoriaAvaliacoes: {
-              [Op.gte]: start,
-            },
-          });
-        }
-
-        if (end !== undefined && end !== null && end !== '') {
-          whereAnd.push({
-            somatoriaAvaliacoes: {
-              [Op.lte]: end,
-            },
-          });
-        }
-      }
-
-      if (filter.quantidadeAvaliacoesRange) {
-        const [start, end] = filter.quantidadeAvaliacoesRange;
-
-        if (start !== undefined && start !== null && start !== '') {
-          whereAnd.push({
-            quantidadeAvaliacoes: {
-              [Op.gte]: start,
-            },
-          });
-        }
-
-        if (end !== undefined && end !== null && end !== '') {
-          whereAnd.push({
-            quantidadeAvaliacoes: {
-              [Op.lte]: end,
-            },
-          });
-        }
-      }
-
-      if (filter.volumeVendasRange) {
-        const [start, end] = filter.volumeVendasRange;
-
-        if (start !== undefined && start !== null && start !== '') {
-          whereAnd.push({
-            volumeVendas: {
-              [Op.gte]: start,
-            },
-          });
-        }
-
-        if (end !== undefined && end !== null && end !== '') {
-          whereAnd.push({
-            volumeVendas: {
-              [Op.lte]: end,
-            },
-          });
-        }
-      }
 
       if (
         filter.isOferta === true ||
@@ -611,12 +486,12 @@ class BannersRepository {
       `SELECT 
       p.*
       FROM
-          bannerss p
+          banners p
       WHERE
-          p.status = 'aprovado'
-          and p.isOferta = false
-      GROUP BY p.id
-      ORDER BY p.createdAt DESC;`
+          p.status = 'ativo'
+	        and deletedAt is null
+          GROUP BY p.id
+          ORDER BY p.createdAt DESC;`
       ,
       {
         nest: true,
