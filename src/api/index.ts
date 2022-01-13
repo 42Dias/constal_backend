@@ -15,7 +15,7 @@ import path from 'path';
 const app = express();
 
 // Enables CORS
-// app.use(cors({ origin: true }));
+app.use(cors({ origin: true }));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -97,7 +97,7 @@ require('./pedidoProduto').default(routes);
 require('./smtp').default(routes);
 require('./comentario').default(routes);
 require('./banner').default(routes);
-require('./alternativeUpload').default(routes);
+
 
 
 // Loads the Tenant if the :tenantId param is passed
@@ -106,6 +106,7 @@ routes.param('tenantId', tenantMiddleware);
 // Add the routes to the /api endpoint
 app.use('/api', routes);
 
+// let https = require('https');
 let https = require('https');
 const fs = require('fs');
 
