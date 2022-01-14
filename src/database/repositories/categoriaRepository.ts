@@ -49,6 +49,7 @@ class CategoriaRepository {
       {
         ...lodash.pick(data, [
           'nome',          
+          'isFixed', 
           'importHash',
           'status'
         ]),
@@ -109,6 +110,7 @@ class CategoriaRepository {
         ...lodash.pick(data, [
           'nome', 
           'status',         
+          'isFixed',         
           'importHash',
         ]),
 
@@ -452,7 +454,7 @@ class CategoriaRepository {
 
     let query =
       `
-      select c.nome, c.id from categoria c where c.status = 'aprovado';
+      select c.nome, c.id from categoria c where c.status = 'aprovado' and isFixed is null  and deletedAt is null;
       `;
 
     let record = await seq.query(query, {
@@ -465,6 +467,26 @@ class CategoriaRepository {
 
     return record;
   }
+
+  static async categoriaListAprovadosIsFixed() {
+
+    let query =
+      `
+      select c.nome, c.id from categoria c where c.status = 'aprovado' and isFixed is not null  and deletedAt is null;
+      `;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.SELECT,
+    });
+
+    if (!record) {
+      throw new Error404();
+    }
+
+    return record;
+  }
+
+
   static async categoriaFindByName(id) {
 
     let query =
