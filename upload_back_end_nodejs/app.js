@@ -114,7 +114,7 @@ app.post("/upload-image", uploadA.single('avatar'), async (req, res, next) => {
 
 
 // http.createServer(app).listen(80);
-
+/*
 let server = https.createServer({
     key: fs.readFileSync(path.join(__dirname,  './cert', 'privada25294.key'), 'ascii'),
     cert: fs.readFileSync(path.join(__dirname, './cert', 'certificado25294.pem'), 'ascii')
@@ -124,9 +124,9 @@ server.listen(
     3000, () => {
     console.log("Servidor iniciado na porta 3000: localhost:3000");
 });
-
-/*
-app.listen(8080, () => {
-    console.log("Servidor iniciado na porta 8080: http://localhost:8080");
-});
 */
+
+app.listen(3000, () => {
+    console.log("Servidor iniciado na porta 3000: http://localhost:3000");
+});
+
