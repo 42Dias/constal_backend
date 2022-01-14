@@ -103,6 +103,9 @@ export default class CategoriaService {
       throw error;
     }
   }
+  async deleteOne(id){
+    await CategoriaRepository.destroyOne(id);
+  }
 
   async findById(id) {
     return CategoriaRepository.findById(id, this.options);
