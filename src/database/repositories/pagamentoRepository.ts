@@ -200,17 +200,6 @@ class PagamentoRepository {
   }
   static async createNewFaturaWithSplits(data, options: IRepositoryOptions){
     /*
-    01 - passar os dados do carrinho no front
-    1 - PedidoProdutos? em um array com sua empresa com dados da iugu? 
-    2 - Valor total do pedidoProduto para  ser enviado dentro do split
-    3 - Varrer esse array    
-    */
-
-    /*
-    Passar para ele os dados da empresa específica dentro de um parâmetro do data
-    */
-
-    /*
     "splits": [
 
           {
@@ -232,7 +221,7 @@ class PagamentoRepository {
      data.precoTotal;
     let precoPedido = 0;
 
-    data.fornecedores.produtosNoCarinho.map(
+    data.fornecedores.produtosNoCarinho.map( //aqui são normalizados os dados entre nosso banco de dados e o servidor dos dados além de gerar as faturas como descrito no comentário acima
       (dadoDoSplit) => {
         console.log("dadoDoSplit")
         console.log(dadoDoSplit)
@@ -286,15 +275,6 @@ class PagamentoRepository {
 
     let dataVencimento = new Date();
     dataVencimento.setDate(dataVencimento.getDate() + 3);
-
-    // let arrItems: any = data.produtos.map(e => {
-    //   return {
-    //     description: e.nome,
-    //     quantity: e.quantidade,
-    //     price_cents: e.precoUnitario * 100 //API Iugu considera centavos
-    //   }
-    // });
-
 
 
     let formaPagamento;
