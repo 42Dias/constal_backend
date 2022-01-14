@@ -131,6 +131,10 @@ export default class CategoriaService {
     return CategoriaRepository.categoriaListAprovados();
   }
 
+  async categoriaListAprovadosIsFixed() {
+    return CategoriaRepository.categoriaListAprovadosIsFixed();
+  }
+
   async import(data, importHash) {
     if (!importHash) {
       throw new Error400(
