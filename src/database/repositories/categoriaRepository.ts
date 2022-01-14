@@ -197,7 +197,6 @@ class CategoriaRepository {
     if (!record) {
       throw new Error404();
     }
-
     return this._fillWithRelationsAndFiles(record, options);
   }
 
@@ -503,6 +502,44 @@ class CategoriaRepository {
       throw new Error404();
     }
 
+    return record;
+  }
+  static async destroyOne(id){
+
+    let seq = new (<any>Sequelize)(
+      getConfig().DATABASE_DATABASE,
+      getConfig().DATABASE_USERNAME,
+      getConfig().DATABASE_PASSWORD,
+      {
+        host: getConfig().DATABASE_HOST,
+        dialect: getConfig().DATABASE_DIALECT,
+        logging:
+          getConfig().DATABASE_LOGGING === 'true'
+            ? (log) =>
+              console.log(
+                highlight(log, {
+                  language: 'sql',
+                  ignoreIllegals: true,
+                }),
+              )
+            : false,
+        timezone: getConfig().DATABASE_TIMEZONE,
+      },
+
+    );
+
+    let record = await seq.query(
+      `
+      delete from categoria where id='${id}';
+      `
+      ,
+      {
+        nest: true,
+        type: QueryTypes.DELETE,
+      }
+    );
+
+    // console.log(record)
     return record;
   }
 }
