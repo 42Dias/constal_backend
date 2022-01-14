@@ -38,4 +38,8 @@ export default (app) => {
     `/categoria-aprovados`,
     require('./categoriaListAprovados').default,
   );
+  app.get(
+    `/categoria-aprovados-is-fixed`,
+    require('./categoriaListAprovadosIsFixed').default,
+  );
 };
