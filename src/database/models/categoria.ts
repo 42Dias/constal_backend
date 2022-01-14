@@ -15,6 +15,9 @@ export default function (sequelize) {
       status: {
         type: DataTypes.TEXT,
       },
+      isFixed: {
+        type: DataTypes.TEXT,
+      },
       importHash: {
         type: DataTypes.STRING(255),
         allowNull: true,    
