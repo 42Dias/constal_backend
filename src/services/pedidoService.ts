@@ -141,7 +141,7 @@ export default class PedidoService {
 
   async geraNewFatura(data) {
 
-    try {
+    try { //Pega os ids das empresas cadastradas no nosso bancos de dados e através desses dados é passado o dinheiro a ser pago
       data.fornecedores.produtosNoCarinho.map(
         async (fornecedorObjeto) => {
           console.log(fornecedorObjeto.fornecedorId)
@@ -149,14 +149,14 @@ export default class PedidoService {
           console.log(fornecedorObjeto)
         }
       )
-      setTimeout(async () => {
+
+        
         let fatura = await PagamentoRepository.createNewFaturaWithSplits(data, {
           ... this.options
         });
-  
+
         return fatura;
-        
-      }, 5000);
+      
 
     } catch (error) {
 
