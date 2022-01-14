@@ -15,6 +15,10 @@ export default (app) => {
     `/tenant/:tenantId/categoria`,
     require('./categoriaDestroy').default,
   );
+  app.delete(
+    `/tenant/:tenantId/categoriaDeleteOne/:id`,
+    require('./categoriaDestroyOne').default,
+  );
   app.get(
     `/tenant/:tenantId/categoria/autocomplete`,
     require('./categoriaAutocomplete').default,
