@@ -982,18 +982,27 @@ class ProdutoRepository {
 
   static async findProdutobyId(id: number) {
 
+    // let query =
+    //   `SELECT 
+    // p.*, f.publicUrl
+    // FROM
+    //     produtos p
+    //         LEFT JOIN
+    //     files f ON f.belongsToId = p.id
+    //     where p.useId = '${id}';`;
+        
     let query =
       `SELECT 
-    p.*, f.publicUrl
-    FROM
-        produtos p
-            LEFT JOIN
-        files f ON f.belongsToId = p.id
-        where p.useId = '${id}';`;
+          *
+            FROM 
+            produtos 
+              LIMIT 1 OFFSET ${id-1};`
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
     });
+
+    console.log(record)
 
     if (!record) {
       throw new Error404();
