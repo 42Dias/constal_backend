@@ -391,9 +391,14 @@ class ComentarioRepository {
 
   let record = await seq.query(
     `SELECT 
-      * from
-        comentarios
-      LIMIT 0, 10;`
+      c.*,
+      e.nome,
+      e.razaoSocial,
+      e.cnpj
+      from
+        comentarios c
+        left JOIN empresas e
+    ON c.fornecedorEmpresaId = e.id;`
     ,
     {
       nest: true,
