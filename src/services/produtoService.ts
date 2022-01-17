@@ -17,6 +17,7 @@ export default class ProdutoService {
     const transaction = await SequelizeRepository.createTransaction(
       this.options.database,
     );
+    console.log(data)
 
     try {
       /*

@@ -2,7 +2,11 @@
   "name": "app-backend",
   "description": "Backend",
   "scripts": {
-    "start": "nodemon --watch \"src/**/*.ts\" -e ts,json --exec \"ts-node --transpile-only ./src/server.ts\"",
+    "startnodemon": "nodemon --watch \"src/**/*.ts\" -e ts,json --exec \"ts-node --transpile-only ./src/server.ts\"",
+    "start": "pm2 start  --watch \"src/**/*.ts\" -e ts,json  \"ts-node --transpile-only ./src/server.ts\"",
+    "stop": "pm2 stop /src/server.ts",
+    
+
     "test": "nodemon --exec \"cross-env NODE_ENV=test mocha -r ts-node/register ./src/**/*.test.ts --exit || exit 1\"",
     "build:documentation": "copyfiles --flat ./src/documentation/openapi.json ./dist/documentation/ --output public",
     "build": "tsc && npm run build:documentation --output public",
@@ -38,6 +42,7 @@
     "passport-google-oauth": "2.0.0",
     "pg": "8.3.3",
     "pg-hstore": "2.3.3",
+    "pm2": "^5.1.2",
     "sequelize": "6.3.5",
     "sqlite": "4.0.14",
     "stripe": "8.96.0",

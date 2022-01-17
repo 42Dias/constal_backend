@@ -34,6 +34,9 @@ export default class PermissionChecker {
    */
   validateHas(permission) {
     if (!this.has(permission)) {
+      console.log("permission")
+      console.log(permission)
+      console.log("dont have permission!")
       throw new Error403(this.language);
     }
   }
@@ -42,16 +45,21 @@ export default class PermissionChecker {
    * Checks if the user has a specific permission.
    */
   has(permission) {
+    console.log(permission)
+    console.log("permission has")	
     assert(permission, 'permission is required');
 
     if (!this.isEmailVerified) {
+      console.log("email stopped")
       return false;
     }
 
     if (!this.hasPlanPermission(permission)) {
+      console.log('stped has permission')
       return false;
     }
-
+    console.log(' this.hasRolePermission  ')
+    console.log(this.hasRolePermission(permission) )
     return this.hasRolePermission(permission);
   }
 
@@ -77,10 +85,20 @@ export default class PermissionChecker {
    * Checks if the current user roles allows the permission.
    */
   hasRolePermission(permission) {
-    return this.currentUserRolesIds.some((role) =>
-      permission.allowedRoles.some(
-        (allowedRole) => allowedRole === role,
-      ),
+
+    console.log(this.currentUserRolesIds)
+	
+    return this.currentUserRolesIds.some((role) =>{
+      return permission.allowedRoles.some(
+        (allowedRole) => {
+             console.log(allowedRole)
+	     console.log(role)
+	     console.log(allowedRole == role)
+
+             return allowedRole == role
+       }
+      )
+     }
     );
   }
 
@@ -126,8 +144,13 @@ export default class PermissionChecker {
     if (!tenant) {
       return [];
     }
-
-    return tenant.roles;
+    console.log('*-*-**-*-*-*-*-')
+    console.log('tenant.roles')
+    console.log(tenant.roles)
+    console.log(JSON.parse(tenant.roles))
+    console.log(typeof(tenant.roles))
+    console.log(typeof(JSON.parse(tenant.roles)))
+    return JSON.parse(tenant.roles);
   }
 
   /**

@@ -48,6 +48,9 @@ class ProdutoRepository {
     const transaction = SequelizeRepository.getTransaction(
       options,
     );
+   
+    console.log(data)
+
     try {
 
 
