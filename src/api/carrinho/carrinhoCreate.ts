@@ -5,6 +5,14 @@ import CarrinhoService from '../../services/carrinhoService';
 
 export default async (req, res, next) => {
   try {
+    console.log(req.currentTenant)
+    console.log(req.language)
+    console.log(req.currentUser)
+    console.log(req.currentUser.tenants[0].dataValues)
+        console.log("re------------------------------*********************q")
+	console.log(req)
+
+
     new PermissionChecker(req).validateHas(
       Permissions.values.carrinhoCreate,
     );

@@ -24,11 +24,11 @@ class CarrinhoRepository {
         where:
         {
           userId: currentUser.id,
-          tenantId: tenant.id,
+          tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         defaults: {
           userId: currentUser.id || null,
-          tenantId: tenant.id,
+          tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
           createdById: currentUser.id,
           updatedById: currentUser.id,
         }
@@ -110,7 +110,7 @@ class CarrinhoRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb' ,
         },
         transaction,
       },
@@ -152,7 +152,7 @@ class CarrinhoRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         include,
         transaction,
