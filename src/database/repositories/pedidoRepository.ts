@@ -856,7 +856,40 @@ class PedidoRepository {
 
     return record;
   }
+  static async listFaturas({ filter, limit = 0, offset = 0, orderBy = '' }
+  ) {
 
+  let where = '';
+  if(filter){
+    if(filter.produtoId){
+      where = ` p.fornecedorEmpresaId = '${filter.id} `
+    }
+    else{
+      where = ``
+    }
+
+
+    const query = `
+    select
+    pg.*,
+    pp.quantidade,
+      pp.precoUnitario,
+    pp.precoTotal,
+    p.id as pedidoId,
+      pp.produtoId,
+      p.fornecedorEmpresaId
+      
+    from pagamentos pg
+    inner join pedidos p
+    inner join pedidoProdutos pp 
+      where 
+      pg.pedidoId = p.id 
+      and pp.pedidoId = p.id 
+      and pg.urlFaturaIugu is not null
+          -- Fazer um req.id e passar o id da empresa e fazer o esquema do where
+            ${where};`
+  }
+  }
 }
 
 export default PedidoRepository;
