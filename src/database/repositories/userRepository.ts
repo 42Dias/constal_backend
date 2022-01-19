@@ -454,7 +454,7 @@ export default class UserRepository {
         model: options.database.tenantUser,
         as: 'tenants',
         where: {
-          ['tenantId']: currentTenant.id,
+          ['tenantId']: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb' ,
         },
       });
     }
@@ -490,7 +490,7 @@ export default class UserRepository {
         const innerWhereAnd: Array<any> = [];
 
         innerWhereAnd.push({
-          ['tenantId']: currentTenant.id,
+          ['tenantId']: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         });
 
         innerWhereAnd.push(
@@ -513,7 +513,7 @@ export default class UserRepository {
           model: options.database.tenantUser,
           as: 'tenants',
           where: {
-            ['tenantId']: currentTenant.id,
+            ['tenantId']: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
             status: filter.status,
           },
         });
@@ -602,7 +602,7 @@ export default class UserRepository {
         model: options.database.tenantUser,
         as: 'tenants',
         where: {
-          ['tenantId']: currentTenant.id,
+          ['tenantId']: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
       },
     ];
@@ -661,16 +661,29 @@ export default class UserRepository {
       options,
     );
 
+    /*
+    o record está retornando null
+    usa as funções do req
+    configurado de forma igual ao local?
+    banco de dados?
+    como verificar?
+    estou ficando louco?
+    */
+   
     let record = await options.database.user.findByPk(id, {
       transaction,
     });
+    console.log("record 1")
+    console.log(record)
 
     record = await this._fillWithRelationsAndFiles(
       record,
       options,
     );
-
+    console.log("record 2")
+    console.log(record)
     if (!record) {
+      console.log("aqui")
       throw new Error404();
     }
 
@@ -687,7 +700,13 @@ export default class UserRepository {
         record,
         currentTenant,
       );
+
+      console.log("record 3")
+      console.log(record)
     }
+
+    console.log("record 4")
+    console.log(record)
 
     return record;
   }
@@ -943,7 +962,7 @@ export default class UserRepository {
         model: options.database.tenantUser,
         as: 'tenants',
         where: {
-          ['tenantId']: currentTenant.id,
+          ['tenantId']: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
       },
     ];

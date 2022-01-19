@@ -43,7 +43,7 @@ class PessoaFisicaRepository {
           'importHash',
         ]),
         userId: data.user || null,
-        tenantId: tenant.id,
+        tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         createdById: currentUser.id,
         updatedById: currentUser.id,
       },
@@ -157,7 +157,7 @@ class PessoaFisicaRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         transaction,
       },
@@ -228,7 +228,7 @@ class PessoaFisicaRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         transaction,
       },
@@ -270,7 +270,7 @@ class PessoaFisicaRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         include,
         transaction,
@@ -304,7 +304,7 @@ class PessoaFisicaRepository {
       {
         where: {
           userId: currentUser.id,
-          tenantId: currentTenant.id,
+          tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb' ,
         },
         include,
       },
@@ -343,7 +343,7 @@ class PessoaFisicaRepository {
       id: {
         [Op.in]: ids,
       },
-      tenantId: currentTenant.id,
+      tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
     };
 
     const records = await options.database.pessoaFisica.findAll(
@@ -369,7 +369,7 @@ class PessoaFisicaRepository {
       {
         where: {
           ...filter,
-          tenantId: tenant.id,
+          tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         transaction,
       },
@@ -393,7 +393,7 @@ class PessoaFisicaRepository {
     ];
 
     whereAnd.push({
-      tenantId: tenant.id,
+      tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
     });
 
     if (filter) {

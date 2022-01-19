@@ -39,7 +39,6 @@ export default class FileRepository {
   ) {
     this._validateReplaceRelationFiles(relation, options);
     const files = this._normalizeFiles(rawFiles);
-
     await this._removeLegacyFiles(relation, files, options);
     await this._addFiles(relation, files, options);
   }
@@ -84,6 +83,7 @@ export default class FileRepository {
    * Creates the new files on the database.
    */
   static async _addFiles(relation, files, options: IRepositoryOptions) {
+
     const transaction = SequelizeRepository.getTransaction(
       options,
     );
@@ -99,8 +99,20 @@ export default class FileRepository {
     const inexistentFiles = files.filter((file) =>
       Boolean(file.new),
     );
+    console.log("files")
+    console.log(files)
 
+    /*
+    Algo aqui errado?
+    */
+   console.log("inexistentFiles")
+   console.log(inexistentFiles)
+   
+    console.log("---deveria passar no for?---")
     for (const file of inexistentFiles) {
+      // passa por aqui?
+      console.log("---file---")
+      console.log(file)
       await options.database.file.create(
         {
           belongsTo: relation.belongsTo,

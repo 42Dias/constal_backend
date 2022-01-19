@@ -21,8 +21,8 @@ export default class SettingsRepository {
       where: { id: tenant.id, tenantId: tenant.id },
       defaults: {
         ...defaults,
-        id: tenant.id,
-        tenantId: tenant.id,
+        id: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
+        tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb'|| 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         createdById: currentUser ? currentUser.id : null,
       },
       transaction: SequelizeRepository.getTransaction(
@@ -62,8 +62,8 @@ export default class SettingsRepository {
       where: { id: tenant.id, tenantId: tenant.id },
       defaults: {
         ...data,
-        id: tenant.id,
-        tenantId: tenant.id,
+        id: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
+        tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         createdById: currentUser ? currentUser.id : null,
       },
       transaction,

@@ -947,7 +947,12 @@ class PagamentoRepository {
     
     return axios.request(options).then(function (response) {
     
-      return response.data;
+      if(response.status == 200){
+        return response.data;
+      }
+      else{
+        throw new Error404();
+      }
     
     }).catch(function (error) {
     
@@ -1043,7 +1048,8 @@ class PagamentoRepository {
 
       }
       else{
-        throw 'Verifique seus dados ou tente novamente'
+        throw new Error404();
+        // throw 'Verifique seus dados ou tente novamente'
       }
     
     })

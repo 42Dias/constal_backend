@@ -59,7 +59,7 @@ class PedidoRepository {
 
       compradorUserId: currentUser.id || null,
       fornecedorEmpresaId: data.fornecedorEmpresa || null,
-      tenantId: tenant.id,
+      tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
       createdById: currentUser.id,
       updatedById: currentUser.id,
     });
@@ -88,7 +88,7 @@ class PedidoRepository {
     let record = await options.database.pedido.findOne({
       where: {
         id,
-        tenantId: currentTenant.id,
+        tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
       },
     });
 

@@ -17,7 +17,7 @@ class CarrinhoRepository {
 
     const tenant = SequelizeRepository.getCurrentTenant(
       options,
-    );
+    ) || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb'
 
     const record = await options.database.carrinho.findOrCreate(
       {

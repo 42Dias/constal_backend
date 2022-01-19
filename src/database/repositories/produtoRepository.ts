@@ -684,7 +684,9 @@ class ProdutoRepository {
           p.status = 'aprovado'
           and p.isOferta = false
       GROUP BY p.id
-      ORDER BY p.createdAt DESC;`
+      ORDER BY p.createdAt DESC
+      LIMIT 0, 10;
+      `
       ,
       {
         nest: true,
@@ -739,6 +741,8 @@ class ProdutoRepository {
           ${where}
       GROUP BY p.id
       ORDER BY p.createdAt DESC
+      LIMIT 0, 10;
+
       ;
       `
       ,
@@ -788,6 +792,10 @@ class ProdutoRepository {
       console.log("id")
       where = `and p.id = '${filter.filter.id}' `
     }
+    if(filter.filter.isOferta){
+      console.log("oferta")
+      where = `and p.isOferta = '${filter.filter.isOferta}' `
+    }
     
     let record = await seq.query(
       `SELECT 
@@ -799,7 +807,6 @@ class ProdutoRepository {
           ${where}
       GROUP BY p.id
       ORDER BY p.createdAt DESC
-      ;
       `
       ,
       {
