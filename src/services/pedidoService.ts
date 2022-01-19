@@ -238,12 +238,12 @@ export default class PedidoService {
     );
   }
 
-  async listFaturas(args) {
-    let fatura = await PagamentoRepository.findAndCountAll(args, {
-      ... this.options
-    });
-    return fatura.rows
-  }
+  // async listFaturas(args) {
+  //   let fatura = await PagamentoRepository.findAndCountAll(args, {
+  //     ... this.options
+  //   });
+  //   return fatura.rows
+  // }
 
   async import(data, importHash) {
     if (!importHash) {
@@ -308,7 +308,9 @@ export default class PedidoService {
     }
     
   }
-  
+  async listFaturas(args){
+    return PedidoRepository.listFaturas(args)
+  }
 }
 
 
