@@ -50,4 +50,8 @@ app.get(
   `/tenant/:tenantId/pedido/fatura`,
   require('./listaFaturas').default,
 );
+app.get(
+  `/tenant/:tenantId/pedido-fatura`,
+  require('./listFaturasWithRelations').default,
+);
 };
