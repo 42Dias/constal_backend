@@ -46,7 +46,7 @@ export default (app) => {
     require('./produtoListWithoutLogin').default,
   );
 
-  app.get(
+  app.get(//this require a filter
     `/produtos-list`,
     require('./produtoListWithoutLoginAndWithoutTenant').default,
   );
