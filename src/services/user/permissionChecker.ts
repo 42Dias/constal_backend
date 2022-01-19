@@ -23,7 +23,7 @@ export default class PermissionChecker {
   currentUser;
 
   constructor({ currentTenant, language, currentUser }) {
-    this.currentTenant = currentTenant;
+    this.currentTenant = currentUser.tenants[0].dataValues;
     this.language = language;
     this.currentUser = currentUser;
   }
@@ -34,7 +34,7 @@ export default class PermissionChecker {
    */
   validateHas(permission) {
     if (!this.has(permission)) {
-      console.log("permission")
+      console.log("permission stop 'cuz it is !this.has(permission)")
       console.log(permission)
       console.log("dont have permission!")
       throw new Error403(this.language);
@@ -61,6 +61,7 @@ export default class PermissionChecker {
     console.log(' this.hasRolePermission  ')
     console.log(this.hasRolePermission(permission) )
     return this.hasRolePermission(permission);
+    // return true
   }
 
   /**
@@ -91,11 +92,14 @@ export default class PermissionChecker {
     return this.currentUserRolesIds.some((role) =>{
       return permission.allowedRoles.some(
         (allowedRole) => {
+             console.log(`Raindrops are falling on my head
+And just like the guy whose feet are too big for his bed
+Nothing seems to fit `)
              console.log(allowedRole)
 	     console.log(role)
 	     console.log(allowedRole == role)
-
-             return allowedRole == role
+	     
+	     return allowedRole == role
        }
       )
      }
@@ -136,8 +140,22 @@ export default class PermissionChecker {
         (tenantUser) => tenantUser.status === 'active',
       )*/
       .find((tenantUser) => {
-        return (
-          tenantUser.tenant.id === this.currentTenant.id
+          console.log(`
+It starts with one
+All I know
+It's so unreal
+Watch you go
+I tried so hard and got so far
+But in the end, it doesn't even matter
+I had to fall to lose it all
+But in the end, it doesn't even matter
+`)
+          console.log(tenantUser.tenant.id)
+	  console.log(this.currentTenant)
+	  console.log("tenantUser.tenant.id === this.currentTenant.tenantId")
+	  console.log(tenantUser.tenant.id === this.currentTenant.tenantId) 
+        return(
+          tenantUser.tenant.id === this.currentTenant.tenantId
         );
       });
 
