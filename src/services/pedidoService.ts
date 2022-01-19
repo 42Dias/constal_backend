@@ -146,18 +146,23 @@ export default class PedidoService {
         async (fornecedorObjeto) => {
           console.log(fornecedorObjeto.fornecedorId)
           fornecedorObjeto.empresa = await EmpresaRepository.findIdBySQL(fornecedorObjeto.fornecedorId);
+    
           console.log(fornecedorObjeto)
         }
       )
+      setTimeout(
+        async () => {
+          let fatura = await PagamentoRepository.createNewFaturaWithSplits(data, {
+            ... this.options
+          });
+          return fatura;
+
+        }, 5000
+      )
 
         
-        let fatura = await PagamentoRepository.createNewFaturaWithSplits(data, {
-          ... this.options
-        });
 
-        return fatura;
       
-
     } catch (error) {
 
       SequelizeRepository.handleUniqueFieldError(
