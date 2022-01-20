@@ -8,10 +8,15 @@ export default async (req, res, next) => {
     new PermissionChecker(req).validateHas(
       Permissions.values.pedidoRead,
     );
+    console.log("---------------------------------------------------------------------------------------------------------------------------------")
+    console.log("req.query")
+    console.log(req.query)
+    console.log("---------------------------------------------------------------------------------------------------------------------------------")
+
     
       const payload = await new PedidoService(
         req,
-      ).findPedidoWithProduct(req.query);
+      ).listFaturas(req.query);
       
         await ApiResponseHandler.success(req, res, payload);
       } catch (error) {
