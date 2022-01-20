@@ -309,6 +309,17 @@ export default class PedidoService {
     
   }
   async listFaturas(args){
+    if(args.filter){
+      console.log("args dentro do if")
+      console.log(args.filter.id)
+      let empresa = await  await EmpresaRepository.findByUserId(args.filter.id, this.options);
+      console.log(empresa)
+      args.filter.empresaId = empresa.id
+
+
+    }
+
+
     return PedidoRepository.listFaturas(args)
   }
 }
