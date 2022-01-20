@@ -1053,7 +1053,6 @@ class ProdutoRepository {
     
     const sdk = require('api')('@iugu-dev/v1.0#d6ie79kw6g1afm');
 
-
     let query =
       `SELECT
       *
@@ -1069,8 +1068,8 @@ class ProdutoRepository {
     }
     
     //Token Usado na Fatura
-    const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
-    // const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
+    // const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
+    const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
 
 
 
@@ -1081,7 +1080,7 @@ class ProdutoRepository {
     pagamentos.map(
       (pagamento => {
 
-        if(pagamento.status == 'pendente'){
+        if(pagamento.status == 'pendente' && pagamento.urlFaturaIugu != null){
           const options = {
           
             method: 'GET',
@@ -1169,7 +1168,8 @@ class ProdutoRepository {
     `SELECT
     *
     FROM 
-    produtos`;
+    produtos
+    where isOferta = 1`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
@@ -1181,7 +1181,7 @@ class ProdutoRepository {
           console.log(
             nowDate >= produtos.promocaoEncerramento
           )
-          if(nowDate >= produtos.promocaoEncerramento){
+          if(nowDate >= produtos.promocaoEncerramento || produtos.promocaoEncerramento == null){
             let rows = await seq.query(
               `
               UPDATE produtos p
