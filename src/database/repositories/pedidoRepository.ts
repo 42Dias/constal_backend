@@ -764,14 +764,8 @@ class PedidoRepository {
   static async findPedidoWithProduct(
     options: IRepositoryOptions
     ) {
-    const currentUser = SequelizeRepository.getCurrentUser(options);
-    
-      /*
-
       
-
-      */
-
+    const currentUser = SequelizeRepository.getCurrentUser(options);
     let query =
     `select 
       p.* ,
@@ -858,38 +852,52 @@ class PedidoRepository {
   }
   static async listFaturas({ filter, limit = 0, offset = 0, orderBy = '' }
   ) {
+  console.log("+++++++++++++++++++++++++++++++++++")
+  console.log("filter")
+  console.log(filter)
+  console.log("+++++++++++++++++++++++++++++++++++")
 
   let where = '';
   if(filter){
-    if(filter.produtoId){
-      where = ` p.fornecedorEmpresaId = '${filter.id} `
+    if(filter.empresaId){
+      where = `and p.fornecedorEmpresaId = '${filter.empresaId}' `
+      // where = `and p.fornecedorEmpresaId = '${filter.id} `
     }
     else{
       where = ``
     }
-
-
-    const query = `
-    select
-    pg.*,
-    pp.quantidade,
-      pp.precoUnitario,
-    pp.precoTotal,
-    p.id as pedidoId,
-      pp.produtoId,
-      p.fornecedorEmpresaId
-      
-    from pagamentos pg
-    inner join pedidos p
-    inner join pedidoProdutos pp 
-      where 
-      pg.pedidoId = p.id 
-      and pp.pedidoId = p.id 
-      and pg.urlFaturaIugu is not null
-          -- Fazer um req.id e passar o id da empresa e fazer o esquema do where
-            ${where};`
   }
+  const query = `
+  select
+  pg.*,
+  pp.quantidade,
+    pp.precoUnitario,
+  pp.precoTotal,
+  p.id as pedidoId,
+    pp.produtoId,
+    p.fornecedorEmpresaId
+    
+  from pagamentos pg
+  inner join pedidos p
+  inner join pedidoProdutos pp 
+    where 
+    pg.pedidoId = p.id 
+    and pp.pedidoId = p.id 
+    and pg.urlFaturaIugu is not null
+        -- Fazer um req.id e passar o id da empresa e fazer o esquema do where
+          ${where};`
+
+  
+  let record = await seq.query(query, {
+    type: QueryTypes.SELECT,
+  });
+  if (!record) {
+    throw new Error404();
   }
+
+  return record
+  }
+  
 }
 
 export default PedidoRepository;
