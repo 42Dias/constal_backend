@@ -71,10 +71,11 @@ class ProdutoRepository {
             'status',
             'frete',
             'prazo',
-            'imagemUrl'
+            'imagemUrl',
+            'categoriaId',
           ]), //como se pegasse o data.algo
           empresaId: data.empresa.id,
-          categoriaId: data.categoria || null,
+          // categoriaId: data.categoria || null,
           tenantId: tenant.id,
           createdById: currentUser.id,
           updatedById: currentUser.id,
@@ -165,9 +166,10 @@ class ProdutoRepository {
           'prazo',
           'promocaoEncerramento',
           'promocaoCriacao',
+          'categoriaId',
         ]),
         empresaId: data.empresaId || null,
-        categoriaId: data.categoria || null,
+        // categoriaId: data.categoria,
         updatedById: currentUser.id,
       },
       {
@@ -586,7 +588,6 @@ class ProdutoRepository {
       }
 
       if (filter.categoria) {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         console.log(filter.categoria)
         whereAnd.push({
           ['categoriaId']: SequelizeFilterUtils.uuid(
