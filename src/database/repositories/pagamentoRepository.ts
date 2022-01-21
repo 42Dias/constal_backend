@@ -239,6 +239,16 @@ class PagamentoRepository {
         splits.push(newSplit)
       }
     )
+    console.log({"splits": splits})
+    /*
+     splits: [
+    {
+      recipient_account_id: '32931CDC346328EE79CCDCD61A004E92EA866FC6E1D2A5F9A4501254977183B8',
+      cents: 9000
+    }
+  ]
+
+    */
     console.log(splits)
 
     const currentUser = SequelizeRepository.getCurrentUser(
@@ -303,7 +313,7 @@ class PagamentoRepository {
       body: JSON.stringify({
         //ensure_workday_due_date: true, //Garantir que a data da fatura caia em dia útil
         items: [
-          arrItems
+          ...arrItems
         ],
         payable_with: formaPagamento,
         payer: {
@@ -329,6 +339,37 @@ class PagamentoRepository {
         due_date: dataVencimento
       })
     };
+    console.log("Dados enviados")
+    console.log(opt)
+    /*
+    {
+      "items":["Sapato Social Infantil"],
+      "payable_with":["all"],
+      "payer":{
+          "address":{
+              "zip_code":"18540000",
+              "street":"15151651",
+              "number":16116511,
+              "district":"industria",
+              "city":"65156165165",
+              "state":"15151651",
+              "country":"brasil"
+            },
+            "name":"aaaaaaaa",
+            "phone":"15996827652",
+            "cpf_cnpj":"52939198810",
+            "email":"ryan@email.com"
+          },
+          "ensure_workday_due_date":false,
+          "splits":[
+            {
+              "recipient_account_id":"32931CDC346328EE79CCDCD61A004E92EA866FC6E1D2A5F9A4501254977183B8","cents":9000
+            }
+          ],
+          "email":"ryan@email.com","due_date":"2022-01-23T11:09:54.810Z"
+        }
+
+    */
 
     await fetch(url, opt)
       .then(res => res.json())
