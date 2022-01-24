@@ -7,6 +7,10 @@ import pagamentoRepository from '../database/repositories/pagamentoRepository';
 import highlight from 'cli-highlight';
 import { Sequelize, QueryTypes } from 'sequelize/types';
 import { getConfig } from '../config';
+import axios from 'axios';
+
+// const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
+const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
 
 export default class EmpresaService {
   options: IServiceOptions;
@@ -206,44 +210,185 @@ export default class EmpresaService {
         
 
 
-        pagamentoRepository.configureEmpresaIugu(data, hasEmpresaProfile.account_id, hasEmpresaProfile.user_token).then(
-          async () => {
-              const record = await EmpresaRepository.createOrUpdate(data, {
-                ...this.options,
-              });
-            return record
-          }
-        )
 
       }
       else{
         console.log('fase0 he he he')
+        try{
+          // AQUI
+          try{
+            const options: any = {
+      
+              method: 'POST',
+            
+              url: `https://api.iugu.com/v1/marketplace/create_account?api_token=${API_TOKEN}`,
+            
+              headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+            
+              data: {
+                name: data.nome
+              }
+            
+            };
+            
+            
+            return axios.request(options).then( (response) => {
+            
+              if(response.status == 200){
+                    try{
+                      console.log('fase1 he he he')
         
-        const responseIugu = await pagamentoRepository.createEmpresaIugu(data).then(
-          async (response) => {
-              console.log('fase1 he he he')
+                      data.user_token = response.data.user_token
+                      data.account_id = response.data.account_id
+                      data.live_api_token = response.data.live_api_token
+                      data.test_api_token = response.data.test_api_token
+                      data.account_id = response.data.account_id
+                      try{
 
-              data.user_token = response.user_token
-              data.account_id = response.account_id
-              data.live_api_token = response.live_api_token
-              data.test_api_token = response.test_api_token
-              data.account_id = response.account_id
+                        console.log(data)
+                      
+                        const optionsRequest: any = {
+                    
+                          method: 'POST',
+                        
+                          url: `https://api.iugu.com/v1/accounts/${data.account_id}/request_verification?api_token=${data.user_token}`,
+                        
+                          headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+                        
+                          data: {
+                        
+                            data: {
+                        
+                              physical_products: false,
+                    
+                              
+                              // price_range: 'Entre R$ 0,00 e R$ 100000,00',
+                              price_range: 'Entre R$ 0,00 e R$ 100000,00',
+                              
+                    
+                              business_type: 'Vendas',
+                              // business_type: 'Descrição do negócio',
+                              
+                              // person_type: '\'Pessoa Física\' ou \'Pessoa Jurídica\'',
+                              person_type: 'Pessoa Jurídica',
+                              
+                              // automatic_transfer: true,
+                              automatic_transfer: true,
+                              
+                              company_name: data.nome,
+                    
+                              // cnpj: 'cnpj só numeros',
+                              // cnpj: data.cnpj? data.cnpj: empresaData.cnpj,
+                              cnpj: data.cnpj,
+                        
+                              // address: 'endereço',
+                              address: data.logradouro,
+                        
+                              // cep: 'cep',
+                              cep: data.cep,
+                        
+                              // city: 'cidade',
+                              city: data.cidade,
+                        
+                              // district: 'bairro',
+                              district: data.bairro,
+                        
+                              // state: 'estado',
+                              state: data.estado,
+                        
+                              // telephone: 'telefone',
+                              telephone: data.telefone.replace(/\+|\(|\)| |-/g, '') || data.celular.replace(/\+|\(|\)| |-/g, '') ,
+                        
+                              // bank: '\'Itaú\', \'Bradesco\', \'Caixa Econômica\', \'Banco do Brasil\', \'Santander\', \'Banrisul\', \'Sicredi\', \'Sicoob\', \'Inter\', \'BRB\', \'Via Credi\', \'Neon\', \'Votorantim\', \'Nubank\', \'Pagseguro\', \'Banco Original\', \'Safra\', \'Modal\', \'Banestes\',\'Unicred\',\'Money Plus\',\'Mercantil do Brasil\',\'JP Morgan\',\'Gerencianet Pagamentos do Brasil\', \'Banco C6\', \'BS2\', \'Banco Topazio\', \'Uniprime\', \'Stone\', \'Banco Daycoval\', \'Rendimento\', \'Banco do Nordeste\', \'Citibank\', \'PJBank\', \'Cooperativa Central de Credito Noroeste Brasileiro\', \'Uniprime Norte do Paraná\', \'Global SCM\', \'Next\', \'Cora\', \'Mercado Pago\', \'Banco da Amazonia\', \'BNP Paribas Brasil\', \'Juno\',\'Cresol\',\'BRL Trust DTVM\',\'Banco Banese\',\'Banco BTG Pactual\',\'Banco Omni\',\'Acesso Soluções de Pagamento\',\'CCR de São Miguel do Oeste\',\'Polocred\',\'Ótimo\',',
+                              
+                              bank:data.cartaoBanco,
+                        
+                              // bank_ag: 'Agência da Conta',
+                              bank_ag: data.cartaoAgencia,
+                        
+                              // bank_cc: 'Número da Conta'
+                              bank_cc: data.cartaoNumero,
+                        
+                              // account_type: 'Poupança' 'Corrente' , 
+                              account_type: data.cartaoTipo,
+                        
+                            }
+                        
+                          }
+                        }
+                            return axios.request(optionsRequest).then(function (response) {
+      
+                              if(response.status == 200){
+                                return response.data;
+                              }
+                              else{
+                                // throw new Error404();
+                              }
+                            
+                            }).catch( (error) => {
+                            
+                              // throw 'Verifique seus dados ou tente novamente MEU2 MEUU'
+                              throw new Error400(
+                                this.options.language,
+                                'importer.errors.importHashRequired',
+                              );
+                            })
+                        
 
+                      }
+        
+                      catch (error) {
+                        console.log("error")
+                        throw error;
+                      }
+                    }
+                    catch (error) {
+                      console.log("error")
 
-              pagamentoRepository.configureEmpresaIugu(data, response.account_id, response.user_token).then(
-                async (response) => {
-                  console.log('fase2 he he he')
-
-
-                    const record = await EmpresaRepository.createOrUpdate(data, {
-                      ...this.options,
-                    });
-                  return record
-                }
-              )
+                      throw error;
+                    }
+                  }
+              else{
+                // throw new Error404();
+              }
+            
+            }).catch(function (error) {
+            
+              throw 'Verifique seus dados ou tente novamente MEU2 MEUU'
+              // return error;
+        
+        
+              
+            });
           }
-          )
-          return responseIugu;
+          catch (error) {
+      
+            throw error;
+          }
+      
+
+            // if(responseIugu == undefined){
+            //   throw new Error400(
+            //     this.options.language,
+            //     'Verifique seus dados ou tente novamente 0',
+            //   );
+            //   // throw 'Verifique seus dados ou tente novamente 0'
+            // }
+            // else{
+            //   return responseIugu;
+            // }
+        }
+        catch (error) {
+          SequelizeRepository.handleUniqueFieldError(
+            error,
+            this.options.language,
+            'empresa',
+          );
+    
+          throw error;
+        }
+        
+        
       }
 
         
@@ -264,4 +409,158 @@ export default class EmpresaService {
   async findByCurrentId() {
     return EmpresaRepository.findByCurrentId(this.options);
   }
+
+  // static async createEmpresaIugu(empresa) {
+  //   try{
+  //     const options = {
+
+  //       method: 'POST',
+      
+  //       url: `https://api.iugu.com/v1/marketplace/create_account?api_token=${API_TOKEN}`,
+      
+  //       headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+      
+  //       data: {
+  //         name: empresa.nome
+  //       }
+      
+  //     };
+      
+      
+  //     return axios.request(options).then(function (response) {
+      
+  //       if(response.status == 200){
+  //         return response.data;
+  //       }
+  //       else{
+  //         // throw new Error404();
+  //       }
+      
+  //     }).catch(function (error) {
+      
+  //       return error;
+  //       throw 'Verifique seus dados ou tente novamente MEU2 MEUU'
+  
+  
+        
+  //     });
+  //   }
+  //   catch (error) {
+
+  //     throw error;
+  //   }
+
+   
+  // }
+  // static async configureEmpresaIugu(data, subcontaId, userToken){
+  //   try{
+
+  //     console.log(data)
+    
+  //     const optionsRequest = {
+  
+  //       method: 'POST',
+      
+  //       url: `https://api.iugu.com/v1/accounts/${subcontaId}/request_verification?api_token=${userToken}`,
+      
+  //       headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+      
+  //       data: {
+      
+  //         data: {
+      
+  //           physical_products: false,
+  
+            
+  //           // price_range: 'Entre R$ 0,00 e R$ 100000,00',
+  //           price_range: 'Entre R$ 0,00 e R$ 100000,00',
+            
+  
+  //           business_type: 'Vendas',
+  //           // business_type: 'Descrição do negócio',
+            
+  //           // person_type: '\'Pessoa Física\' ou \'Pessoa Jurídica\'',
+  //           person_type: 'Pessoa Jurídica',
+            
+  //           // automatic_transfer: true,
+  //           automatic_transfer: true,
+            
+  //           company_name: data.nome,
+  
+  //           // cnpj: 'cnpj só numeros',
+  //           // cnpj: data.cnpj? data.cnpj: empresaData.cnpj,
+  //           cnpj: data.cnpj,
+      
+  //           // address: 'endereço',
+  //           address: data.logradouro,
+      
+  //           // cep: 'cep',
+  //           cep: data.cep,
+      
+  //           // city: 'cidade',
+  //           city: data.cidade,
+      
+  //           // district: 'bairro',
+  //           district: data.bairro,
+      
+  //           // state: 'estado',
+  //           state: data.estado,
+      
+  //           // telephone: 'telefone',
+  //           telephone: data.telefone.replace(/\+|\(|\)| |-/g, '') || data.celular.replace(/\+|\(|\)| |-/g, '') ,
+      
+  //           // bank: '\'Itaú\', \'Bradesco\', \'Caixa Econômica\', \'Banco do Brasil\', \'Santander\', \'Banrisul\', \'Sicredi\', \'Sicoob\', \'Inter\', \'BRB\', \'Via Credi\', \'Neon\', \'Votorantim\', \'Nubank\', \'Pagseguro\', \'Banco Original\', \'Safra\', \'Modal\', \'Banestes\',\'Unicred\',\'Money Plus\',\'Mercantil do Brasil\',\'JP Morgan\',\'Gerencianet Pagamentos do Brasil\', \'Banco C6\', \'BS2\', \'Banco Topazio\', \'Uniprime\', \'Stone\', \'Banco Daycoval\', \'Rendimento\', \'Banco do Nordeste\', \'Citibank\', \'PJBank\', \'Cooperativa Central de Credito Noroeste Brasileiro\', \'Uniprime Norte do Paraná\', \'Global SCM\', \'Next\', \'Cora\', \'Mercado Pago\', \'Banco da Amazonia\', \'BNP Paribas Brasil\', \'Juno\',\'Cresol\',\'BRL Trust DTVM\',\'Banco Banese\',\'Banco BTG Pactual\',\'Banco Omni\',\'Acesso Soluções de Pagamento\',\'CCR de São Miguel do Oeste\',\'Polocred\',\'Ótimo\',',
+            
+  //           bank:data.cartaoBanco,
+      
+  //           // bank_ag: 'Agência da Conta',
+  //           bank_ag: data.cartaoAgencia,
+      
+  //           // bank_cc: 'Número da Conta'
+  //           bank_cc: data.cartaoNumero,
+      
+  //           // account_type: 'Poupança' 'Corrente' , 
+  //           account_type: data.cartaoTipo,
+      
+  //         }
+      
+  //       }
+      
+  //     };
+      
+      
+  //     return axios.request(optionsRequest).then(function (response) {
+      
+  //       console.log("response.data");
+  //       console.log(response.data);
+  
+  //       if(response.status == 200 ){
+          
+  
+  //         return response.data;
+  
+  
+  //       }
+  //       else{
+  //         // throw new Error404("");
+  //         throw 'Verifique seus dados ou tente novamente MEU'
+  //       }
+      
+  //     })
+  //     .catch( (error) => {
+  
+  //       console.log("error.response");
+  //       console.log(error.response.data);
+  //       // console.error(error);
+  //       // throw 'Verifique seus dados ou tente novamente'
+  //       return
+  //     });;
+
+  //   }
+  //   catch (error) {
+
+  //     throw error;
+  //   }
+  // }
 }
+
