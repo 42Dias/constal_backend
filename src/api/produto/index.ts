@@ -71,4 +71,9 @@ export default (app) => {
     `/produto-imagens-promocionais/`,
     require('./produtoImagemPromocao').default,
   );
+
+  app.delete(
+    `/tenant/:tenantId/delete-produto-imagens-promocionais/:id`,
+    require('./produtoImagemPromocaoDelete').default,
+  );
 };
