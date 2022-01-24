@@ -8,6 +8,7 @@ import highlight from 'cli-highlight';
 import { Sequelize, QueryTypes } from 'sequelize/types';
 import { getConfig } from '../config';
 import axios from 'axios';
+import Error404 from '../errors/Error404';
 
 // const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
 const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
@@ -326,12 +327,15 @@ export default class EmpresaService {
                               }
                             
                             }).catch( (error) => {
-                            
-                              // throw 'Verifique seus dados ou tente novamente MEU2 MEUU'
-                              throw new Error400(
-                                this.options.language,
-                                'importer.errors.importHashRequired',
-                              );
+                              console.log(error)
+                              console.log("--**-*-**-*-*--*-*")
+                              console.error(error.response.data);
+                              throw (error.response.data)
+
+                              // throw new Error400(
+                              //   this.options.language,
+                              //   'importer.errors.importHashRequired',
+                              // );
                             })
                         
 
@@ -339,11 +343,15 @@ export default class EmpresaService {
         
                       catch (error) {
                         console.log("error")
+                        console.log(error)
+
                         throw error;
                       }
                     }
                     catch (error) {
                       console.log("error")
+                      console.log("++++++++++++++++++++++++++")
+                      console.log(error)
 
                       throw error;
                     }
@@ -353,16 +361,18 @@ export default class EmpresaService {
               }
             
             }).catch(function (error) {
-            
-              throw 'Verifique seus dados ou tente novamente MEU2 MEUU'
-              // return error;
-        
-        
-              
+              console.log("error")
+              console.log("------------------")
+              // throw new Error400(error);
+              // console.log(error)
+
+              // throw error              
+              return error              
             });
           }
           catch (error) {
-      
+            console.log("error final")
+            console.log(error)
             throw error;
           }
       
