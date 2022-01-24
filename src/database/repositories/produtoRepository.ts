@@ -1221,6 +1221,37 @@ class ProdutoRepository {
 
     return record;
   }
+  
+  static async deletePromocionalImagem(id){
+    console.log(id)
+
+    let configMySql =  `SET SQL_SAFE_UPDATES = 0;`
+
+    let config = await seq.query(configMySql, {
+      type: QueryTypes.UPDATE,
+    });
+
+    console.log(config)
+
+
+    let query =
+    `
+    update produtos
+        set imagemPromocional = null
+        and promocaoCriacao = null
+        and promocaoEncerramento = null
+        and promocaoId = null
+        where promocaoId = '${id}';
+    `;
+
+    let record = await seq.query(query, {
+      type: QueryTypes.UPDATE,
+    });
+
+    console.log(record)
+    
+    return record
+  }
 }
 
 
