@@ -9,6 +9,11 @@ export default (app) => {
     );
 
     app.post(
+      `/cliente/enviarEmailEmpresaAprovada`,
+      require('./appEnviarEmailEmpresaAprovada').default,
+    );
+
+    app.post(
       `/produto/enviarEmailRecusado`,
       require('./sendEmailProduto').default,
     );
