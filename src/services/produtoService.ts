@@ -192,6 +192,10 @@ export default class ProdutoService {
     return ProdutoRepository.listPromocionalImagem();
   }
 
+  async deleteProdutobyId(id) {
+    return ProdutoRepository.deletePromocionalImagem(id);
+  }
+
   async produtoAfterBuy(id, quantidade) {
     return ProdutoRepository.produtoAfterBuy(id, quantidade);
   }
