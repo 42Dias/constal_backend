@@ -970,138 +970,155 @@ class PagamentoRepository {
     return output;
   } 
   static async createEmpresaIugu(empresa) {
+    try{
+      const options = {
 
-    const options = {
+        method: 'POST',
+      
+        url: `https://api.iugu.com/v1/marketplace/create_account?api_token=${API_TOKEN}`,
+      
+        headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+      
+        data: {
+          name: empresa.nome
+        }
+      
+      };
+      
+      
+      return axios.request(options).then(function (response) {
+      
+        if(response.status == 200){
+          return response.data;
+        }
+        else{
+          throw new Error404();
+        }
+      
+      }).catch(function (error) {
+      
+        return error;
+        throw 'Verifique seus dados ou tente novamente MEU2 MEUU'
+  
+  
+        
+      });
+    }
+    catch (error) {
 
-      method: 'POST',
-    
-      url: `https://api.iugu.com/v1/marketplace/create_account?api_token=${API_TOKEN}`,
-    
-      headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
-    
-      data: {
-        name: empresa.nome
-      }
-    
-    };
-    
-    
-    return axios.request(options).then(function (response) {
-    
-      if(response.status == 200){
-        return response.data;
-      }
-      else{
-        throw new Error404();
-      }
-    
-    }).catch(function (error) {
-    
       throw error;
-    
-    });
+    }
+
+   
   }
   static async configureEmpresaIugu(data, subcontaId, userToken){
+    try{
 
-    console.log(data)
+      console.log(data)
     
-    const options = {
-
-      method: 'POST',
-    
-      url: `https://api.iugu.com/v1/accounts/${subcontaId}/request_verification?api_token=${userToken}`,
-    
-      headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
-    
-      data: {
-    
-        data: {
-    
-          physical_products: false,
-
-          
-          // price_range: 'Entre R$ 0,00 e R$ 100000,00',
-          price_range: 'Entre R$ 0,00 e R$ 100000,00',
-          
-          business_type: 'Vendas',
-          // business_type: 'Descrição do negócio',
-          
-          // person_type: '\'Pessoa Física\' ou \'Pessoa Jurídica\'',
-          person_type: 'Pessoa Jurídica',
-          
-          // automatic_transfer: true,
-          automatic_transfer: true,
-          
-          company_name: data.nome,
-
-          // cnpj: 'cnpj só numeros',
-          // cnpj: data.cnpj? data.cnpj: empresaData.cnpj,
-          cnpj: data.cnpj,
-    
-          // address: 'endereço',
-          address: data.logradouro,
-    
-          // cep: 'cep',
-          cep: data.cep,
-    
-          // city: 'cidade',
-          city: data.cidade,
-    
-          // district: 'bairro',
-          district: data.bairro,
-    
-          // state: 'estado',
-          state: data.estado,
-    
-          // telephone: 'telefone',
-          telephone: data.telefone.replace(/\+|\(|\)| |-/g, ''),
-    
-          // bank: '\'Itaú\', \'Bradesco\', \'Caixa Econômica\', \'Banco do Brasil\', \'Santander\', \'Banrisul\', \'Sicredi\', \'Sicoob\', \'Inter\', \'BRB\', \'Via Credi\', \'Neon\', \'Votorantim\', \'Nubank\', \'Pagseguro\', \'Banco Original\', \'Safra\', \'Modal\', \'Banestes\',\'Unicred\',\'Money Plus\',\'Mercantil do Brasil\',\'JP Morgan\',\'Gerencianet Pagamentos do Brasil\', \'Banco C6\', \'BS2\', \'Banco Topazio\', \'Uniprime\', \'Stone\', \'Banco Daycoval\', \'Rendimento\', \'Banco do Nordeste\', \'Citibank\', \'PJBank\', \'Cooperativa Central de Credito Noroeste Brasileiro\', \'Uniprime Norte do Paraná\', \'Global SCM\', \'Next\', \'Cora\', \'Mercado Pago\', \'Banco da Amazonia\', \'BNP Paribas Brasil\', \'Juno\',\'Cresol\',\'BRL Trust DTVM\',\'Banco Banese\',\'Banco BTG Pactual\',\'Banco Omni\',\'Acesso Soluções de Pagamento\',\'CCR de São Miguel do Oeste\',\'Polocred\',\'Ótimo\',',
-          
-          bank:data.cartaoBanco,
-    
-          // bank_ag: 'Agência da Conta',
-          bank_ag: data.cartaoAgencia,
-    
-          // bank_cc: 'Número da Conta'
-          bank_cc: data.cartaoNumero,
-    
-          // account_type: 'Poupança' 'Corrente' , 
-          account_type: data.cartaoTipo,
-    
-        }
-    
-      }
-    
-    };
-    
-    
-    return axios.request(options).then(function (response) {
-    
-      console.log("response.data");
-      console.log(response.data);
-
-      if(response.status == 200 ){
-        
-
-        return response.data;
-
-
-      }
-      else{
-        throw new Error404();
-        // throw 'Verifique seus dados ou tente novamente'
-      }
-    
-    })
-    .catch( (error) => {
-
-      console.log("error.response");
-      console.log(error.response.data);
-      console.error(error);
+      const options = {
+  
+        method: 'POST',
       
-    
-    });;
+        url: `https://api.iugu.com/v1/accounts/${subcontaId}/request_verification?api_token=${userToken}`,
+      
+        headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
+      
+        data: {
+      
+          data: {
+      
+            physical_products: false,
+  
+            
+            // price_range: 'Entre R$ 0,00 e R$ 100000,00',
+            price_range: 'Entre R$ 0,00 e R$ 100000,00',
+            
+  
+            business_type: 'Vendas',
+            // business_type: 'Descrição do negócio',
+            
+            // person_type: '\'Pessoa Física\' ou \'Pessoa Jurídica\'',
+            person_type: 'Pessoa Jurídica',
+            
+            // automatic_transfer: true,
+            automatic_transfer: true,
+            
+            company_name: data.nome,
+  
+            // cnpj: 'cnpj só numeros',
+            // cnpj: data.cnpj? data.cnpj: empresaData.cnpj,
+            cnpj: data.cnpj,
+      
+            // address: 'endereço',
+            address: data.logradouro,
+      
+            // cep: 'cep',
+            cep: data.cep,
+      
+            // city: 'cidade',
+            city: data.cidade,
+      
+            // district: 'bairro',
+            district: data.bairro,
+      
+            // state: 'estado',
+            state: data.estado,
+      
+            // telephone: 'telefone',
+            telephone: data.telefone.replace(/\+|\(|\)| |-/g, '') || data.celular.replace(/\+|\(|\)| |-/g, '') ,
+      
+            // bank: '\'Itaú\', \'Bradesco\', \'Caixa Econômica\', \'Banco do Brasil\', \'Santander\', \'Banrisul\', \'Sicredi\', \'Sicoob\', \'Inter\', \'BRB\', \'Via Credi\', \'Neon\', \'Votorantim\', \'Nubank\', \'Pagseguro\', \'Banco Original\', \'Safra\', \'Modal\', \'Banestes\',\'Unicred\',\'Money Plus\',\'Mercantil do Brasil\',\'JP Morgan\',\'Gerencianet Pagamentos do Brasil\', \'Banco C6\', \'BS2\', \'Banco Topazio\', \'Uniprime\', \'Stone\', \'Banco Daycoval\', \'Rendimento\', \'Banco do Nordeste\', \'Citibank\', \'PJBank\', \'Cooperativa Central de Credito Noroeste Brasileiro\', \'Uniprime Norte do Paraná\', \'Global SCM\', \'Next\', \'Cora\', \'Mercado Pago\', \'Banco da Amazonia\', \'BNP Paribas Brasil\', \'Juno\',\'Cresol\',\'BRL Trust DTVM\',\'Banco Banese\',\'Banco BTG Pactual\',\'Banco Omni\',\'Acesso Soluções de Pagamento\',\'CCR de São Miguel do Oeste\',\'Polocred\',\'Ótimo\',',
+            
+            bank:data.cartaoBanco,
+      
+            // bank_ag: 'Agência da Conta',
+            bank_ag: data.cartaoAgencia,
+      
+            // bank_cc: 'Número da Conta'
+            bank_cc: data.cartaoNumero,
+      
+            // account_type: 'Poupança' 'Corrente' , 
+            account_type: data.cartaoTipo,
+      
+          }
+      
+        }
+      
+      };
+      
+      
+      return axios.request(options).then(function (response) {
+      
+        console.log("response.data");
+        console.log(response.data);
+  
+        if(response.status == 200 ){
+          
+  
+          return response.data;
+  
+  
+        }
+        else{
+          // throw new Error404("");
+          throw 'Verifique seus dados ou tente novamente MEU'
+        }
+      
+      })
+      .catch( (error) => {
+  
+        console.log("error.response");
+        console.log(error.response.data);
+        console.error(error);
+        throw 'Verifique seus dados ou tente novamente '
+      });;
+
+    }
+    catch (error) {
+
+      throw error;
+    }
   }
 }
 
