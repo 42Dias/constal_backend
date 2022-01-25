@@ -542,9 +542,9 @@ class EmpresaRepository {
       e.id as empresaId, e. *, u. *, tu.status, tu.id as tId
       FROM
           users u
-      left JOIN
+            inner JOIN
           empresas e ON e.userId = u.id
-              LEFT JOIN
+            inner JOIN
           tenantUsers tu ON u.id = tu.userId
       WHERE
           
