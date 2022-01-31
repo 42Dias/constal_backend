@@ -782,11 +782,15 @@ class ProdutoRepository {
     );
     let where = ''
 
-    console.log(filter)
-    console.log(filter.filter.categoria)
+    if(filter.filter.promocaoId){
+      console.log("promocaoId")
+      console.log(`'${filter.filter.promocaoId}'`)
+      where = `and p.promocaoId = '${filter.filter.promocaoId}' `
+    }
 
     if(filter.filter.categoria){
       console.log("filter")
+      console.log(filter.filter.categoria)
       where = `and p.categoriaId = '${filter.filter.categoria}' `
     }
     if(filter.filter.id){
@@ -797,9 +801,15 @@ class ProdutoRepository {
       console.log("oferta")
       where = `and p.isOferta = '${filter.filter.isOferta}' `
     }
+
+    if(filter.filter.nome){
+      console.log("nome")
+      where = `and p.nome like '%${filter.filter.nome}%' `
+    }
     
     let record = await seq.query(
-      `SELECT 
+      `
+      SELECT 
       p.*
       FROM
           produtos p
