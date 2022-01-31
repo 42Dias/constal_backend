@@ -7,6 +7,8 @@ import Error404 from '../errors/Error404';
 import SequelizeRepository from '../database/repositories/sequelizeRepository';
 import { getConfig } from '../config';
 import jwt from 'jsonwebtoken';
+import EmpresaRepository from '../database/repositories/empresaRepository';
+import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 
 export default class SmtpService {
 
@@ -265,20 +267,15 @@ export default class SmtpService {
             this.options,
           );
 
-        let cliente = await this.options.database.user.findOne({
-            where: { id },
-            transaction
-          });
-        
-          console.log("cliente.email")
-          console.log(cliente.email)
+        let empresaClinte = await EmpresaRepository.findUserByEmpresaId(id)
 
+        console.log("----empresaClinte----")
+        console.log(empresaClinte.email)
 
-    
         // send mail with defined transport object
         let info = await transporter.sendMail({
             from: env.NODEMAILER_FROM, // sender address
-            to: cliente.email, // list of receivers
+            to:   empresaClinte.email, // cliente.email, // list of receivers
             subject: `Devolutiva da imagem promocional do seu produto ${product.nome}, Constal`, // Subject line
             text: "", // plain text body
             html: `
