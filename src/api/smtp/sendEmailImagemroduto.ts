@@ -5,7 +5,7 @@ export default async (req, res, next) => {
   try {
 
     const payload = await new SmtpService(req).retornoDoProdutoImagemPromocional(
-      req.body.userId, req.body.product, req.body.emailContent
+      req.body.empresaId, req.body.product, req.body.emailContent
       );
 
     await ApiResponseHandler.success(req, res, payload);
