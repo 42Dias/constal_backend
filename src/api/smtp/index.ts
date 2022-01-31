@@ -19,8 +19,8 @@ export default (app) => {
     );
 
     app.post(
-      `/produto/enviarEmailRecusadoImagemProduto`,
-      require('./sendEmailPImagemroduto').default,
+      `/tenant/:tenantId/produto/enviarEmailRecusadoImagemProduto`,
+      require('./sendEmailImagemroduto').default,
     );
   };
   
