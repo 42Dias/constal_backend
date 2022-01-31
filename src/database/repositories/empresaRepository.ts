@@ -11,7 +11,30 @@ import highlight from 'cli-highlight';
 
 const Op = Sequelize.Op;
 
+let seq = new (<any>Sequelize)(
+  getConfig().DATABASE_DATABASE,
+  getConfig().DATABASE_USERNAME,
+  getConfig().DATABASE_PASSWORD,
+  {
+    host: getConfig().DATABASE_HOST,
+    dialect: getConfig().DATABASE_DIALECT,
+    logging:
+      getConfig().DATABASE_LOGGING === 'true'
+        ? (log) =>
+          console.log(
+            highlight(log, {
+              language: 'sql',
+              ignoreIllegals: true,
+            }),
+          )
+        : false,
+    timezone: getConfig().DATABASE_TIMEZONE,
+  },
+
+);
+
 class EmpresaRepository {
+  
 
   static async create(data, options: IRepositoryOptions) {
     const currentUser = SequelizeRepository.getCurrentUser(
@@ -100,27 +123,7 @@ class EmpresaRepository {
     return record
   }
   static async empresaStatusUpdate(id, data) {
-    let seq = new (<any>Sequelize)(
-      getConfig().DATABASE_DATABASE,
-      getConfig().DATABASE_USERNAME,
-      getConfig().DATABASE_PASSWORD,
-      {
-        host: getConfig().DATABASE_HOST,
-        dialect: getConfig().DATABASE_DIALECT,
-        logging:
-          getConfig().DATABASE_LOGGING === 'true'
-            ? (log) =>
-              console.log(
-                highlight(log, {
-                  language: 'sql',
-                  ignoreIllegals: true,
-                }),
-              )
-            : false,
-        timezone: getConfig().DATABASE_TIMEZONE,
-      },
 
-    );
     let rows = await seq.query(
       `
       UPDATE tenantUsers tu
@@ -961,6 +964,28 @@ class EmpresaRepository {
     
     return rows2[0] ;
   }
+  static async findUserByEmpresaId(id) {
+
+    let req = `
+    SELECT 
+    * 
+    FROM empresas e
+      inner join users u
+      where e.id = '${id}'
+      and u.id = e.userId;
+    `
+
+    let rows2 = await seq.query(
+      req,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    
+    return rows2[0] ;
+    
+  }
+
 }
 
 export default EmpresaRepository;
