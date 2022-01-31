@@ -17,5 +17,10 @@ export default (app) => {
       `/produto/enviarEmailRecusado`,
       require('./sendEmailProduto').default,
     );
+
+    app.post(
+      `/produto/enviarEmailRecusadoImagemProduto`,
+      require('./sendEmailPImagemroduto').default,
+    );
   };
   
