@@ -255,5 +255,48 @@ export default class SmtpService {
 
         return info;
     }
+    async retornoDoProdutoImagemPromocional(id, product, emailContent) {
+        let baseUrl = env.NODEMAILER_BASE_URL || '';
+
+        // create reusable transporter object using the default SMTP transport
+        let transporter = await this.createTransporter();
+
+        const transaction = SequelizeRepository.getTransaction(
+            this.options,
+          );
+
+        let cliente = await this.options.database.user.findOne({
+            where: { id },
+            transaction
+          });
+        
+          console.log("cliente.email")
+          console.log(cliente.email)
+
+
+    
+        // send mail with defined transport object
+        let info = await transporter.sendMail({
+            from: env.NODEMAILER_FROM, // sender address
+            to: cliente.email, // list of receivers
+            subject: `Devolutiva da imagem promocional do seu produto ${product.nome}, Constal`, // Subject line
+            text: "", // plain text body
+            html: `
+            <p>Verifique seu produto ${product.nome}, Constal</p>
+            <h2>Ol&aacute;,</h2>
+            <p>Seu produto ${product.nome} foi recursado</p>
+            <p>Mensagem do admin:</p>
+            <p>"${emailContent}"</p>
+            <p>Obrigado,</p>
+            <p><img
+            style='width: 180px;' 
+            src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' /></p>
+            ` // html body
+        });
+    
+        transporter.close();
+    
+        return info;
+    }
 }
 
