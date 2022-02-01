@@ -220,6 +220,7 @@ class PagamentoRepository {
     console.log(data)
      data.precoTotal;
     let precoPedido = 0;
+    let precoConstal = 0;
 
     data.fornecedores.produtosNoCarinho.map( //aqui são normalizados os dados entre nosso banco de dados e o servidor dos dados além de gerar as faturas como descrito no comentário acima
       (dadoDoSplit) => {
@@ -228,8 +229,9 @@ class PagamentoRepository {
         
         let newSplit = {
           "recipient_account_id": dadoDoSplit.empresa.user_token,
-          "cents": dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100
+          "cents": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100 ) * 0.95
         }
+        precoConstal += (dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100) * 0.05;
         arrItems.push(dadoDoSplit.produto.nome)
 
         precoPedido += dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100
@@ -239,6 +241,12 @@ class PagamentoRepository {
         splits.push(newSplit)
       }
     )
+
+    let newSplit1 = {
+      "recipient_account_id": 'B95EDB287EE8390FF14FEA4A41491910',
+      "cents": precoConstal
+    }
+    splits.push(newSplit1)
     console.log({"splits": splits})
     /*
      splits: [
