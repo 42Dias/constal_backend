@@ -305,12 +305,13 @@ class PagamentoRepository {
         formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
         break;
     }
-
+//  url: 'https://api.iugu.com/v1/invoices?api_token=9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8',
     const url = `https://api.iugu.com/v1/invoices?api_token=${API_TOKEN}`;
     const opt = {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: 
+        {
         //ensure_workday_due_date: true, //Garantir que a data da fatura caia em dia útil
         items: [
           ...arrItems
@@ -337,7 +338,7 @@ class PagamentoRepository {
 
         email: pessoa.email,
         due_date: dataVencimento
-      })
+      }
     };
     console.log("Dados enviados")
     console.log(opt)
@@ -1148,3 +1149,75 @@ errors: {
 
 // D346EC6805F7058689D009576F63E11D0E9A9E2EF9C3473511121B2DCEC87AD6
 
+/*
+{
+
+     "ensure_workday_due_date": false,
+
+     "items": [
+
+          {
+
+               "description": "nome1",
+
+               "quantity": 1,
+
+               "price_cents": 1500
+
+          },
+
+          {
+
+               "description": "nome2",
+
+               "quantity": 2,
+
+               "price_cents": 3000
+
+          }
+
+     ],
+
+     "payer": {
+
+          "address": {
+
+               "number": "15",
+
+               "zip_code": "18540000",
+
+               "street": "Padre Bento",
+
+               "district": "Bairro",
+
+               "city": "Porto Feliz",
+
+               "state": "SP",
+
+               "country": "Brasil"
+
+          },
+
+          "cpf_cnpj": "52939198810",
+
+          "name": "Ryan",
+
+          "phone_prefix": "015",
+
+          "phone": "996827652",
+
+          "email": "ryan.r.c.339ac@gmail.com"
+
+     },
+
+     "email": "ryan.r.c.339ac@gmail.com",
+
+     "due_date": "2022-02-02",
+
+     "return_url": "http://constalshop.com.br/#/finalizar",
+
+     "ignore_canceled_email": false
+
+}
+'
+*/
