@@ -78,12 +78,6 @@ export default function (sequelize) {
       precoOferta: {
         type: DataTypes.DECIMAL(10, 2),
       },
-      //PARA SER AUTOINCREMENT DEVERIA SER PRIMARY KEY
-      useId: {
-        type: DataTypes.INTEGER, 
-        autoIncrement: true,
-        unique: true,
-      },
       importHash: {
         type: DataTypes.STRING(255),
         allowNull: true,
