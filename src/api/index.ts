@@ -97,6 +97,8 @@ require('./pedidoProduto').default(routes);
 require('./smtp').default(routes);
 require('./comentario').default(routes);
 require('./banner').default(routes);
+require('./termo').default(routes);
+require('./informacoes').default(routes);
 
 
 // Loads the Tenant if the :tenantId param is passed
