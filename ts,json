@@ -1,0 +1,143 @@
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
+JsonWebTokenError: jwt malformed
+    at Object.module.exports [as verify] (/root/novoConstal/constal_backend/node_modules/jsonwebtoken/verify.js:63:17)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:373:11
+    at new Promise (<anonymous>)
+    at Function.<anonymous> (/root/novoConstal/constal_backend/src/services/auth/authService.ts:372:12)
+    at Generator.next (<anonymous>)
+    at /root/novoConstal/constal_backend/src/services/auth/authService.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/root/novoConstal/constal_backend/src/services/auth/authService.ts:4:12)
+    at Function.findByToken (/root/novoConstal/constal_backend/src/services/auth/authService.ts:179:16)
+    at /root/novoConstal/constal_backend/src/middlewares/authMiddleware.ts:36:48
