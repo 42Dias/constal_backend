@@ -5,9 +5,9 @@ import informacoesService from '../../services/informacoesService';
 
 export default async (req, res, next) => {
   try {
-    new PermissionChecker(req).validateHas(
-      Permissions.values.informacoesRead,
-    );
+    // new PermissionChecker(req).validateHas(
+    //   Permissions.values.informacoesRead,
+    // );
 
     const payload = await new informacoesService(
       req,
