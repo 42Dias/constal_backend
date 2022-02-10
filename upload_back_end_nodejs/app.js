@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const https = require('https')
+const https = require('http')
 const fs = require('fs');
 const cors = require('cors');
 var bodyParser = require('body-parser');
@@ -121,8 +121,8 @@ let server = https.createServer({
   }, app)
 
 server.listen(
-    3000, () => {
-    console.log("Servidor iniciado na porta 3000: localhost:3000");
+    3028, () => {
+    console.log("Servidor iniciado na porta 3028: localhost:3028");
 });
 
 /*

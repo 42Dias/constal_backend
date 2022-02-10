@@ -1,0 +1,83 @@
+
+
+linnguagem de programação faz a ponte entre o usuário e o CÓDIGO DE MÁQUINA
+
+CÓDIGO DE MÁQUINA é muito limitada => interessante saber de baixo dos panos 10010101
+	soma, guarda, compara
+	
+00101001011 => bit, BInary Digit,  menor unidade possível para o armazenamento de informação.
+
+8 bits = 1 byte
+
+8b = 1B
+
+linguagem de programção => tradutor => linguagem de máquina
+
+compiladores => faz a tradução e pronto, Livro
+    X
+interpretadores => faz a tradução simultânea, Tradutor em tempo real
+
+
+compiladores => faz a tradução e pronto, Livro
+    X
+interpretadores => faz a tradução simultânea, Tradutor em tempo real
+
+
+compiladores => {
+	espaço adicional para a compilação do programa,
+	com o passar do desenvolvimento a compilação pode afetar a produtividade,
+	velocidade de execução ALTA
+	verifica antes de executar
+	DISTRIBUIÇÃO NÃO FACILITADA => executa em uma máquina
+}
+    X
+interpretadores => {
+	não há tempo de espera para a compilação, estantâneo,
+	velocidade de execução não tão alta
+	começa a executar na hora,
+	só verifica erros executando,
+	DISTRIBUIÇÃO FACILITADA => executa em máquinas diferentes
+	
+}
+
+uma mesma linguagem pode ser os dois
+
+JIT Compilation, Just In Time
+meio de campo entre os compiladores e interpretadores,
+v8 google
+
+Java -> compilar o código para usar em vários computadores
+
+
+
+
+*-*-*
+Aula 1:
+    Como funciona a linguagem que o computador entende: a linguagem de máquina;
+    O computador precisa de um programa tradutor para transformar um código em uma linguagem de programação de alto nível para linguagem de máquina;
+    Existem, em geral, dois tipos de tradutores: compiladores e interpretadores;
+    Quais as diferenças entre compiladores e interpretadores, e suas implementações modernas.
+*-*-*
+
+
+Sistema de pastas
+	memória não volátil = memória secundária
+		HD => hard disk, grande capacidade, muito barato, mas bem LENTO e 			Frágil
+		
+		SSD => Solid State Drive, chips eletrónicos, bem menor e rápido, mas 			caro e limitação de escrita
+		
+
+	memória de trabalho = memória não volátil  => ram, Random Acess Memory
+		capacidade de armazenamento
+		guarda o que estamos trabalhando
+		
+		tabela de indices com a execução
+		
+	
+Memória secundária=> memória ram => programa executando
+
+
+
+
+	
+	
