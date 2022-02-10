@@ -295,5 +295,55 @@ export default class SmtpService {
     
         return info;
     }
+
+    async retornoDenunciaComentario(id, emailContent) {
+        let baseUrl = env.NODEMAILER_BASE_URL || '';
+
+
+        // create reusable transporter object using the default SMTP transport
+        let transporter = await this.createTransporter();
+
+        const transaction = SequelizeRepository.getTransaction(
+            this.options,
+          );
+
+          console.log("-----")
+        console.log("id")
+        console.log(id)
+
+        let cliente = await EmpresaRepository.findUserByEmpresaId(id)
+
+          console.log("---------")
+          console.log("cliente")
+          console.log(cliente)
+        
+          console.log("cliente.email")
+          console.log(cliente.email)
+
+
+    
+        // send mail with defined transport object
+        let info = await transporter.sendMail({
+            from: env.NODEMAILER_FROM, // sender address
+            to: cliente.email // 'Ryan.r.c.399ac@gmail.com', // cliente.email, // list of receivers
+            ,
+            subject: "Um comentário foi do seu produto foi retirado da plataforma, Constal", // Subject line
+            text: "", // plain text body
+            html: `
+            <h2>Ol&aacute;,</h2>
+            <p>Mensagem do admin:</p>
+            <p>"${emailContent}"</p>
+            <p><a style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58a4b0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px;" href="${baseUrl}/">Ir para a plataforma</a></p>
+            <p>Obrigado,</p>
+            <p><img
+            style='width: 180px;' 
+            src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' /></p>
+            ` // html body
+        });
+    
+        transporter.close();
+    
+        return info;
+    }
 }
 
