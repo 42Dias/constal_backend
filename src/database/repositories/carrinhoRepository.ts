@@ -24,11 +24,11 @@ class CarrinhoRepository {
         where:
         {
           userId: currentUser.id,
-          tenantId: tenant.id,
+          tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
         },
         defaults: {
           userId: currentUser.id || null,
-          tenantId: tenant.id,
+          tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb' ,
           createdById: currentUser.id,
           updatedById: currentUser.id,
         }
@@ -192,7 +192,7 @@ class CarrinhoRepository {
       id: {
         [Op.in]: ids,
       },
-      tenantId: currentTenant.id,
+      tenantId: currentTenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
     };
 
     const records = await options.database.carrinho.findAll(
@@ -218,7 +218,7 @@ class CarrinhoRepository {
       {
         where: {
           ...filter,
-          tenantId: tenant.id,
+          tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb' ,
         },
         transaction,
       },
@@ -242,7 +242,7 @@ class CarrinhoRepository {
     ];
 
     whereAnd.push({
-      tenantId: tenant.id,
+      tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
     });
 
     if (filter) {
