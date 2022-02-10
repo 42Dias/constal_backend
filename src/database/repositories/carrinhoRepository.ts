@@ -152,7 +152,7 @@ class CarrinhoRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          // tenantId: currentTenant.id,
         },
         include,
         transaction,
@@ -160,6 +160,7 @@ class CarrinhoRepository {
     );
 
     if (!record) {
+      console.log("bnjcdbnvxcbvxbscvbschbvhcbvahcbvjhcbvhchcvblnkvkdcnndcknbdklnbvnblvckbnlnvk")
       throw new Error404();
     }
 
