@@ -259,7 +259,7 @@ class ProdutoRepository {
       {
         where: {
           id,
-          tenantId: currentTenant.id,
+          // tenantId: currentTenant.id,
         },
         include,
         transaction,
