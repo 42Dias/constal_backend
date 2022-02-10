@@ -22,5 +22,8 @@ export default (app) => {
       `/tenant/:tenantId/produto/enviarEmailRecusadoImagemProduto`,
       require('./sendEmailImagemroduto').default,
     );
-  };
-  
+    app.post(
+      `/tenant/:tenantId/cliente/comentario-denuncia`,
+      require('./sendEmailDenunciaComentario').default,
+    );
+  }
