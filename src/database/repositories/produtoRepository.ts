@@ -167,6 +167,7 @@ class ProdutoRepository {
           'promocaoEncerramento',
           'promocaoCriacao',
           'categoriaId',
+          'caracteristicasTecnicas',
         ]),
         empresaId: data.empresaId || null,
         // categoriaId: data.categoria,
