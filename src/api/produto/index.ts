@@ -32,6 +32,11 @@ export default (app) => {
     require('./produtoList').default,
   );
 
+  app.get(
+    `/find-produto-by-id/:id`,
+    require('./produtoFindWithoutLogin').default,
+  );
+
   app.put(
     `/tenant/:tenantId/produtos/:id`,
     require('./produtoAfterBuy').default,
