@@ -241,9 +241,9 @@ class CarrinhoRepository {
       },
     ];
 
-    whereAnd.push({
-      tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
-    });
+    // whereAnd.push({
+    //   tenantId: tenant.id || 'c4a740fc-2e98-48b6-a837-6aa0feccfcfb',
+    // });
 
     if (filter) {
       if (filter.id) {
