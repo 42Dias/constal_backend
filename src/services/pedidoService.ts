@@ -286,14 +286,9 @@ export default class PedidoService {
 
 
   async findPedidoWithProductToEmpresa(userId, args) {
-
-
-
-    if(args.filter.role){
-      console.log("----------------")
-      console.log("args.filter.role")
-      console.log(args.filter.role)
-      return PedidoRepository.findPedidoWithProductToEmpresa(args.filter.role, args);
+    
+    if(args.filter && args.filter.role){      
+      return  PedidoRepository.findPedidoWithProductToEmpresa(args.filter.role, args);
     }
     else{
       console.log("----------------")
