@@ -206,7 +206,8 @@ class ComentarioRepository {
       comentarios c
        inner JOIN
     users u ON u.id = c.userId 
-        where c.produtoId = '${id}';`;
+        where c.produtoId = '${id}'
+        and c.isDenunciado not like 1;`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
@@ -398,7 +399,7 @@ class ComentarioRepository {
       from
         comentarios c
         left JOIN empresas e
-    ON c.fornecedorEmpresaId = e.id;`
+        ON c.fornecedorEmpresaId = e.id;`
     ,
     {
       nest: true,
