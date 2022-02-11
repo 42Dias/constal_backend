@@ -122,7 +122,7 @@ let server = https.createServer({
 
 server.listen(
     3000, () => {
-    console.log("Servidor iniciado na porta 3028: localhost:3028");
+    console.log("Servidor iniciado na porta 3000: localhost:3000");
 });
 
 /*
