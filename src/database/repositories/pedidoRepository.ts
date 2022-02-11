@@ -802,10 +802,13 @@ class PedidoRepository {
       }
       else if(filter.produtoId){
         where = `and p.id = '${filter.produtoId}' `
-      }
+      } 
       else{
-        where = ``
+        where = `where ped.fornecedorEmpresaId = '${empresaId}'`
       }
+    }
+    else{
+      where = `where ped.fornecedorEmpresaId = '${empresaId}'`
     }
 
     let query =
@@ -815,11 +818,13 @@ class PedidoRepository {
         p.imagemUrl,
         ped.status,
         ped.id AS pedidoId,
-        pp.precoTotal,
+        pp.precoTotal ,
+        pp.quantidade as quantidadeProdutos ,
         ped.compradorUserId,
         pp.id AS pedidoProdutoId,
-        pp.pedidoId AS ppId,
+        pp.pedidoId AS id,
         pf.nome AS fullname,
+        pf.nome,
         pf.cpf,
         pf.celular,
         pf.cep,
@@ -827,7 +832,8 @@ class PedidoRepository {
         pf.numero,
         pf.bairro,
         pf.cidade,
-        pf.estado
+        pf.estado,
+        ped.createdAt as dataPedido
           FROM
               pedidoProdutos pp
                   INNER JOIN
@@ -836,7 +842,6 @@ class PedidoRepository {
               pedidos ped ON pp.pedidoId = ped.id
                   INNER JOIN
               pessoaFisicas pf ON pp.compradorUserId = pf.userId
-        where ped.fornecedorEmpresaId = '${empresaId}'
         ${where}
           order by ped.createdAt;`;
     
@@ -847,6 +852,9 @@ class PedidoRepository {
     if (!record) {
       throw new Error404();
     }
+
+    console.log("record")
+    console.log(record)
 
     return record;
   }
