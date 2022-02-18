@@ -8,6 +8,7 @@ const plans = Plans.values;
 
 /**
  * Checks the Permission of the User on a Tenant.
+ * Hey
  */
 export default class PermissionChecker {
   ImagemCreate(produtoEdit: {
