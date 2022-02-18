@@ -1,5 +1,5 @@
 import { i18n, i18nExists } from '../i18n';
-
+//a
 export default class Error403 extends Error {
   code: Number;
 

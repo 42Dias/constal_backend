@@ -4,7 +4,7 @@ import sendgridMail from '@sendgrid/mail';
 
 if (getConfig().SENDGRID_KEY) {
   sendgridMail.setApiKey(getConfig().SENDGRID_KEY);
-}
+}//a
 
 export default class EmailSender {
   templateId: string;
