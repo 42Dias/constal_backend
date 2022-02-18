@@ -107,8 +107,8 @@ routes.param('tenantId', tenantMiddleware);
 // Add the routes to the /api endpoint
 app.use('/api', routes);
 
-// let https = require('https');
-let https = require('http');
+let https = require('https');
+// let https = require('http');
 // let https = require('http');
 const fs = require('fs');
 
@@ -116,8 +116,9 @@ let sslServer;
 
 
   sslServer = https.createServer({
-    key: fs.readFileSync(path.join(__dirname, '../../cert', 'privada25294.key'), 'ascii'),
-    cert: fs.readFileSync(path.join(__dirname, '../../cert', 'certificado25294.pem'), 'ascii')
+    ca:   fs.readFileSync(path.join(__dirname, '../../cert', 'constalshop.crt'),   'utf8'),
+    key:  fs.readFileSync(path.join(__dirname, '../../cert', 'constalshop.key'),       'ascii'),
+    cert: fs.readFileSync(path.join(__dirname, '../../cert', 'constalshop.pem'),   'utf8')
   }, app)
 
 
