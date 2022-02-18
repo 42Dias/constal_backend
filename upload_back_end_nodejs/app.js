@@ -116,8 +116,9 @@ app.post("/upload-image", uploadA.single('avatar'), async (req, res, next) => {
 // http.createServer(app).listen(80);
 
 let server = https.createServer({
-    key: fs.readFileSync(path.join(__dirname,  './cert', 'privada25294.key'), 'ascii'),
-    cert: fs.readFileSync(path.join(__dirname, './cert', 'certificado25294.pem'), 'ascii')
+    ca:   fs.readFileSync(path.join(__dirname, './cert', 'constalshop.crt'),   'utf8'),
+    key:  fs.readFileSync(path.join(__dirname, './cert', 'constalshop.key'),   'ascii'),
+    cert: fs.readFileSync(path.join(__dirname, './cert', 'constalshop.pem'),   'utf8')
   }, app)
 
 server.listen(
