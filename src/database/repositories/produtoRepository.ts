@@ -1016,6 +1016,7 @@ class ProdutoRepository {
             FROM 
             produtos 
             where deletedAt is null
+            and status = 'aprovado'
               LIMIT 1 OFFSET ${id-1};`
 
     let record = await seq.query(query, {
