@@ -223,15 +223,16 @@ class ComentarioRepository {
 
   static async findByEmpresa(id) {
     let query =
-      `SELECT 
-      c.*,
-      u.fullName,
-      u.firstName
-      FROM
+      `
+      SELECT 
+    c.*, u.fullName, u.firstName, p.nome as 'nomeDoProduto'
+    FROM
       comentarios c
-       inner JOIN
-    users u ON u.id = c.userId 
-        where c.fornecedorEmpresaId = '${id}';`;
+          INNER JOIN
+      users u ON u.id = c.userId
+      INNER JOIN
+    produtos p ON p.id = c.produtoId
+  where c.fornecedorEmpresaId = '${id}';`;
 
     let record = await seq.query(query, {
       type: QueryTypes.SELECT,
