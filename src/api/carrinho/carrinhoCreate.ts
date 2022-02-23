@@ -5,9 +5,9 @@ import CarrinhoService from '../../services/carrinhoService';
 
 export default async (req, res, next) => {
   try {
-    new PermissionChecker(req).validateHas(
-      Permissions.values.carrinhoCreate,
-    );
+    // new PermissionChecker(req).validateHas(
+    //   Permissions.values.carrinhoCreate,
+    // );
 
     const payload = await new CarrinhoService(req).create(
       req.body,
