@@ -12,8 +12,8 @@ export default (app) => {
     require('./cartaoImport').default,
   );
   app.delete(
-    `/tenant/:tenantId/cartao`,
-    require('./cartaoDestroy').default,
+    `/tenant/:tenantId/cartao/:id`,
+    require('./cartaoDestroyOne').default,
   );
   app.get(
     `/tenant/:tenantId/cartao/autocomplete`,
