@@ -37,6 +37,8 @@ class EmpresaRepository {
   
 
   static async create(data, options: IRepositoryOptions) {
+
+    console.log("RATATATA TA TA TA TATA")
     const currentUser = SequelizeRepository.getCurrentUser(
       options,
     );
@@ -48,6 +50,12 @@ class EmpresaRepository {
     const transaction = SequelizeRepository.getTransaction(
       options,
     );
+
+    console.log("data")
+    console.log(data)
+
+    console.log("data.marca")
+    console.log(data.marca)
 
     const record = await options.database.empresa.create(
       {
@@ -70,10 +78,12 @@ class EmpresaRepository {
           'pix',
           'importHash',
           'live_api_token',
-          'account_id',
-          'cartaoTipo',
-          'cartaoNumero',
-          'cartaoBanco',
+          'codigoBanco',
+          'agencia',
+          'agenciaDigito',
+          'conta',
+          'contaDigito',
+          'tipoDeConta',
           'teste_api_token',
           'user_token',
           
@@ -107,7 +117,10 @@ class EmpresaRepository {
       options,
     );
 
-    return this.findById(record.id, options);
+    console.log("record")
+    console.log(record)
+
+    return await this.findById(record.id, options);
   }
 
   static async findByUserId(id, options: IRepositoryOptions) {
@@ -184,9 +197,11 @@ class EmpresaRepository {
     record = await record.update(
       {
         ...lodash.pick(data, [
+          'nome',
           'marca',
           'razaoSocial',
           'cnpj',
+          'celular',
           'telefone',
           'ramal',
           'email',
@@ -308,6 +323,7 @@ class EmpresaRepository {
 
     if (!record) {
       throw new Error404();
+      console.log('bgidjbgvijsdbvgisbhvbsdibvhjsdkhvjbsdkbv')
     }
 
     return this._fillWithRelationsAndFiles(record, options);
