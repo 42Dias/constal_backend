@@ -11,9 +11,13 @@ import EmpresaRepository from './empresaRepository';
 import { IServiceOptions } from '../../services/IServiceOptions';
 const fetch = require("node-fetch");
 const axios = require("axios").default;
+import pagarme from 'pagarme';
+
 
 const Op = Sequelize.Op;
 
+
+let idConstal = 'acc_X634NeXSWiwMpzjR'
 
 
 let seq = new (<any>Sequelize)(
@@ -40,14 +44,13 @@ let seq = new (<any>Sequelize)(
 https://dev.iugu.com/docs/marketplace
 
 */
-const moderadorIdIugu = 'B4CE264C2A374693B3E3E1F8E72D40E6'
 
 
 const { QueryTypes } = require('sequelize');
 
 //Token Usado na Fatura
-// const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
-const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
+const API_TOKEN = 'sk_test_KEB42ybcqCNDv1Xq'
+const moderadorId = 'acc_X634NeXSWiwMpzjR'
 
 /*
 api_token deve ser o user_token da empresa
@@ -159,15 +162,6 @@ class PagamentoRepository {
         },
         ensure_workday_due_date: false,
 
-        // splits: [{
-        //   percent: 5,
-        //   bank_slip_percent: 5,
-        //   credit_card_percent: 5,
-        //   pix_percent: 5,
-        //   permit_aggregated: true,
-        //   recipient_account_id: moderadorIdIugu
-        // }],
-
         email: pessoa.email,
         due_date: dataVencimento
       })
@@ -226,10 +220,19 @@ class PagamentoRepository {
       (dadoDoSplit) => {
         console.log("dadoDoSplit")
         console.log(dadoDoSplit)
+
+        
+        // deverá ter o cents da constal tbm??
+
+        /* recipient_id: 're_civb4o6zr003u3m6e8dezzja6',
+            percentage:  "cents": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100 ) * 0.95 / precoPedido,
+            liable: false,
+            charge_processing_fee: true
+        */
         
         let newSplit = {
           "recipient_account_id": dadoDoSplit.empresa.user_token,
-          "cents": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100 ) * 0.95
+          "total": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100 ) * 0.95
         }
         precoConstal += (dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100) * 0.05;
         arrItems.push(dadoDoSplit.produto.nome)
@@ -242,10 +245,19 @@ class PagamentoRepository {
       }
     )
 
+    splits.map(
+      (dadoDoSplit) => { 
+        dadoDoSplit.percentage =  dadoDoSplit.percentage / precoPedido
+      }
+    )
+
     let newSplit1 = {
-      "recipient_account_id": 'B95EDB287EE8390FF14FEA4A41491910',
-      "cents": precoConstal
+      "recipient_account_id": idConstal,
+      "percentage": precoConstal,
+      "charge_remainder": true
+
     }
+
     splits.push(newSplit1)
     console.log({"splits": splits})
     /*
@@ -313,7 +325,80 @@ class PagamentoRepository {
         formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
         break;
     }
-//  url: 'https://api.iugu.com/v1/invoices?api_token=9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8',
+
+
+    let params = {
+    "amount": 21000,
+    "card_number": "4111111111111111",
+    "card_cvv": "123",
+    "card_expiration_date": "0922",
+    "card_holder_name": "Morpheus Fishburne",
+    "customer": {
+      "external_id": "#3311",
+      "name": "Morpheus Fishburne",
+      "type": "individual",
+      "country": "br",
+      "email": "mopheus@nabucodonozor.com",
+      "documents": [
+        {
+          "type": "cpf",
+          "number": "00000000000"
+        }
+      ],
+      "phone_numbers": ["+5511999998888", "+5511888889999"],
+      "birthday": "1965-01-01"
+    },
+    "billing": {
+      "name": "Trinity Moss",
+      "address": {
+        "country": "br",
+        "state": "sp",
+        "city": "Cotia",
+        "neighborhood": "Rio Cotia",
+        "street": "Rua Matrix",
+        "street_number": "9999",
+        "zipcode": "06714360"
+      }
+    },
+    "shipping": {
+      "name": "Neo Reeves",
+      "fee": 1000,
+      "delivery_date": "2000-12-21",
+      "expedited": true,
+      "address": {
+        "country": "br",
+        "state": pessoa.estado,
+        "city": pessoa.cidade,
+        "neighborhood": pessoa.bairro,
+        "street": pessoa.rua,
+        "street_number": pessoa.numero,
+        "zipcode": pessoa.cep
+
+      }
+    },
+    "items": [
+      {
+        "id": "r123",
+        "title": "Red pill",
+        "unit_price": 10000,
+        "quantity": 1,
+        "tangible": true
+      },
+      {
+        "id": "b123",
+        "title": "Blue pill",
+        "unit_price": 10000,
+        "quantity": 1,
+        "tangible": true
+      }
+    ],
+    "split_rules": splits
+  }
+  pagarme.client.connect({ api_key: API_TOKEN })
+  let trx = pagarme.transaction.create(params)
+
+  console.log(trx)
+
     const url = `https://api.iugu.com/v1/invoices?api_token=${API_TOKEN}`;
     const opt = {
       method: 'POST',
@@ -389,6 +474,38 @@ class PagamentoRepository {
       }
       )
       .catch(err => console.error('error:' + err));
+    /*
+    */
+
+
+    pagarme.client.connect({ api_key: 'SUA_API_KEY' })
+      .then(client => client.transactions.create({
+        amount: 100,
+        payment_method: 'credit_card',
+        card_number: '4111111111111111',
+        card_holder_name: 'abc',
+        card_expiration_date: '1225',
+        card_cvv: '123',
+        split_rules: [
+          {
+            recipient_id: 're_civb4p9l7004xbm6dhsetkpj8',
+            percentage: 50,
+            liable: true,
+            charge_processing_fee: true
+          },
+          {
+            recipient_id: 're_civb4o6zr003u3m6e8dezzja6',
+            percentage: 50,
+            liable: false,
+            charge_processing_fee: true
+          }
+        ]
+      }))
+
+    
+    
+    
+
 
     const record = await options.database.pagamento.create(
       {
