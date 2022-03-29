@@ -105,6 +105,29 @@ export default class CartaoService {
     }
   }
 
+
+  async destroyOne(id) {
+    const transaction = await SequelizeRepository.createTransaction(
+      this.options.database,
+    );
+
+    try {
+        await CartaoRepository.destroy(id, {
+          ...this.options,
+          transaction,
+        });
+
+      await SequelizeRepository.commitTransaction(
+        transaction,
+      );
+    } catch (error) {
+      await SequelizeRepository.rollbackTransaction(
+        transaction,
+      );
+      throw error;
+    }
+  }
+
   async findById(id) {
     return CartaoRepository.findById(id, this.options);
   }
