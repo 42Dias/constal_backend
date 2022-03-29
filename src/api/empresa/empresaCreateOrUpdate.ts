@@ -9,6 +9,9 @@ export default async (req, res, next) => {
       Permissions.values.empresaCreate,
     );
 
+    console.log("req")
+    console.log(req)
+
     const payload = await new EmpresaService(req).createOrUpdate(
       req.body.data,
     );
