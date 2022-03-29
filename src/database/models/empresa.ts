@@ -85,6 +85,31 @@ export default function (sequelize) {
       cartaoAgencia: {
         type: DataTypes.TEXT,
       },
+
+      codigoBanco: {
+        type: DataTypes.TEXT,
+      },
+
+      agencia: {
+        type: DataTypes.TEXT,
+      },
+
+      agenciaDigito: {
+        type: DataTypes.TEXT,
+      },
+
+      conta: {
+        type: DataTypes.TEXT,
+      },
+
+      contaDigito: {
+        type: DataTypes.TEXT,
+      },
+
+      tipoDeConta: {
+        type: DataTypes.TEXT,
+      },
+
       
       
       pix: {
