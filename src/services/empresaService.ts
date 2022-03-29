@@ -9,9 +9,12 @@ import { Sequelize, QueryTypes } from 'sequelize/types';
 import { getConfig } from '../config';
 import axios from 'axios';
 import Error404 from '../errors/Error404';
+import pagarme from 'pagarme'
+import empresaCreate from '../api/empresa/empresaCreate';
 
-// const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
-const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
+
+const API_TOKEN = 'CC93760DC60C4FFDA487ED6D9B88D9B6';   //* TESTE
+// const API_TOKEN = 'CC93760DC60C4FFDA487ED6D9B88D9B6' //* PRODUÇÃO
 
 export default class EmpresaService {
   options: IServiceOptions;
@@ -27,18 +30,15 @@ export default class EmpresaService {
     );
 
     try {
-      data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options, transaction });
-      
-      
-
-      
-      await SequelizeRepository.commitTransaction(
-        transaction,
-        );
         const record = await EmpresaRepository.create(data, {
         ...this.options,
         transaction,
       });
+
+      await SequelizeRepository.commitTransaction(
+        transaction,
+        );
+
       return record
 
     } catch (error) {
@@ -190,222 +190,84 @@ export default class EmpresaService {
   }
 
   async createOrUpdate(data) {
-
+    // THIS FUNCTION IS JUST TO GENERATE THE F. API AUTH!
     try {
-      // data.user = await UserRepository.filterIdInTenant(data.user, { ...this.options });
-      
       const currentUser = SequelizeRepository.getCurrentUser(
         this.options,
       );
-      
+
       data.user = currentUser.id
 
-      const hasEmpresaProfile = await this.findByUserId(data.user)
-      console.log("hasEmpresaProfile")
-      console.log(hasEmpresaProfile)
-
-      if(hasEmpresaProfile){
-      console.log("hasEmpresaProfile")
-      console.log(hasEmpresaProfile)
-
-        
-
-
-
-      }
-      else{
         console.log('fase0 he he he')
-        try{
-          // AQUI
-          try{
-            const options: any = {
-      
-              method: 'POST',
-            
-              url: `https://api.iugu.com/v1/marketplace/create_account?api_token=${API_TOKEN}`,
-            
-              headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
-            
-              data: {
-                name: data.nome
-              }
-            
-            };
-            
-            
-            return axios.request(options).then( (response) => {
-            
-              if(response.status == 200){
-                    try{
-                      console.log('fase1 he he he')
-        
-                      data.user_token = response.data.user_token
-                      data.account_id = response.data.account_id
-                      data.live_api_token = response.data.live_api_token
-                      data.test_api_token = response.data.test_api_token
-                      data.account_id = response.data.account_id
-                      try{
 
-                        console.log(data)
-                      
-                        const optionsRequest: any = {
-                    
-                          method: 'POST',
-                        
-                          url: `https://api.iugu.com/v1/accounts/${data.account_id}/request_verification?api_token=${data.user_token}`,
-                        
-                          headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
-                        
-                          data: {
-                        
-                            data: {
-                        
-                              physical_products: false,
-                    
-                              
-                              // price_range: 'Entre R$ 0,00 e R$ 100000,00',
-                              price_range: 'Entre R$ 0,00 e R$ 100000,00',
-                              
-                    
-                              business_type: 'Vendas',
-                              // business_type: 'Descrição do negócio',
-                              
-                              // person_type: '\'Pessoa Física\' ou \'Pessoa Jurídica\'',
-                              person_type: 'Pessoa Jurídica',
-                              
-                              // automatic_transfer: true,
-                              automatic_transfer: true,
-                              
-                              company_name: data.nome,
-                    
-                              // cnpj: 'cnpj só numeros',
-                              // cnpj: data.cnpj? data.cnpj: empresaData.cnpj,
-                              cnpj: data.cnpj,
-                        
-                              // address: 'endereço',
-                              address: data.logradouro,
-                        
-                              // cep: 'cep',
-                              cep: data.cep,
-                        
-                              // city: 'cidade',
-                              city: data.cidade,
-                        
-                              // district: 'bairro',
-                              district: data.bairro,
-                        
-                              // state: 'estado',
-                              state: data.estado,
-                        
-                              // telephone: 'telefone',
-                              telephone: data.telefone.replace(/\+|\(|\)| |-/g, '') || data.celular.replace(/\+|\(|\)| |-/g, '') ,
-                        
-                              // bank: '\'Itaú\', \'Bradesco\', \'Caixa Econômica\', \'Banco do Brasil\', \'Santander\', \'Banrisul\', \'Sicredi\', \'Sicoob\', \'Inter\', \'BRB\', \'Via Credi\', \'Neon\', \'Votorantim\', \'Nubank\', \'Pagseguro\', \'Banco Original\', \'Safra\', \'Modal\', \'Banestes\',\'Unicred\',\'Money Plus\',\'Mercantil do Brasil\',\'JP Morgan\',\'Gerencianet Pagamentos do Brasil\', \'Banco C6\', \'BS2\', \'Banco Topazio\', \'Uniprime\', \'Stone\', \'Banco Daycoval\', \'Rendimento\', \'Banco do Nordeste\', \'Citibank\', \'PJBank\', \'Cooperativa Central de Credito Noroeste Brasileiro\', \'Uniprime Norte do Paraná\', \'Global SCM\', \'Next\', \'Cora\', \'Mercado Pago\', \'Banco da Amazonia\', \'BNP Paribas Brasil\', \'Juno\',\'Cresol\',\'BRL Trust DTVM\',\'Banco Banese\',\'Banco BTG Pactual\',\'Banco Omni\',\'Acesso Soluções de Pagamento\',\'CCR de São Miguel do Oeste\',\'Polocred\',\'Ótimo\',',
-                              
-                              bank:data.cartaoBanco,
-                        
-                              // bank_ag: 'Agência da Conta',
-                              bank_ag: data.cartaoAgencia,
-                        
-                              // bank_cc: 'Número da Conta'
-                              bank_cc: data.cartaoNumero,
-                        
-                              // account_type: 'Poupança' 'Corrente' , 
-                              account_type: data.cartaoTipo,
-                        
-                            }
-                        
-                          }
-                        }
-                            return axios.request(optionsRequest).then(function (response) {
-      
-                              if(response.status == 200){
-                                return response.data;
-                              }
-                              else{
-                                // throw new Error404();
-                              }
-                            
-                            }).catch( (error) => {
-                              console.log(error)
-                              console.log("--**-*-**-*-*--*-*")
-                              console.error(error.response.data);
-                              throw (error.response.data)
+        console.log("data")
+        console.log(data)
 
-                              // throw new Error400(
-                              //   this.options.language,
-                              //   'importer.errors.importHashRequired',
-                              // );
-                            })
-                        
-
-                      }
-        
-                      catch (error) {
-                        console.log("error")
-                        console.log(error)
-
-                        throw error;
-                      }
-                    }
-                    catch (error) {
-                      console.log("error")
-                      console.log("++++++++++++++++++++++++++")
-                      console.log(error)
-
-                      throw error;
-                    }
-                  }
-              else{
-                // throw new Error404();
-              }
-            
-            }).catch(function (error) {
-              console.log("error")
-              console.log("------------------")
-              // throw new Error400(error);
-              // console.log(error)
-
-              // throw error              
-              return error              
-            });
-          }
-          catch (error) {
-            console.log("error final")
-            console.log(error)
-            throw error;
-          }
-      
-
-            // if(responseIugu == undefined){
-            //   throw new Error400(
-            //     this.options.language,
-            //     'Verifique seus dados ou tente novamente 0',
-            //   );
-            //   // throw 'Verifique seus dados ou tente novamente 0'
-            // }
-            // else{
-            //   return responseIugu;
-            // }
-        }
-        catch (error) {
-          SequelizeRepository.handleUniqueFieldError(
-            error,
-            this.options.language,
-            'empresa',
-          );
+        let body = {
+          "name": data.nome,
+          "email": currentUser.email,
+          "document": data.cnpj,
+          "type": "company",
+          "description": data.nome,
     
-          throw error;
+          "default_bank_account": {
+            "holder_name": data.nome,
+            "holder_type": "company",
+            "holder_document": data.cnpj,
+            "bank": data.codigoBanco,
+            "branch_number": data.agencia,
+            "branch_check_digit": data.agenciaDigito,
+            "account_number": data.conta,
+            "account_check_digit": data.contaDigito,
+            "type": "checking",
+            "metadata": {
+              "key": "value"
+            }
+          },
+          "transfer_settings": {
+            "transfer_enabled": false,
+            "transfer_interval": "Daily",
+            "transfer_day": 0
+          },
+          "automatic_anticipation_settings":
+            {
+            "enabled": true,
+            "type": "full",
+            "volume_percentage": "95",
+            "delay": null
+          },
+          "metadata": {
+            "key": "value"
+          }
         }
-        
-        
-      }
-
-        
-      await UserRepository.updateHasProfile({ ...this.options });
 
 
-    } catch (error) {
+        const url = 'https://api.pagar.me/core/v5/';
+        const hash = 'c2tfdGVzdF9LRUI0MnliY3FDTkR2MVhxOg=='
+
+        const api = axios.create({
+            baseURL: url,
+            timeout: 50000,
+            headers: {'Authorization': 'Basic '+ hash}
+        });
+
+
+        let res = await api.post('recipients', body)
+        .then(r => r.data)
+        .catch(function (error) {
+          console.log(error)
+          console.log("error")
+          console.log("------------------")
+          throw error              
+        });
+
+        console.log( " res " )
+        console.log(  res  )
+        data.user_token = res.id
+
+        return data
+    }
+    catch (error) {
       SequelizeRepository.handleUniqueFieldError(
         error,
         this.options.language,
