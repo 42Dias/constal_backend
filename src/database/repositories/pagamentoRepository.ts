@@ -11,7 +11,6 @@ import EmpresaRepository from './empresaRepository';
 import { IServiceOptions } from '../../services/IServiceOptions';
 const fetch = require("node-fetch");
 const axios = require("axios").default;
-import pagarme from 'pagarme';
 
 
 const Op = Sequelize.Op;

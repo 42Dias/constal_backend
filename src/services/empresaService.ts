@@ -9,7 +9,6 @@ import { Sequelize, QueryTypes } from 'sequelize/types';
 import { getConfig } from '../config';
 import axios from 'axios';
 import Error404 from '../errors/Error404';
-import pagarme from 'pagarme'
 import empresaCreate from '../api/empresa/empresaCreate';
 
 

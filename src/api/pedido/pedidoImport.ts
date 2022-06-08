@@ -2,7 +2,6 @@ import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
 import PedidoService from '../../services/pedidoService';
-import pagarme from 'pagarme'
 
 export default async (req, res, next) => {
   try {
