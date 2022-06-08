@@ -17,7 +17,7 @@ import pagarme from 'pagarme';
 const Op = Sequelize.Op;
 
 
-let idConstal = 'acc_X634NeXSWiwMpzjR'
+let idConstal = '15057'
 
 
 let seq = new (<any>Sequelize)(
@@ -193,82 +193,74 @@ class PagamentoRepository {
     return record;
   }
   static async createNewFaturaWithSplits(data, options: IRepositoryOptions){
-    /*
-    "splits": [
-
-          {
-               "recipient_account_id": "aaa",
-               "cents": 120
-          },
-
-          {
-               "recipient_account_id": "bbbb",
-               "cents": 150
-          }
-     ]
-    */
     let splits:any[] = []
     let arrItems: any[] = []
   
 
-    console.log(data)
-     data.precoTotal;
     let precoPedido = 0;
     let precoConstal = 0;
 
-    data.fornecedores.produtosNoCarinho.map( //aqui são normalizados os dados entre nosso banco de dados e o servidor dos dados além de gerar as faturas como descrito no comentário acima
+    //aqui são normalizados os dados entre nosso banco de dados e o servidor dos dados além de gerar as faturas como descrito no comentário acima
+    data.fornecedores.produtosNoCarinho.map(
       (dadoDoSplit) => {
         console.log("dadoDoSplit")
         console.log(dadoDoSplit)
 
         
-        // deverá ter o cents da constal tbm??
-
-        /* recipient_id: 're_civb4o6zr003u3m6e8dezzja6',
-            percentage:  "cents": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100 ) * 0.95 / precoPedido,
-            liable: false,
-            charge_processing_fee: true
+        /*
+          "splits": [{ 
+          "estabelecimentoId": 10564,
+          "tipoSplit": 2,
+          "valor": 10
+          }]
         */
         
         let newSplit = {
-          "recipient_account_id": dadoDoSplit.empresa.user_token,
-          "total": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100 ) * 0.95
+          "tipoSplit": 2,
+          "valor": ( dadoDoSplit.produto.preco * dadoDoSplit.quantidade ) * 0.95,
+          "estabelecimentoId":  parseInt(dadoDoSplit.empresa.user_token),
+          "cpfcnpj": dadoDoSplit.empresa.cnpj,
+          "nome": dadoDoSplit.empresa.nome,
+          "email": dadoDoSplit.empresa.email,
+          "chargeProcessingFee": true
+
         }
-        precoConstal += (dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100) * 0.05;
-        arrItems.push(dadoDoSplit.produto.nome)
 
-        precoPedido += dadoDoSplit.produto.preco * dadoDoSplit.quantidade * 100
+        precoConstal += (dadoDoSplit.produto.preco * dadoDoSplit.quantidade) * 0.05;
 
-        console.log(newSplit)
+        arrItems.push(dadoDoSplit.produto.preco)
+
+        precoPedido += dadoDoSplit.produto.preco * dadoDoSplit.quantidade
 
         splits.push(newSplit)
       }
     )
 
     splits.map(
+
+
       (dadoDoSplit) => { 
-        dadoDoSplit.percentage =  dadoDoSplit.percentage / precoPedido
+        dadoDoSplit.valor = (dadoDoSplit.valor / precoPedido * 100 );
       }
     )
 
     let newSplit1 = {
-      "recipient_account_id": idConstal,
-      "percentage": precoConstal,
-      "charge_remainder": true
+
+
+      // "percentage": precoConstal / precoPedido,
+      // "total": precoConstal,
+      // "charge_remainder": true,
+
+      "estabelecimentoId": idConstal,
+      "tipoSplit": 2,
+      "valor": precoConstal / precoPedido
 
     }
 
-    splits.push(newSplit1)
+    // splits.push(newSplit1)
+
+
     console.log({"splits": splits})
-    /*
-     splits: [
-    {
-      recipient_account_id: '32931CDC346328EE79CCDCD61A004E92EA866FC6E1D2A5F9A4501254977183B8',
-      cents: 9000
-    }
-  ]
-
-    */
     console.log(splits)
 
     const currentUser = SequelizeRepository.getCurrentUser(
@@ -289,7 +281,6 @@ class PagamentoRepository {
     if (!pessoa) {
       throw new Error404();
     }
-    console.log(data)
 
 
 
@@ -303,224 +294,137 @@ class PagamentoRepository {
       pessoa.celular = pessoa.celular.replace(/\+|\(|\)| |-/g, '');
     }
 
-    let dataVencimento = new Date();
-    dataVencimento.setDate(dataVencimento.getDate() + 3);
+    const formaPagamento = data.formaPagamento
+
+    const ip = '201.27.139.162'
+    const hash = 'f3bd8a2cabbeee52713c35f4bcc00775035a9635'
+
+    const url = `https://api.zsystems.com.br/`;
+    const opt = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+ hash,
+      },
+      
+      body: 
+        {
+          "cartao": {
+            "codigoSeguranca": data.cartao?.cvv,
+            "numero": data.cartao?.numero,
+            "titular": data.cartao?.nomeTitular,
+            "validade": data.cartao?.validade
+        },
+          
+          "cliente": {
+              "nome": pessoa?.nome,
+              "cpf": pessoa?.cpf,
+              "dataNascimento": "1985-03-10",
+              "email": pessoa.email,
+              "celular": pessoa.celular
+          },
+
+          
+          
+          // "endereco": {
+          //     "logradouro": pessoa.logradouro,
+          //     "numero":     `${pessoa.numero}`,
+          //     "cep":        pessoa.cep,
+          //     "cidade":     pessoa.cidade,
+          //     "estado":     pessoa.estado,
+          //     "complemento": pessoa.complemento
+          // },
+          
+          "endereco": {
+            "cep": "02912-000",
+            "cidade": "São Paulo",
+            "complemento": "Perto do posto Petrobrás",
+            "estado": "SP",
+            "logradouro": "Rua Coronel Bento Bicudo",
+            "numero": "847"
+          },
 
 
-    let formaPagamento;
-    switch (data.formaPagamento) {
-      case 'boleto':
-        formaPagamento = ['bank_slip'];
-        break;
 
-      case 'cartao':
-        formaPagamento = precoPedido < 100000 ? ['credit_card'] : ['bank_slip', 'pix'];
-        break;
+          "ip": ip,
+          "parcelas": 1,
+          // "splits": [ ],
+          "splits": splits,
+          "tipoPagamentoId": formaPagamento,
+          "valor": precoPedido
+          },
 
-      case 'pix':
-        formaPagamento = ['pix'];
-        break;
+     
+     
+    };
 
-      default:
-        formaPagamento = precoPedido < 100000 ? ['all'] : ['bank_slip', 'pix'];
-        break;
+
+
+
+
+    const api = axios.create({
+        baseURL: url,
+        timeout: 50000,
+        headers: {
+            'Authorization': 'Bearer '+ hash,
+            'Content-Type': 'application/json',
+          }
+      });
+
+
+      let res = await api
+      .post('vendas',  opt.body)
+      .then(res => res.data)
+      .catch(err => console.error('error:' + err));
+      
+      console.log("splits")
+      console.log(splits)
+
+
+      // data.id =  res.pedido.id
+      // data.url = res.pedido.secure_url
+      data.url = res.pedido.id
+      let status = res.success
+    
+      
+    
+    
+    if(status){
+      const record = await options.database.pagamento.create(
+        {
+          ...lodash.pick(data, [
+            'url',
+          ]),
+  
+          // idIugu: data.pedido.id,
+          status: res.pedido.status_pedido.titulo.toLowerCase(),
+          pedidoId: data.pedidoId,
+          createdById: currentUser.id,
+          updatedById: currentUser.id,
+        },
+      );
+
+      
+      const returnedRecord = {
+        id: record.id,
+        idIugu: record.idIugu,
+        pedidoId: record.pedidoId,
+        status: record.status,
+        apiResponse: res
+      };
+
+
+      return returnedRecord;
+    }
+
+    else{
+      return 'error';
+
     }
 
 
-    let params = {
-    "amount": 21000,
-    "card_number": "4111111111111111",
-    "card_cvv": "123",
-    "card_expiration_date": "0922",
-    "card_holder_name": "Morpheus Fishburne",
-    "customer": {
-      "external_id": "#3311",
-      "name": "Morpheus Fishburne",
-      "type": "individual",
-      "country": "br",
-      "email": "mopheus@nabucodonozor.com",
-      "documents": [
-        {
-          "type": "cpf",
-          "number": "00000000000"
-        }
-      ],
-      "phone_numbers": ["+5511999998888", "+5511888889999"],
-      "birthday": "1965-01-01"
-    },
-    "billing": {
-      "name": "Trinity Moss",
-      "address": {
-        "country": "br",
-        "state": "sp",
-        "city": "Cotia",
-        "neighborhood": "Rio Cotia",
-        "street": "Rua Matrix",
-        "street_number": "9999",
-        "zipcode": "06714360"
-      }
-    },
-    "shipping": {
-      "name": "Neo Reeves",
-      "fee": 1000,
-      "delivery_date": "2000-12-21",
-      "expedited": true,
-      "address": {
-        "country": "br",
-        "state": pessoa.estado,
-        "city": pessoa.cidade,
-        "neighborhood": pessoa.bairro,
-        "street": pessoa.rua,
-        "street_number": pessoa.numero,
-        "zipcode": pessoa.cep
 
-      }
-    },
-    "items": [
-      {
-        "id": "r123",
-        "title": "Red pill",
-        "unit_price": 10000,
-        "quantity": 1,
-        "tangible": true
-      },
-      {
-        "id": "b123",
-        "title": "Blue pill",
-        "unit_price": 10000,
-        "quantity": 1,
-        "tangible": true
-      }
-    ],
-    "split_rules": splits
-  }
-  pagarme.client.connect({ api_key: API_TOKEN })
-  let trx = pagarme.transaction.create(params)
-
-  console.log(trx)
-
-    const url = `https://api.iugu.com/v1/invoices?api_token=${API_TOKEN}`;
-    const opt = {
-      method: 'POST',
-      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-      body: 
-        {
-        //ensure_workday_due_date: true, //Garantir que a data da fatura caia em dia útil
-        items: [
-          ...arrItems
-        ],
-        payable_with: formaPagamento,
-        payer: {
-          address: {
-            zip_code: pessoa.cep,
-            street: pessoa.estado,
-            number: pessoa.numero,
-            district: pessoa.bairro,
-            city: pessoa.cidade,
-            state: pessoa.estado,
-            country: 'brasil'
-          },
-          name: pessoa.nome,
-          phone: pessoa.celular,
-          cpf_cnpj: pessoa.cpf,
-          email: pessoa.email
-        },
-        ensure_workday_due_date: false,
-
-        splits: splits,
-
-        email: pessoa.email,
-        due_date: dataVencimento
-      }
-    };
-    console.log("Dados enviados")
-    console.log(opt)
-    /*
-    {
-      "items":["Sapato Social Infantil"],
-      "payable_with":["all"],
-      "payer":{
-          "address":{
-              "zip_code":"18540000",
-              "street":"15151651",
-              "number":16116511,
-              "district":"industria",
-              "city":"65156165165",
-              "state":"15151651",
-              "country":"brasil"
-            },
-            "name":"aaaaaaaa",
-            "phone":"15996827652",
-            "cpf_cnpj":"52939198810",
-            "email":"ryan@email.com"
-          },
-          "ensure_workday_due_date":false,
-          "splits":[
-            {
-              "recipient_account_id":"32931CDC346328EE79CCDCD61A004E92EA866FC6E1D2A5F9A4501254977183B8","cents":9000
-            }
-          ],
-          "email":"ryan@email.com","due_date":"2022-01-23T11:09:54.810Z"
-        }
-
-    */
-
-    await fetch(url, opt)
-      .then(res => res.json())
-      .then(json => {
-        console.log(json)
-        data.idIugu = json.id
-        data.urlFaturaIugu = json.secure_url
-      }
-      )
-      .catch(err => console.error('error:' + err));
-    /*
-    */
-
-
-    pagarme.client.connect({ api_key: 'SUA_API_KEY' })
-      .then(client => client.transactions.create({
-        amount: 100,
-        payment_method: 'credit_card',
-        card_number: '4111111111111111',
-        card_holder_name: 'abc',
-        card_expiration_date: '1225',
-        card_cvv: '123',
-        split_rules: [
-          {
-            recipient_id: 're_civb4p9l7004xbm6dhsetkpj8',
-            percentage: 50,
-            liable: true,
-            charge_processing_fee: true
-          },
-          {
-            recipient_id: 're_civb4o6zr003u3m6e8dezzja6',
-            percentage: 50,
-            liable: false,
-            charge_processing_fee: true
-          }
-        ]
-      }))
-
-    
-    
-    
-
-
-    const record = await options.database.pagamento.create(
-      {
-        ...lodash.pick(data, [
-          'idIugu',
-          'urlFaturaIugu',
-        ]),
-        status: 'pendente',
-        pedidoId: data.pedidoId,
-        createdById: currentUser.id,
-        updatedById: currentUser.id,
-      },
-    );
-
-    return record;
   }
 
    static async update(id, data, options: IRepositoryOptions) {
