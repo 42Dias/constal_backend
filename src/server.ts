@@ -28,10 +28,6 @@ const updateIsOferta = async () => {
 
 api.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
-    setInterval(updatePagamentos, 1000 * 3600);
-    setInterval(updateIsOferta, 1000 * 43200);
-    
-    // setInterval(displayHello, 10000);
-
-
+  setInterval(updateIsOferta, 1000 * 43200);
+  setInterval(updatePagamentos, 1000 * 3600);
 });

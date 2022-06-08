@@ -139,29 +139,27 @@ export default class PedidoService {
     }
   }
 
-  async geraNewFatura(data) {
+  async geraNewFatura(rawData) {
 
     try { //Pega os ids das empresas cadastradas no nosso bancos de dados e através desses dados é passado o dinheiro a ser pago
-      data.fornecedores.produtosNoCarinho.map(
+      let data = rawData
+      
+      await Promise.all(data.fornecedores.produtosNoCarinho.map(
         async (fornecedorObjeto) => {
           console.log(fornecedorObjeto.fornecedorId)
           fornecedorObjeto.empresa = await EmpresaRepository.findIdBySQL(fornecedorObjeto.fornecedorId);
     
+          console.log("fornecedorObjeto")
           console.log(fornecedorObjeto)
         }
-      )
-      setTimeout(
-        async () => {
-          let fatura = await PagamentoRepository.createNewFaturaWithSplits(data, {
-            ... this.options
-          });
-          return fatura;
+      ))
 
-        }, 5000
-      )
 
-        
+      let fatura = await PagamentoRepository.createNewFaturaWithSplits(data, {
+        ... this.options
+      });
 
+      return fatura;
       
     } catch (error) {
 
