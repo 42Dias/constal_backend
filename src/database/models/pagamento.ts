@@ -9,15 +9,11 @@ export default function (sequelize) {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      idIugu: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
       pedidoId: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-      urlFaturaIugu: {
+      url: {
         type: DataTypes.STRING
       },
       status: {
