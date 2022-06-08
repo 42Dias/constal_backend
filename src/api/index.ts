@@ -17,6 +17,15 @@ const app = express();
 // Enables CORS
 app.use(cors({ origin: true }));
 
+
+var bodyParser = require('body-parser');
+
+
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
+
+
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
@@ -39,7 +48,7 @@ app.use(authMiddleware);
 app.use('/api/tenant/:tenantId/produto', getEmpresaMiddleware);
 
 // Middleware para encontrar o ususario empresa
-app.use('/api/tenant/:tenantId/pedido', getEmpresaMiddleware);
+// app.use('/api/tenant/:tenantId/pedido', getEmpresaMiddleware);
 // app.use('/api/tenant/:tenantId/pedido', getPessoaFisicaMiddleware);
 
 // Setup the Documentation
@@ -115,11 +124,11 @@ const fs = require('fs');
 let sslServer;
 
 
-  sslServer = https.createServer({
-    ca:   fs.readFileSync(path.join(__dirname, '../../cert', 'constal.crt'),   'utf8'),
-    key:  fs.readFileSync(path.join(__dirname, '../../cert', 'constal.key'),   'ascii'),
-    cert: fs.readFileSync(path.join(__dirname, '../../cert', 'constal.pem'),   'utf8')
-  }, app)
+sslServer = https.createServer({
+  ca:   fs.readFileSync(path.join(__dirname, '../../cert', 'constal.crt'),   'utf8'),
+  key:  fs.readFileSync(path.join(__dirname, '../../cert', 'constal.key'),   'ascii'),
+  cert: fs.readFileSync(path.join(__dirname, '../../cert', 'constal.pem'),   'utf8')
+}, app)
 
 
 export default sslServer;
