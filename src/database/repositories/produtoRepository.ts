@@ -1063,8 +1063,6 @@ class ProdutoRepository {
     return record;
   }
   static async updateAllDatabaseOfPagementos(){
-    
-    const sdk = require('api')('@iugu-dev/v1.0#d6ie79kw6g1afm');
 
     let query =
       `SELECT
@@ -1080,98 +1078,77 @@ class ProdutoRepository {
       throw new Error404();
     }
     
-    //Token Usado na Fatura
-    // const API_TOKEN = 'A7C933D7B2F192D4DA24D134FF9640FD4CE73D7049284194CE962E7374A3EA37';   //* TESTE
-    const API_TOKEN = '9E22B79709D38A9C4CD229E480EBDDB363BC99F9182C8FD1BC49CECC0CAA44F8' //* PRODUÇÃO
 
+    const axios = require("axios").default;
+    const hash = 'f3bd8a2cabbeee52713c35f4bcc00775035a9635'
+    const url = `https://api.zsystems.com.br/`;
 
 
     const pagamentos = await record
+
+    const api = axios.create({
+      baseURL: url,
+      timeout: 50000,
+      headers: {
+          'Authorization': 'Bearer '+ hash,
+          'Content-Type': 'application/json',
+        }
+    });
+
     
-    const axios = require("axios").default;
 
     pagamentos.map(
-      (pagamento => {
+      (async pagamento => {
+        
+      if(pagamento.status == 'pendente' && pagamento.url != null){
+        
+        
+      await api.get(`vendas/${pagamento.url}`)
+      .then(async function (response) {
 
-        if(pagamento.status == 'pendente' && pagamento.urlFaturaIugu != null){
-          const options = {
-          
-            method: 'GET',
-          
-            url: `https://api.iugu.com/v1/invoices/${pagamento.idIugu}?api_token=${API_TOKEN}`,
-          
-            headers: {Accept: 'application/json'}
-          
-          };
-          
-          
-          axios.request(options).then(async function (response) {
-          
-  
-  
-              if(response.data.status == 'paid'){
-  
+        const status = response.data.venda.status.titulo.toLowerCase() 
+        
+          if(status == 'aprovado'){
 
-                let rows = await seq.query(
-                  `
-                  UPDATE pagamentos p
-                  SET p.status = 'pago'
-                  WHERE p.idIugu = '${response.data.id}';
-                  `
-                )
+            let rows = await seq.query(
+              `
+              UPDATE pagamentos p
+              SET p.status = 'aprovado'
+              WHERE p.url = '${pagamento.url}';
+              `
+            )
 
-                let query =
-                `SELECT
-                  p.pedidoId
-                  FROM pagamentos p
-                    WHERE p.idIugu = '${response.data.id}';
-                `;
+            let query =
+            `SELECT
+              p.pedidoId
+              FROM pagamentos p
+                WHERE p.url = '${pagamento.url}';
+            `;
+        
+            let record = await seq.query(query, {
+              type: QueryTypes.SELECT,
+            })
             
-                let record = await seq.query(query, {
-                  type: QueryTypes.SELECT,
-                }).then(
-                  async (record) => {
-
-                    //[ { pedidoId: 'dcbc4724-6bf8-44fa-aad4-c5bff3e3437e' } ]
-
-                    let newquery =
-                    `UPDATE pedidos p
-                      SET p.status = 'pago'
-                        WHERE p.id = '${record[0].pedidoId}';;
-                    `;
-                
-                    let newrecord = await seq.query(newquery, {
-                      type: QueryTypes.SELECT,
-                    })
-    
-                    console.log("newrecord")
-                    console.log(newrecord)
-
-                  }
-                )
-                  
-                  
-                
-
-                console.log(rows)
-              }
-              else{
-                console.log("passa")
-              }
+            let newquery =
+            `UPDATE pedidos p
+              SET p.status = 'aprovado'
+                WHERE p.id = '${record[0].pedidoId}';;
+            `;
+        
+            let newrecord = await seq.query(newquery, {
+              type: QueryTypes.SELECT,
+            })
+           }
+           })
+          .catch(function (error) {
           
-                  })
-                  .catch(function (error) {
-                  
-                    console.error(error);
-                  
-                  });
-        }
-        
-        
-              }
-              )
-              )
-              return 
+            console.error(error);
+          
+          });
+          }
+          })
+          )
+          return 
     // return record;
   }
   static async updateAllIsOferta(){
