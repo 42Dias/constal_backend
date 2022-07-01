@@ -396,10 +396,11 @@ class AuthService {
                     moment(user.jwtTokenInvalidBefore),
                   );
 
-              if (isTokenManuallyExpired) {
-                reject(new Error401());
-                return;
-              }
+              // if (isTokenManuallyExpired) {
+              //   reject(new Error401());
+              //   // console.log("çrsvnodjnvosdfnvdjnvdkfsjnvksjdanvnsnvooskdmvkdsmvkmvfkadsmvojfvnjfavnajosdfvnapfojvnadfpvnafǘojnsfdjvnas-dfvinfsojvinóvnfavkifanvoadmbkfbmgĺkabmagkĺbnmgfokbnaǵoijbndf")
+              //   return;
+              // }
 
               // If the email sender id not configured,
               // removes the need for email verification.
