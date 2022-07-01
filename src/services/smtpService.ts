@@ -105,7 +105,7 @@ export default class SmtpService {
             to: email, // list of receivers
             subject: env.NODEMAILER_VERIFY_SUBJECT, // Subject line
             text: "", // plain text body
-            html: "Verifique sua conta para o app/site Constal </h1> <h2 color: 'red',>Olá,</h2><p>Clique no link abaixo para confirmar seu email.</p><p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px' href=" + link + ">Verificar email</a></p><p>Se você não solicitou, ignore este email.</p><p>Obrigado,</p><img src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' />" // html body
+            html: "Verifique sua conta para o app/site Constal </h1> <h2 color: 'red',>Olá,</h2><p>Clique no link abaixo para confirmar seu email.</p><p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 15px 0 0 80px' href=" + link + ">Verificar email</a></p><p>Se você não solicitou, ignore este email.</p><p>Obrigado,</p><img src='https://constalshop.com.br/static/media/logo.dbfcbed5.png' />" // html body
         });
 
         transporter.close();
@@ -223,7 +223,7 @@ export default class SmtpService {
             <p>Obrigado,</p>
             <p><img
             style='width: 180px;' 
-            src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' /></p>
+            src='https://constalshop.com.br/static/media/logo.dbfcbed5.png' /></p>
             ` // html body
         });
     
@@ -240,7 +240,7 @@ export default class SmtpService {
         let link = baseUrl+'dados-pessoais/';
 
 
-        const emailViewer = "<h1>Parabéns</h1><h2>Olá,</h2><p>Sua empresa foi aprovada no site constalshop!</p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 0 0 0 80px;' href='+ " + link + "' >Entrar</a><p>Obrigado,</p><img style='width: 180px;' src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' />"
+        const emailViewer = "<h1>Parabéns</h1><h2>Olá,</h2><p>Sua empresa foi aprovada no site constalshop!</p><a style='text-decoration: none; display: flex; align-items: center; justify-content: center; width: 160px; height: 35px; color: white; background-color: #58A4B0; border-radius: 6px; text-align: center; padding: 0 0 0 80px;' href='+ " + link + "' >Entrar</a><p>Obrigado,</p><img style='width: 180px;' src='https://constalshop.com.br/static/media/logo.dbfcbed5.png' />"
 
         // send mail with defined transport object
         let info = await transporter.sendMail({
@@ -287,7 +287,7 @@ export default class SmtpService {
             <p>Obrigado,</p>
             <p><img
             style='width: 180px;' 
-            src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' /></p>
+            src='https://constalshop.com.br/static/media/logo.dbfcbed5.png' /></p>
             ` // html body
         });
     
@@ -337,7 +337,7 @@ export default class SmtpService {
             <p>Obrigado,</p>
             <p><img
             style='width: 180px;' 
-            src='http://dev.42dias.com.br/Clientes/constal/static/media/logo.dbfcbed5.png' /></p>
+            src='https://constalshop.com.br/static/media/logo.dbfcbed5.png' /></p>
             ` // html body
         });
     
