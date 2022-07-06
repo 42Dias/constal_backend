@@ -199,6 +199,9 @@ class PagamentoRepository {
     let precoPedido = 0;
     let precoConstal = 0;
 
+    try{
+
+
     //aqui são normalizados os dados entre nosso banco de dados e o servidor dos dados além de gerar as faturas como descrito no comentário acima
     data.fornecedores.produtosNoCarinho.map(
       (dadoDoSplit) => {
@@ -293,6 +296,12 @@ class PagamentoRepository {
       pessoa.celular = pessoa.celular.replace(/\+|\(|\)| |-/g, '');
     }
 
+    if(pessoa.telefone){
+      pessoa.celular = pessoa.telefone.replace(/\+|\(|\)| |-/g, '');
+    }
+    
+    
+
     const formaPagamento = data.formaPagamento
 
     const ip = '201.27.139.162'
@@ -377,8 +386,7 @@ class PagamentoRepository {
       .then(res => res.data)
       .catch(err => console.error('error:' + err));
       
-      console.log("splits")
-      console.log(splits)
+      console.log(res)
 
 
       // data.id =  res.pedido.id
@@ -420,7 +428,13 @@ class PagamentoRepository {
     else{
       return 'error';
 
-    }
+    }      
+  }
+  catch(e){
+    console.log(e)
+    throw e
+    
+  }
 
 
 
@@ -1130,22 +1144,20 @@ class PagamentoRepository {
   
         }
         else{
-          // throw new Error404("");
           throw 'Verifique seus dados ou tente novamente MEU'
         }
       
       })
       .catch( (error) => {
-  
         console.log("error.response");
         console.log(error.response.data);
         console.error(error);
+
         throw 'Verifique seus dados ou tente novamente '
-      });;
+      });
 
     }
     catch (error) {
-
       throw error;
     }
   }
